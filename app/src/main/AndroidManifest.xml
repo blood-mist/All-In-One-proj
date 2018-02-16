@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="comcast.stb">
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <application
+        android:name=".MainApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".splashscreen.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".launcher.LauncherActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".livetv.LiveTVActivity" />
+        <activity android:name=".movielist.MovieListActivity" />
+        <activity android:name=".movielist.MoviePlayActivity" />
+        <activity android:name=".fm.FmListActivity" />
+        <activity android:name=".fm.FmPlayActivity" />
+
+        <service android:name=".fm.FmBindService" />
+
+        <receiver
+            android:name=".fm.FmReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="play" />
+                <action android:name="stop" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".account.AccountActivity" />
+        <activity android:name=".movielist.MovieNewActivity"></activity>
+    </application>
+
+</manifest>

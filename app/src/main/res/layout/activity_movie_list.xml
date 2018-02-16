@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/launcher_bg"
+    android:padding="10dp"
+    tools:context="com.crostinotv.stb.movielist.MovieCategoryActivity">
+
+    <TextView
+        android:padding="10dp"
+        android:id="@+id/txt_currentSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="How I did..."
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_toEndOf="@+id/txt_selectionLabel" />
+
+    <TextView
+        android:id="@+id/txt_selectionLabel"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:text="@string/current_selection" />
+
+    <TextView
+        android:id="@+id/txt_movie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="top|end"
+        android:padding="10dp"
+        android:text="@string/movie"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/white_color"
+        android:textStyle="bold" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/txt_movie"
+        android:layout_centerInParent="true">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movie_list_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:padding="20dp" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/progressbar_movielist"
+            style="@style/AVLoadingIndicatorView.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            app:indicatorColor="@color/white_color"
+            app:indicatorName="BallTrianglePathIndicator" />
+
+        <TextView
+            android:id="@+id/txt_nomovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:text="@string/no_movie"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:visibility="gone" />
+    </FrameLayout>
+
+
+</RelativeLayout>

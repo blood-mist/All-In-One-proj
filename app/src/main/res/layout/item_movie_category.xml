@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:id="@+id/layout_movie_catgry_prnt"
+    android:padding="4dp">
+    <LinearLayout
+        android:layout_width="350dp"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_gravity="center"
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:id="@+id/layout_movie_catgry">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:id="@+id/img_movie_category"
+            android:scaleType="fitXY"
+            android:padding="5dp"
+            android:adjustViewBounds="true"/>
+        <TextView
+            android:id="@+id/txt_movie_category"
+            android:layout_width="match_parent"
+            android:textColor="@color/white_color"
+            android:layout_height="50dp"
+            android:padding="5dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="English Movies"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+    <View
+        android:focusable="false"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:id="@+id/shade_view"
+        android:background="@color/transp_50_black"
+        android:visibility="visible"/>
+
+</FrameLayout>

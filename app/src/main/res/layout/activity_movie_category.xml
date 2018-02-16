@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/launcher_bg"
+    android:padding="10dp">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+        <android.support.v7.widget.RecyclerView
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:visibility="visible"
+            android:id="@+id/moviecategory_recycler_list"/>
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/progressbar_movieCategory"
+            style="@style/AVLoadingIndicatorView.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            app:indicatorColor="@color/white_color"
+            app:indicatorName="BallTrianglePathIndicator"/>
+    </FrameLayout>
+
+
+</LinearLayout>

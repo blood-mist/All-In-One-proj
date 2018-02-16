@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#97bbeb</color>
+    <color name="colorPrimaryDark">#6899d1</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="accent">#c62328</color>
+    <color name="white_color">#f7f7f7</color>
+    <color name="color_test">#323335</color>
+    <color name="color_smkblck">#120608</color>
+    <color name="transparent_black">#cf111111</color>
+    <color name="transp_50_black">#80111111</color>
+    <color name="transparent_40_white">#66f7f7f7</color>
+    <color name="transp_primary">#666899d1</color>
+    <color name="color_red">#f44336</color>
+    <color name="color_grey">#616161</color>
+    <color name="primary_darker">#015cb8</color>
+    <color name="transparent_grey">#cc757575</color>
+    <color name="transp_30_primary">#4d97bbeb</color>
+    <color name="colorBlue">#95DCD4</color>
+    <color name="transp60blue">#9995DCD4</color>
+    <color name="transp25blue">#4095DCD4</color>
+    <color name="white_no_selection">#40ffffff</color>
+    <color name="white_selection">#99ffffff</color>
+    <color name="tabTextColor">#d1c9c9 </color>
+    <color name="itemNameColor">#97DCD4</color>
+    <color name="tabSelectedTextColor">#FFF</color>
+    <color name="tabIndicatorColor">#FFF</color>
+    <color name="tabSelectedColor">#3284e1</color>
+    <color name="tabBackgroundColor">#7380e1</color>
+    <color name="dimBg">#bf000000</color>
+    <color name="transparent_30_black">#4d111111</color>
+    <color name="transp_20_black">#33111111</color>
+    <color name="transp_20_primary">#338daedb</color>
+</resources>

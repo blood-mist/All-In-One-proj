@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.crostinotv.stb.purchase.livetvpurchase.BuyChannelDialog"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/txt_purchase_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/purchase_movie_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:padding="10dp"
+        android:textColor="@color/white_color"
+        android:background="@color/primary_darker"
+        />
+    <TextView
+        android:id="@+id/txt_purchaseBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/purchase_body"
+        android:padding="10dp"
+        android:background="@color/transparent_grey"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textColor="@color/white_color"/>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:orientation="horizontal"
+      android:weightSum="2">
+      <Button
+          android:id="@+id/btn_purchase"
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="match_parent"
+          android:text="@string/purchase"
+          android:background="@drawable/button_selector"/>
+      <Button
+          android:id="@+id/btn_cancel"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:text="@string/cancel"
+          android:background="@drawable/button_selector"/>
+
+  </LinearLayout>
+
+</LinearLayout>

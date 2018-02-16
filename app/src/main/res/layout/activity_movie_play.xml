@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.crostinotv.stb.movielist.MoviePlayActivity">
+    <SurfaceView
+        android:id="@+id/video_play_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/tvboxID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent_black"
+        android:text="@string/txt_empty"
+        android:textColor="@color/white_color"
+        android:textSize="22sp" />
+    <LinearLayout
+        android:id="@+id/controller_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        android:background="@color/transparent_black">
+        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:focusable="true"
+            app:dsb_indicatorColor="@color/colorPrimary"
+            app:dsb_indicatorPopupEnabled="false"
+            app:dsb_progressColor="@color/white_color"
+            app:dsb_rippleColor="@color/white_color"
+            app:dsb_trackColor="@color/colorPrimaryDark" />
+    </LinearLayout>
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/movie_progressBar"
+        style="@style/AVLoadingIndicatorView"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:indicatorColor="@color/white_color"
+        app:indicatorName="BallSpinFadeLoaderIndicator" />
+
+</FrameLayout>

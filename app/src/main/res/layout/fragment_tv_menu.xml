@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="comcast.stb.launcher.LauncherActivity">
+
+        <ImageView
+            android:id="@+id/org_logo"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:focusable="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/storeLogo"
+            android:scaleType="fitXY"
+            android:src="@drawable/store_logo" />
+
+        <ImageView
+            android:id="@+id/img_tv_logout"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:adjustViewBounds="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="5dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/logout" />
+
+        <TextView
+            android:id="@+id/txt_tv_username"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/img_tv_logout"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:layout_toLeftOf="@+id/img_tv_logout"
+            android:layout_toStartOf="@+id/img_tv_logout"
+            android:clickable="true"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:text="Hello"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@drawable/text_selector" />
+
+        <ImageView
+            android:id="@+id/user_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:layout_toLeftOf="@+id/txt_tv_username"
+            android:layout_toStartOf="@+id/txt_tv_username"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/userimage" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/org_logo"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:layout_alignParentEnd="true">
+        <LinearLayout
+            android:id="@+id/category_container"
+            android:layout_width="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/menu_left_bg"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp">
+
+            <TextView
+                android:id="@+id/txt_category_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/categories"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/white_color"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_category_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp" />
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/img_tv_ad"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/channel_list_layout"
+                android:layout_alignParentTop="true"
+                android:background="@color/white_no_selection"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/current_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Test Channel"
+                    android:textColor="@color/white_color"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_channel_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp" />
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/img_tv_ad"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:adjustViewBounds="true"
+                android:background="@color/white_no_selection"
+                android:scaleType="fitXY"
+                android:src="@drawable/ad" />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/description_container"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/menu_right_bg"
+            android:orientation="vertical"
+            android:layout_marginStart="5dp">
+            <TextView
+                android:id="@+id/txt_tv_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="@string/txt_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/white_color"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Description:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/white_color" />
+
+            <TextView
+                android:id="@+id/txt_channel_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/white_color"
+                android:text="@string/description_demo"
+                android:padding="10dp"/>
+            <ImageView
+                android:id="@+id/img_desc"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:src="@drawable/placeholder"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/buy_option_container">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/white_color"
+                    android:textStyle="bold"
+                    android:text="buy now to get exclusive offers"
+                    android:textAllCaps="true"
+                    android:padding="10dp"/>
+                <TextView
+                    android:id="@+id/txt_menu_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:padding="10dp"
+                    android:text="Price:"
+                    android:textColor="@color/white_color"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="buy"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:background="@drawable/button_selector"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    </RelativeLayout>
+
+

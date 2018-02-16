@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_gravity="center"
+    android:background="@color/transparent_grey"
+    android:focusable="true"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:padding="4dp">
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/white_color"
+        android:maxLines="1"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:padding="5dp"
+        android:text="dsag"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_color"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/tvPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:textAlignment="textStart"
+        android:maxLines="1"
+        android:textColor="@color/white_color"
+        android:padding="5dp"
+        android:text="Price"
+        />
+    <TextView
+        android:id="@+id/tvExpiry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:textAlignment="textStart"
+        android:maxLines="1"
+        android:text="Expiry"
+        android:textColor="@color/white_color"
+        android:padding="5dp"
+        />
+</LinearLayout>
