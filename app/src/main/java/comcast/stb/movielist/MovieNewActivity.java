@@ -1,9 +1,9 @@
 package comcast.stb.movielist;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -27,7 +27,6 @@ import comcast.stb.entity.LoginData;
 import comcast.stb.entity.MovieCategory;
 import comcast.stb.entity.MovieLink;
 import comcast.stb.entity.MoviesItem;
-import comcast.stb.livetv.ChannelRecyclerAdapter;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
 import comcast.stb.utils.ApiManager;
@@ -224,5 +223,13 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
     @Override
     public void onMovieDeselected() {
         movieListContainer.setBackgroundColor(ContextCompat.getColor(this,R.color.white_no_selection));
+    }
+
+    public void updateProgress(boolean b) {
+        if(b){
+            startAnim();
+        }else{
+            stopAnim();
+        }
     }
 }

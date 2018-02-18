@@ -1,7 +1,6 @@
 package comcast.stb.fm;
 
 
-
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;

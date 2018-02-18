@@ -15,8 +15,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,7 +22,8 @@ import comcast.stb.R;
 import comcast.stb.entity.BuyResponse;
 import comcast.stb.entity.LoginData;
 import comcast.stb.entity.MoviesItem;
-import comcast.stb.movielist.MovieListActivity;
+
+import comcast.stb.movielist.MovieNewActivity;
 import io.realm.Realm;
 
 import static comcast.stb.StringData.PURCHASE_TYPE_BOUGHT;
@@ -147,15 +146,15 @@ public class BuyMovieDialog extends DialogFragment implements BuyMovieApiInterfa
 
     @Override
     public void showProgress() {
-        if(activity instanceof MovieListActivity)
-            ((MovieListActivity) activity).updateProgress(true);
+        if(activity instanceof MovieNewActivity)
+            ((MovieNewActivity) activity).updateProgress(true);
 
 
     }
 
     @Override
     public void hideProgress() {
-        if(activity instanceof MovieListActivity)
-            ((MovieListActivity) activity).updateProgress(false);
+        if(activity instanceof MovieNewActivity)
+            ((MovieNewActivity) activity).updateProgress(false);
     }
 }

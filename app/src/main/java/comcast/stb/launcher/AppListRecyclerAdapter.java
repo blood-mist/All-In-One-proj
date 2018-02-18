@@ -18,7 +18,6 @@ import comcast.stb.R;
 import comcast.stb.entity.AppData;
 import comcast.stb.fm.FmListActivity;
 import comcast.stb.livetv.LiveTVActivity;
-import comcast.stb.movielist.MovieListActivity;
 import comcast.stb.movielist.MovieNewActivity;
 
 import static comcast.stb.utils.StringData.LIVE_TV;

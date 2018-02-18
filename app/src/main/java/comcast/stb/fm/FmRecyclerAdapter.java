@@ -5,11 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -22,7 +19,7 @@ import comcast.stb.entity.FmsItem;
 
 public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.ViewHolder> {
     private ArrayList<FmsItem> fmList;
-    private OnChannelListInteractionListener mListener;
+    private OnFmListInteractionListener mListener;
 
     Context mContext;
     private int focusedItem = 0;
@@ -36,9 +33,9 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
         this.selectedChannel = selectedChannelPos;
     }
 
-    private int selectedChannel = -1;
+    private int selectedChannel=-1;
 
-    public FmRecyclerAdapter(Context context, ArrayList<FmsItem> fmList, FmRecyclerAdapter.OnChannelListInteractionListener mListener) {
+    public FmRecyclerAdapter(Context context, ArrayList<FmsItem> fmList, OnFmListInteractionListener mListener) {
         this.fmList = fmList;
         this.mContext = context;
         this.mListener = mListener;
@@ -49,7 +46,7 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel, null);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel_category, null);
 
 
         return new ViewHolder(v);
@@ -62,17 +59,14 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
     }
 
 
+
     @Override
     public void onBindViewHolder(FmRecyclerAdapter.ViewHolder holder, final int position) {
 
 //        holder.itemView.setSelected(tryFocusItem==position);
 
         FmsItem fm = fmList.get(position);
-        holder.channelTitle.setText(fm.getName());
-        Picasso.with(mContext)
-                .load(fm.getImage())
-                .resize(200, 200)
-                .into(holder.channelImage);
+        holder.fmName.setText(fm.getName());
         if (position == getSelectedChannel()) {
             holder.itemLayout.setSelected(true);
         } else {
@@ -88,22 +82,17 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView channelTitle;
+        private TextView fmName;
         private LinearLayout itemLayout;
-        private View shadeView;
-        private ImageView channelImage;
 
         public ViewHolder(final View itemView) {
             super(itemView);
-            shadeView = itemView.findViewById(R.id.shade_view);
-            channelTitle = itemView.findViewById(R.id.txt_channelname);
-            channelImage = itemView.findViewById(R.id.img_channel);
-            itemLayout = itemView.findViewById(R.id.channel_item_layout);
+            fmName = itemView.findViewById(R.id.txt_cat_title);
+            itemLayout = itemView.findViewById(R.id.channel_category_layout);
             itemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     onFMClicked(fmList.get(getAdapterPosition()));
-                    notifyDataSetChanged();
 
                 }
             });
@@ -113,13 +102,6 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
                 public void onFocusChange(View view, boolean b) {
                     if (b) {
                         onFMSelected(fmList.get(getAdapterPosition()));
-                        shadeView.setVisibility(View.GONE);
-                        itemView.setScaleX(1.05f);
-                        itemView.setScaleY(1.05f);
-                    } else {
-                        shadeView.setVisibility(View.VISIBLE);
-                        itemView.setScaleX(1.0f);
-                        itemView.setScaleY(1.0f);
                     }
                 }
             });
@@ -128,16 +110,15 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
     }
 
     private void onFMSelected(FmsItem fmsItem) {
-        mListener.onChannelSelected(fmsItem);
+        mListener.onFmSelected(fmsItem);
     }
 
     private void onFMClicked(FmsItem fmsItem) {
-        mListener.onChannelClickInteraction(fmsItem);
+        mListener.onFmClickInteraction(fmsItem);
     }
 
-    public interface OnChannelListInteractionListener {
-        void onChannelClickInteraction(FmsItem fmsItem);
-
-        void onChannelSelected(FmsItem fmsItem);
+    public interface OnFmListInteractionListener {
+        void onFmClickInteraction(FmsItem fmsItem);
+        void onFmSelected(FmsItem fmsItem);
     }
 }

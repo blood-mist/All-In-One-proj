@@ -9,7 +9,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;

@@ -9,13 +9,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import java.util.ArrayList;
-import java.util.List;
 
 import comcast.stb.R;
 import comcast.stb.entity.FmCategory;
-import comcast.stb.entity.FmsItem;
 
 
 public class FmCategoryRecyclerAdapter extends RecyclerView.Adapter<FmCategoryRecyclerAdapter.ViewHolder> {
@@ -45,9 +42,7 @@ public class FmCategoryRecyclerAdapter extends RecyclerView.Adapter<FmCategoryRe
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel_category, null);
-        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        v.setLayoutParams(lp);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel_category, parent,false);
         return new ViewHolder(v);
     }
 
@@ -87,14 +82,13 @@ public class FmCategoryRecyclerAdapter extends RecyclerView.Adapter<FmCategoryRe
             categoryOrChannelName = itemView.findViewById(R.id.txt_cat_title);
             itemLayout = itemView.findViewById(R.id.channel_category_layout);
 
-            itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
                     if (b) {
                         Log.d("current_position",getAdapterPosition()+"");
                         setSelectedPos(getAdapterPosition());
-                        List<FmsItem> fmsItemArrayList=  fmCategoryArrayList.get(getAdapterPosition()).getFms();
-                        onCategoryClicked(fmsItemArrayList);
+                        onCategoryClicked(fmCategoryArrayList.get(getAdapterPosition()));
                     }
                 }
             });
@@ -102,11 +96,11 @@ public class FmCategoryRecyclerAdapter extends RecyclerView.Adapter<FmCategoryRe
         }
     }
 
-    private void onCategoryClicked(List<FmsItem> fms) {
+    private void onCategoryClicked(FmCategory fms) {
         mListener.onCategoryListClickInteraction(fms);
     }
 
     public interface OnCategoryListInteractionListener {
-        void onCategoryListClickInteraction(List<FmsItem> fmsList);
+        void onCategoryListClickInteraction(FmCategory fmsList);
     }
 }

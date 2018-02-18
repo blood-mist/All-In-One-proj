@@ -1,7 +1,6 @@
 package comcast.stb.fm;
 
 
-
 import java.util.List;
 
 import comcast.stb.entity.FmCategory;
@@ -28,6 +27,7 @@ public interface FmApiInterface {
     }
     interface FmWithCategoryPresenter{
         void getFmsWithCategory(String token);
+
 
     }
     interface FmWithCategoryInteractor{

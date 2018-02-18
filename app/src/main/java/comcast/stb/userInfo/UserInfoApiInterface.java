@@ -1,4 +1,4 @@
-package comcast.stb.splashscreen;
+package comcast.stb.userInfo;
 
 
 
@@ -12,14 +12,15 @@ import retrofit2.http.Query;
  * Created by blood-mist on 1/27/18.
  */
 
-public interface SplashApiInterface {
+public interface UserInfoApiInterface {
     @GET("user/info")
     Observable<Response<UserInfo>> getUserInfo(@Query("token") String token);
 
     interface SplashView {
         void setUserInfo(UserInfo userInfo);
-
         void onErrorOccured(String message);
+        void showProgress();
+        void hideProgress();
     }
 
     interface SplashPresenter {

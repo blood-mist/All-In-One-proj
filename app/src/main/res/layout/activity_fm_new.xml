@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/stb_bg">
+
+    <ImageView
+        android:id="@+id/org_fm_logo"
+        android:layout_width="0dp"
+        app:layout_widthPercent="25%"
+        android:layout_height="40dp"
+        android:focusable="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="5dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/storeLogo"
+        android:scaleType="fitXY"
+        android:src="@drawable/store_logo" />
+
+    <ImageView
+        android:id="@+id/img_fm_logout"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_margin="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:adjustViewBounds="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="5dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/logout" />
+
+    <TextView
+        android:id="@+id/txt_fm_username"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/img_fm_logout"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:layout_toLeftOf="@+id/img_fm_logout"
+        android:layout_toStartOf="@+id/img_fm_logout"
+        android:clickable="true"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:text="Hello"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@drawable/text_selector" />
+
+    <ImageView
+        android:id="@+id/user_fm_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:layout_toLeftOf="@+id/txt_fm_username"
+        android:layout_toStartOf="@+id/txt_fm_username"
+        android:adjustViewBounds="true"
+        android:padding="5dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/userimage" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/org_fm_logo"
+        android:layout_alignParentEnd="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:baselineAligned="false">
+            <LinearLayout
+                android:id="@+id/category_container"
+                android:layout_width="0dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/menu_left_bg"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_marginEnd="5dp">
+
+                <TextView
+                    android:id="@+id/txt_fm_category_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/categories"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/white_color"
+                    android:textStyle="bold" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_fm_category_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp" />
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/img_fm_ad"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/movie_list_layout"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/white_no_selection"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/current_fm_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="Test Channel"
+                        android:textColor="@color/white_color"
+                        android:textStyle="bold"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.cleveroad.audiovisualization.GLAudioVisualizationView
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/visualizer_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:av_bubblesSize="@dimen/bubble_size"
+                            app:av_bubblesRandomizeSizes="true"
+                            app:av_wavesHeight="@dimen/wave_height"
+                            app:av_wavesFooterHeight="@dimen/footer_height"
+                            app:av_wavesCount="7"
+                            app:av_layersCount="4"
+                            app:av_backgroundColor="@color/av_color_bg"
+                            app:av_bubblesPerLayer="16"
+                            />
+                        <LinearLayout
+                            android:id="@+id/fm_play_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/txt_current_fm"
+                                android:text="FM 102.2"
+                                android:padding="10dp"
+                                android:textColor="@color/white_color"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                                android:textStyle="bold"/>
+                            <ImageView
+                                android:id="@+id/img_fm_play"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:focusableInTouchMode="true"
+                                android:focusable="true"
+                                android:clickable="true"
+                                android:scaleType="fitCenter"
+                                android:adjustViewBounds="true"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_pause_circle_outline_black_24dp"
+                                android:tint="@color/white_color"
+                                android:background="@drawable/play_selector"/>
+                        </LinearLayout>
+
+                       <TextView
+                           android:id="@+id/no_content"
+                           android:visibility="gone"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                           android:textColor="@color/white_color"
+                           android:layout_gravity="center"
+                           android:gravity="center"
+                           android:minLines="2"
+                           android:padding="10dp"
+                           android:text="@string/nothing_selected"/>
+                    </FrameLayout>
+
+                </LinearLayout>
+
+
+                <ImageView
+                    android:id="@+id/img_fm_ad"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@color/white_no_selection"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ad" />
+
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/fm_list_container"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/menu_right_bg"
+                android:orientation="vertical"
+                android:layout_marginStart="5dp">
+                <TextView
+                    android:id="@+id/txt_fm_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/fm"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/white_color"
+                    android:textStyle="bold" />
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/fm_list_recycler"
+                    android:padding="10dp"/>
+                </LinearLayout>
+        </LinearLayout>
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/progressbar_fmCategory"
+            style="@style/AVLoadingIndicatorView.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            app:indicatorColor="@color/white_color"
+            app:indicatorName="BallTrianglePathIndicator"/>
+    </FrameLayout>
+
+</android.support.percent.PercentRelativeLayout>

@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -28,7 +27,6 @@ import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.entity.events.FmLauncherEvent;
-import comcast.stb.utils.EqualSpacingItemDecoration;
 
 import static comcast.stb.StringData.CHANNEL_PACKAGE;
 import static comcast.stb.StringData.CHANNEL_PCKG;
@@ -39,7 +37,6 @@ import static comcast.stb.StringData.USER_NAME;
 import static comcast.stb.utils.StringData.LIVE_TV;
 import static comcast.stb.utils.StringData.MOVIE;
 import static comcast.stb.utils.StringData.RADIO_SERVICE;
-import static comcast.stb.utils.StringData.USER_ACCOUNTS;
 
 
 public class LauncherActivity extends AppCompatActivity implements MainPckgRecyclerAdapter.OnPackageListInteraction,MainSubsRecyclerAdapter.OnSubsListInteraction,MainOrderRecyclerAdapter.OnOrderInteractionListener {
@@ -193,8 +190,9 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
+
     }
 
     @Override

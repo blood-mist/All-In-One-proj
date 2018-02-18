@@ -1,4 +1,4 @@
-package comcast.stb.splashscreen;
+package comcast.stb.userInfo;
 
 
 
@@ -27,12 +27,12 @@ import retrofit2.Retrofit;
  * Created by blood-mist on 1/27/18.
  */
 
-public class SplashModel implements SplashApiInterface.SplashInteractor, TokenRefreshApiInterface.TokenRefreshView {
-    SplashApiInterface.SplashListener splashListener;
+public class UserInfoModel implements UserInfoApiInterface.SplashInteractor, TokenRefreshApiInterface.TokenRefreshView {
+    UserInfoApiInterface.SplashListener splashListener;
     TokenPresImpl tokenPres;
     LogoutPresImpl logoutPres;
 
-    public SplashModel(SplashApiInterface.SplashListener splashListener, LogoutPresImpl logoutPres) {
+    public UserInfoModel(UserInfoApiInterface.SplashListener splashListener, LogoutPresImpl logoutPres) {
         this.splashListener = splashListener;
         tokenPres = new TokenPresImpl(this);
         this.logoutPres = logoutPres;
@@ -66,10 +66,10 @@ public class SplashModel implements SplashApiInterface.SplashInteractor, TokenRe
     @Override
     public void getUserInfo(final String token) {
         Retrofit retrofit = ApiManager.getAdapter();
-        final SplashApiInterface splashApiInterface = retrofit.create(SplashApiInterface.class);
+        final UserInfoApiInterface userInfoApiInterface = retrofit.create(UserInfoApiInterface.class);
 
 
-        Observable<Response<UserInfo>> observable = splashApiInterface.getUserInfo(token);
+        Observable<Response<UserInfo>> observable = userInfoApiInterface.getUserInfo(token);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<UserInfo>>() {
                     @Override

@@ -59,4 +59,5 @@
     <string name="no_content">Nothing to show</string>
     <string name="description_demo">Here will be channel description.</string>
     <string name="txt_movie_description">Movie Description</string>
+    <string name="nothing_selected">No Content Selected.\nPlease select a channel to play.</string>
 </resources>
