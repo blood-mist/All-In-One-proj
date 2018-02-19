@@ -99,6 +99,15 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
         populateList();
 
     }
+    @OnClick(R.id.txt_username)
+    public void onUserNameClicled(){
+        showUserInfoDialog();
+
+    }
+
+    private void showUserInfoDialog() {
+
+    }
 
     private void poplateSubscriptions() {
         if(subscriptionList.size()>0) {

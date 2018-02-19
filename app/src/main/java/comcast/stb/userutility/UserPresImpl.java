@@ -7,6 +7,7 @@ import comcast.stb.entity.MoviePckgItem;
 import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
+import comcast.stb.entity.UserInfo;
 import comcast.stb.logout.LogoutPresImpl;
 
 
@@ -20,7 +21,7 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
 
     public UserPresImpl(UserApiInterface.UserView userView, LogoutPresImpl logoutPres) {
         this.userView = userView;
-        userDataInteractor = new UserDataModel(this,logoutPres);
+        userDataInteractor = new UserDataModel(this, logoutPres);
     }
 
     @Override
@@ -31,6 +32,11 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
     @Override
     public void getOrderHistory(String token) {
         userDataInteractor.getOrderHistory(token);
+    }
+
+    @Override
+    public void getUserInfo(String token) {
+        userDataInteractor.getUserInfo(token);
     }
 
     @Override
@@ -50,6 +56,11 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
     }
 
     @Override
+    public void takeUserInfo(UserInfo userInfo) {
+        userView.setUserInfo(userInfo);
+    }
+
+    @Override
     public void takeSubsHistory(List<SubsItem> subsHistory) {
         userView.setSubsHistory(subsHistory);
     }
@@ -66,18 +77,18 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
 
     @Override
     public void setChannelsInaPckg(int packageId, List<ChannelPckgItem> channelsInaPckgList) {
-        userView.setChannelsInaPckg(packageId,channelsInaPckgList);
+        userView.setChannelsInaPckg(packageId, channelsInaPckgList);
     }
 
     @Override
     public void setMoviesInaPckg(int packageId, List<MoviePckgItem> moviesInaPckgList) {
-        userView.setMoviesInaPckg(packageId,moviesInaPckgList);
+        userView.setMoviesInaPckg(packageId, moviesInaPckgList);
 
     }
 
     @Override
     public void onErrorOccured(String packageType, String message) {
-        userView.onErrorOccured(packageType,message);
+        userView.onErrorOccured(packageType, message);
     }
 
     @Override

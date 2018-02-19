@@ -34,23 +34,25 @@ import static comcast.stb.StringData.SUBSCRIPTION_LIST;
 import static comcast.stb.StringData.USER_NAME;
 
 
-public class SplashActivity extends AppCompatActivity implements UserApiInterface.UserView,LogoutApiInterface.LogoutView  {
-   private LoginData loginData;
+public class SplashActivity extends AppCompatActivity implements UserApiInterface.UserView, LogoutApiInterface.LogoutView {
+    private LoginData loginData;
     private Realm realm;
     private LogoutPresImpl logoutPres;
     private UserPresImpl userPres;
-    private ArrayList<SubsItem>subscriptionList;
+    private ArrayList<SubsItem> subscriptionList;
     private ArrayList<OrderItem> orderItemArrayList;
-    private ArrayList<PackagesInfo>channelPackageslist,moviesPackagesList;
-   @BindView(R.id.avi) com.wang.avi.AVLoadingIndicatorView loadingIndicatorView;
+    private ArrayList<PackagesInfo> channelPackageslist, moviesPackagesList;
+    private UserInfo userInfo;
+    @BindView(R.id.avi)
+    com.wang.avi.AVLoadingIndicatorView loadingIndicatorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        realm=Realm.getDefaultInstance();
-        logoutPres=new LogoutPresImpl(this);
-        userPres=new UserPresImpl(this,logoutPres);
+        realm = Realm.getDefaultInstance();
+        logoutPres = new LogoutPresImpl(this);
+        userPres = new UserPresImpl(this, logoutPres);
         ButterKnife.bind(this);
         startAnim();
 
@@ -59,17 +61,17 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
     @Override
     protected void onStart() {
         super.onStart();
-        loginData=realm.where(LoginData.class).findFirst();
-        if(loginData!=null){
+        loginData = realm.where(LoginData.class).findFirst();
+        if (loginData != null) {
             userPres.getSubsHistory(loginData.getToken());
 
-        }else{
+        } else {
             showLogin();
         }
     }
 
     private void showLogin() {
-        Intent loginIntent=new Intent(SplashActivity.this,LoginActivity.class);
+        Intent loginIntent = new Intent(SplashActivity.this, LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(loginIntent);
         finish();
@@ -99,26 +101,26 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
 
     @Override
     public void setSubsHistory(List<SubsItem> subsHistory) {
-        this.subscriptionList= (ArrayList<SubsItem>) subsHistory;
+        this.subscriptionList = (ArrayList<SubsItem>) subsHistory;
         userPres.getOrderHistory(loginData.getToken());
     }
 
     @Override
     public void setPackageInfo(List<PackagesInfo> channelListInfo, String packageType) {
-        switch (packageType){
+        switch (packageType) {
             case CHANNEL_PACKAGE:
-                this.channelPackageslist= (ArrayList<PackagesInfo>) channelListInfo;
-                userPres.getPackageInfo(MOVIE_PACKAGE,loginData.getToken());
+                this.channelPackageslist = (ArrayList<PackagesInfo>) channelListInfo;
+                userPres.getPackageInfo(MOVIE_PACKAGE, loginData.getToken());
                 break;
             case MOVIE_PACKAGE:
-                this.moviesPackagesList= (ArrayList<PackagesInfo>) channelListInfo;
-                Intent launcherIntent=new Intent(SplashActivity.this, LauncherActivity.class);
-                launcherIntent.putExtra(USER_NAME,loginData.getUser().getName());
-                launcherIntent.putParcelableArrayListExtra(SUBSCRIPTION_LIST,subscriptionList);
-                launcherIntent.putParcelableArrayListExtra(ORDER_LIST,orderItemArrayList);
-                launcherIntent.putParcelableArrayListExtra(CHANNEL_PCKG,channelPackageslist);
-                launcherIntent.putParcelableArrayListExtra(MOVIE_PCKG,moviesPackagesList);
-                launcherIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                this.moviesPackagesList = (ArrayList<PackagesInfo>) channelListInfo;
+                Intent launcherIntent = new Intent(SplashActivity.this, LauncherActivity.class);
+                launcherIntent.putExtra(USER_NAME, loginData.getUser().getName());
+                launcherIntent.putParcelableArrayListExtra(SUBSCRIPTION_LIST, subscriptionList);
+                launcherIntent.putParcelableArrayListExtra(ORDER_LIST, orderItemArrayList);
+                launcherIntent.putParcelableArrayListExtra(CHANNEL_PCKG, channelPackageslist);
+                launcherIntent.putParcelableArrayListExtra(MOVIE_PCKG, moviesPackagesList);
+                launcherIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(launcherIntent);
                 finish();
         }
@@ -137,7 +139,7 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
 
     @Override
     public void onErrorOccured(String message) {
-       showErrorDialog(message);
+        showErrorDialog(message);
 
     }
 
@@ -171,7 +173,13 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
 
     @Override
     public void setOrderHistory(List<OrderItem> orderHistory) {
-    this.orderItemArrayList= (ArrayList<OrderItem>) orderHistory;
-    userPres.getPackageInfo(CHANNEL_PACKAGE,loginData.getToken());
+        this.orderItemArrayList = (ArrayList<OrderItem>) orderHistory;
+        userPres.getUserInfo(loginData.getToken());
+    }
+
+    @Override
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+        userPres.getPackageInfo(CHANNEL_PACKAGE, loginData.getToken());
     }
 }

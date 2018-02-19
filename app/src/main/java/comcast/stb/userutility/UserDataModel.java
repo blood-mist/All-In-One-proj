@@ -13,6 +13,7 @@ import comcast.stb.entity.NewToken;
 import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
+import comcast.stb.entity.UserInfo;
 import comcast.stb.logout.LogoutPresImpl;
 import comcast.stb.tokenrefresh.TokenPresImpl;
 import comcast.stb.tokenrefresh.TokenRefreshApiInterface;
@@ -276,6 +277,53 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                     }
                 });
 
+    }
+
+    @Override
+    public void getUserInfo(final String token) {
+        Retrofit retrofit = ApiManager.getAdapter();
+        final UserApiInterface splashApiInterface = retrofit.create(UserApiInterface.class);
+
+
+        Observable<Response<UserInfo>> observable = splashApiInterface.getUserInfo(token);
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response<UserInfo>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<UserInfo> value) {
+                        int responseCode = value.code();
+                        if (responseCode == 200) {
+                            userDataListener.takeUserInfo(value.body());
+                        } else if (responseCode == 403) {
+                            userDataListener.onErrorOccured("403");
+                        } else if (responseCode == 401) {
+                            tokenPres.refreshTheToken(token);
+                        } else {
+                            userDataListener.onErrorOccured(value.message()); //value.message()
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (e instanceof HttpException || e instanceof ConnectException) {
+                            userDataListener.onErrorOccured("No Internet Connection");
+                        } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
+                            userDataListener.onErrorOccured("Couldn't connect to server");
+                        } else {
+                            userDataListener.onErrorOccured("Error Occured");
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Override
