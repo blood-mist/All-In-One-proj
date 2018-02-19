@@ -1,6 +1,12 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    tools:context="comcast.stb.userInfo.UserDialogFragment">
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
@@ -35,7 +41,7 @@
         android:id="@+id/name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/user_name"
+        android:text="@string/email"
         android:layout_toRightOf="@id/img_userImage"
         android:layout_alignTop="@id/img_userImage"
         android:layout_marginTop="50dp"
@@ -46,17 +52,18 @@
         android:layout_marginStart="40dp"
         android:layout_toEndOf="@id/img_userImage" />
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/name_label"
         android:id="@+id/txt_fullName"
         android:layout_alignTop="@+id/name_label"
         android:layout_alignBottom="@id/name_label"
-        android:text="Jonathon"
         android:padding="10dp"
         android:layout_alignLeft="@id/txt_user_balance"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/white_color"/>
+        android:textColor="@color/white_color"
+        android:layout_alignStart="@id/txt_user_balance"
+        android:layout_toEndOf="@+id/name_label" />
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name_label"
@@ -64,9 +71,10 @@
             android:text="@string/mac"
             android:padding="10dp"
             android:textColor="@color/white_color"
-            android:id="@+id/mac_label"/>
+            android:id="@+id/mac_label"
+            android:layout_alignStart="@id/name_label" />
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/mac_label"
         android:layout_alignTop="@id/mac_label"
@@ -75,7 +83,6 @@
         android:id="@+id/txt_macAddress"
         android:textColor="@color/white_color"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:text="XXXXXXXXXX"
         android:layout_toEndOf="@+id/mac_label"
         android:layout_alignStart="@id/txt_user_balance" />
     <TextView
@@ -91,7 +98,7 @@
         android:layout_alignStart="@id/mac_label" />
     <TextView
         android:id="@+id/txt_user_balance"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/balance_label"
         android:layout_alignTop="@id/balance_label"
@@ -115,6 +122,7 @@
         android:layout_toEndOf="@id/img_userImage"
         android:layout_marginEnd="-20dp" />
     <View
+        android:id="@+id/view2"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:background="@color/white_color"
@@ -128,5 +136,26 @@
         android:layout_toEndOf="@id/img_userImage"
         android:layout_marginEnd="-20dp"
         android:layout_alignEnd="@id/txt_macAddress" />
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view2"
+        android:layout_alignLeft="@id/view2"
+        android:layout_alignRight="@id/view2"
+        android:layout_centerHorizontal="true"
+        android:layout_alignEnd="@id/view2"
+        android:layout_alignStart="@id/view2"
+        android:text="@string/dismiss"
+        android:background="@drawable/button_selector"
+        android:layout_marginTop="25dp"/>
 </RelativeLayout>
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/progressbar_userinfo"
+        style="@style/AVLoadingIndicatorView.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:indicatorColor="@color/white_color"
+        app:indicatorName="BallTrianglePathIndicator" />
+</FrameLayout>

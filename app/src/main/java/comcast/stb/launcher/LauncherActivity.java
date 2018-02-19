@@ -2,6 +2,8 @@ package comcast.stb.launcher;
 
 import android.app.PendingIntent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.entity.events.FmLauncherEvent;
+import comcast.stb.userInfo.UserDialogFragment;
 
 import static comcast.stb.StringData.CHANNEL_PACKAGE;
 import static comcast.stb.StringData.CHANNEL_PCKG;
@@ -39,7 +42,8 @@ import static comcast.stb.utils.StringData.MOVIE;
 import static comcast.stb.utils.StringData.RADIO_SERVICE;
 
 
-public class LauncherActivity extends AppCompatActivity implements MainPckgRecyclerAdapter.OnPackageListInteraction,MainSubsRecyclerAdapter.OnSubsListInteraction,MainOrderRecyclerAdapter.OnOrderInteractionListener {
+public class LauncherActivity extends AppCompatActivity implements MainPckgRecyclerAdapter.OnPackageListInteraction,MainSubsRecyclerAdapter.OnSubsListInteraction,
+        MainOrderRecyclerAdapter.OnOrderInteractionListener,UserDialogFragment.OnFragmentInteractionListener {
     private ArrayList<AppData> appDataList;
     @BindView(R.id.app_recycler_list)
     RecyclerView appRecyclerList;
@@ -171,6 +175,17 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
         }
     }
 
+    @OnClick(R.id.txt_username)
+    public void onUserNameClick(){
+        FragmentManager manager=getSupportFragmentManager();
+        Fragment userInfo=manager.findFragmentByTag("userInfo");
+        if (userInfo != null) {
+            manager.beginTransaction().remove(userInfo).commit();
+        }
+        UserDialogFragment userDialogFragment =  UserDialogFragment.newInstance();
+        userDialogFragment.show(getSupportFragmentManager(),"userInfo");
+    }
+
     private void populateList() {
         AppListRecyclerAdapter appListRecyclerAdapter = new AppListRecyclerAdapter(LauncherActivity.this, appDataList, appRecyclerList);
         StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
@@ -212,6 +227,16 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
 
     @Override
     public void onPackageBuyClicked(PackagesInfo packagesInfo, String packageType) {
+
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+
+    }
+
+    @Override
+    public void onUserInfoErrorOccured(UserDialogFragment userDialogFragment) {
 
     }
 }
