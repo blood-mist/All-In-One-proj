@@ -1,20 +1,17 @@
 package comcast.stb.userInfo;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.wang.avi.AVLoadingIndicatorView;
@@ -27,10 +24,9 @@ import comcast.stb.entity.UserInfo;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
-import comcast.stb.splashscreen.SplashActivity;
-import io.reactivex.Observable;
+import comcast.stb.utils.AppConfig;
+import comcast.stb.utils.DeviceUtils;
 import io.realm.Realm;
-import retrofit2.Response;
 
 public class UserDialogFragment extends DialogFragment implements LogoutApiInterface.LogoutView, UserInfoApiInterface.SplashView {
     private LoginData loginData;
@@ -38,7 +34,7 @@ public class UserDialogFragment extends DialogFragment implements LogoutApiInter
     private UserInfoPresenterImpl userInfoPresenter;
     private LogoutPresImpl logoutPres;
 
-    private OnFragmentInteractionListener mListener;
+    private OnUserFragInteractionListener mListener;
     @BindView(R.id.img_userImage)
     ImageView userImage;
 
@@ -54,6 +50,9 @@ public class UserDialogFragment extends DialogFragment implements LogoutApiInter
     @BindView(R.id.txt_user_balance)
     TextView currentBalance;
 
+    @BindView(R.id.btn_dismiss)
+    Button btnDismiss;
+
     @BindView(R.id.progressbar_userinfo)
     AVLoadingIndicatorView progressBar;
 
@@ -64,23 +63,27 @@ public class UserDialogFragment extends DialogFragment implements LogoutApiInter
 
 
     public static UserDialogFragment newInstance() {
-        UserDialogFragment fragment = new UserDialogFragment();
-        return fragment;
+        return new UserDialogFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NO_TITLE, 0);
+        setStyle(DialogFragment.STYLE_NO_TITLE,R.style.Theme_AppCompat_Dialog);
         realm = Realm.getDefaultInstance();
         loginData = realm.where(LoginData.class).findFirst();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View dialogView = inflater.inflate(R.layout.fragment_user_dialog, container, false);
+        View dialogView = inflater.inflate(R.layout.fragment_user_dialog,container,false);
         ButterKnife.bind(this, dialogView);
         logoutPres = new LogoutPresImpl(this);
         userInfoPresenter = new UserInfoPresenterImpl(this, logoutPres);
@@ -96,18 +99,18 @@ public class UserDialogFragment extends DialogFragment implements LogoutApiInter
 
     public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction();
+            mListener.onUserFragInteraction();
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnUserFragInteractionListener) {
+            mListener = (OnUserFragInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnUserFragInteractionListener");
         }
     }
 
@@ -117,6 +120,26 @@ public class UserDialogFragment extends DialogFragment implements LogoutApiInter
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().setOnKeyListener(new DialogInterface.OnKeyListener()
+        {
+            @Override
+            public boolean onKey(android.content.DialogInterface dialog,
+                                 int keyCode,android.view.KeyEvent event)
+            {
+                if ((keyCode ==  android.view.KeyEvent.KEYCODE_BACK))
+                {
+                    // To dismiss the fragment when the back-button is pressed.
+                    dismiss();
+                    return true;
+                }
+                // Otherwise, do nothing else
+                else return false;
+            }
+        });
+    }
 
     @Override
     public void successfulLogout() {
@@ -133,14 +156,15 @@ public class UserDialogFragment extends DialogFragment implements LogoutApiInter
 
     private void updateUI(UserInfo userInfo) {
         email.setText(userInfo.getUserData().getEmail());
-        macAddress.setText(userInfo.getUserData().getMacAddress());
+        macAddress.setText(AppConfig.isDevelopment()?AppConfig.getMac(): DeviceUtils.getMac(getActivity()));
         currentBalance.setText(userInfo.getUserData().getBalance());
+        btnDismiss.requestFocus();
 
     }
 
     @Override
     public void onErrorOccured(String message) {
-        mListener.onUserInfoErrorOccured(UserDialogFragment.this);
+        mListener.onUserInfoErrorOccured(message);
     }
 
     @Override
@@ -172,9 +196,9 @@ public class UserDialogFragment extends DialogFragment implements LogoutApiInter
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnUserFragInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction();
-        void onUserInfoErrorOccured(UserDialogFragment userDialogFragment);
+        void onUserFragInteraction();
+        void onUserInfoErrorOccured(String message);
     }
 }

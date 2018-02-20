@@ -5,150 +5,150 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:background="@color/colorPrimary"
+    android:padding="10dp"
     tools:context="comcast.stb.userInfo.UserDialogFragment">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:orientation="horizontal"
     tools:context="comcast.stb.userInfo.UserDialogFragment">
 
-
-    <ImageView
-        android:id="@+id/img_userImage"
-        android:layout_width="227dp"
-        android:layout_height="228dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="100dp"
-        android:src="@drawable/userimage"
-        />
-
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
     <TextView
         android:id="@+id/txt_displayName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/img_userImage"
-        android:layout_alignRight="@+id/img_userImage"
-        android:layout_alignLeft="@+id/img_userImage"
-        android:layout_centerHorizontal="true"
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/white_color"
         android:padding="10dp"
-        android:text="TextView" />
+        android:text="TextView"/>
+    <ImageView
+        android:id="@+id/img_userImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:src="@drawable/userimage"/>
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/view1"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/white_color"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="-20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="-20dp" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/name_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:text="@string/email"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="40dp"
+                android:padding="10dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/white_color"
+                android:layout_marginStart="40dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/name_label"
+                android:id="@+id/txt_fullName"
+                android:layout_alignTop="@+id/name_label"
+                android:layout_alignBottom="@id/name_label"
+                android:padding="10dp"
+                android:layout_alignLeft="@id/txt_user_balance"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/white_color"
+                android:layout_alignStart="@id/txt_user_balance"
+                android:layout_toEndOf="@+id/name_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/name_label"
+                android:layout_alignLeft="@id/name_label"
+                android:text="@string/mac"
+                android:padding="10dp"
+                android:textColor="@color/white_color"
+                android:id="@+id/mac_label"
+                android:layout_alignStart="@id/name_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_toRightOf="@+id/mac_label"
+                android:layout_alignTop="@+id/mac_label"
+                android:id="@+id/txt_macAddress"
+                android:textColor="@color/white_color"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            <TextView
+                android:id="@+id/balance_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_below="@+id/mac_label"
+                android:layout_alignLeft="@id/mac_label"
+                android:text="@string/balance"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/white_color" />
+            <TextView
+                android:id="@+id/txt_user_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/txt_macAddress"
+                android:layout_below="@+id/mac_label"
+                android:padding="10dp"
+                android:textColor="@color/white_color"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            <Button
+                android:id="@+id/btn_dismiss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:layout_below="@+id/balance_label"
+                android:layout_alignLeft="@+id/balance_label"
+                android:clickable="true"
+                android:padding="10dp"
+                android:nextFocusUp="@id/btn_dismiss"
+                android:nextFocusRight="@id/btn_dismiss"
+                android:nextFocusDown="@id/btn_dismiss"
+                android:nextFocusLeft="@id/btn_dismiss"
+                android:focusableInTouchMode="true"
+                android:text="@string/dismiss"
+                android:background="@drawable/button_selector"
+                android:layout_marginTop="25dp"/>
+        </RelativeLayout>
 
 
-    <TextView
-        android:id="@+id/name_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/email"
-        android:layout_toRightOf="@id/img_userImage"
-        android:layout_alignTop="@id/img_userImage"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="40dp"
-        android:padding="10dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/white_color"
-        android:layout_marginStart="40dp"
-        android:layout_toEndOf="@id/img_userImage" />
-    <TextView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/name_label"
-        android:id="@+id/txt_fullName"
-        android:layout_alignTop="@+id/name_label"
-        android:layout_alignBottom="@id/name_label"
-        android:padding="10dp"
-        android:layout_alignLeft="@id/txt_user_balance"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/white_color"
-        android:layout_alignStart="@id/txt_user_balance"
-        android:layout_toEndOf="@+id/name_label" />
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/name_label"
-            android:layout_alignLeft="@id/name_label"
-            android:text="@string/mac"
-            android:padding="10dp"
-            android:textColor="@color/white_color"
-            android:id="@+id/mac_label"
-            android:layout_alignStart="@id/name_label" />
-    <TextView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/mac_label"
-        android:layout_alignTop="@id/mac_label"
-        android:padding="10dp"
-        android:layout_alignLeft="@id/txt_user_balance"
-        android:id="@+id/txt_macAddress"
-        android:textColor="@color/white_color"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:layout_toEndOf="@+id/mac_label"
-        android:layout_alignStart="@id/txt_user_balance" />
-    <TextView
-        android:id="@+id/balance_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mac_label"
-        android:layout_alignLeft="@id/mac_label"
-        android:padding="10dp"
-        android:text="@string/balance"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/white_color"
-        android:layout_alignStart="@id/mac_label" />
-    <TextView
-        android:id="@+id/txt_user_balance"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/balance_label"
-        android:layout_alignTop="@id/balance_label"
-        android:padding="10dp"
-        android:textColor="@color/white_color"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:layout_toEndOf="@id/balance_label" />
-    <View
-        android:id="@+id/view1"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/white_color"
-        android:layout_toRightOf="@id/img_userImage"
-        android:layout_alignTop="@id/img_userImage"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_alignRight="@id/txt_macAddress"
-        android:layout_marginRight="-20dp"
-        android:layout_marginStart="20dp"
-        android:layout_alignEnd="@id/txt_macAddress"
-        android:layout_toEndOf="@id/img_userImage"
-        android:layout_marginEnd="-20dp" />
-    <View
-        android:id="@+id/view2"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/white_color"
-        android:layout_toRightOf="@id/img_userImage"
-        android:layout_below="@+id/balance_label"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="-20dp"
-        android:layout_alignRight="@id/txt_macAddress"
-        android:layout_marginStart="20dp"
-        android:layout_toEndOf="@id/img_userImage"
-        android:layout_marginEnd="-20dp"
-        android:layout_alignEnd="@id/txt_macAddress" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/view2"
-        android:layout_alignLeft="@id/view2"
-        android:layout_alignRight="@id/view2"
-        android:layout_centerHorizontal="true"
-        android:layout_alignEnd="@id/view2"
-        android:layout_alignStart="@id/view2"
-        android:text="@string/dismiss"
-        android:background="@drawable/button_selector"
-        android:layout_marginTop="25dp"/>
-</RelativeLayout>
+        <View
+            android:id="@+id/view2"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/white_color"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="-20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="-20dp" />
+    </LinearLayout>
+</LinearLayout>
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/progressbar_userinfo"
         style="@style/AVLoadingIndicatorView.Large"

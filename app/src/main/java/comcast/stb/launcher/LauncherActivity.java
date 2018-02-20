@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import comcast.stb.InfoDialog.InfoDialogFragment;
 import comcast.stb.R;
 import comcast.stb.entity.AppData;
 import comcast.stb.entity.OrderItem;
@@ -30,6 +31,8 @@ import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.entity.events.FmLauncherEvent;
 import comcast.stb.userInfo.UserDialogFragment;
+import comcast.stb.utils.ApiManager;
+import retrofit2.Retrofit;
 
 import static comcast.stb.StringData.CHANNEL_PACKAGE;
 import static comcast.stb.StringData.CHANNEL_PCKG;
@@ -43,7 +46,7 @@ import static comcast.stb.utils.StringData.RADIO_SERVICE;
 
 
 public class LauncherActivity extends AppCompatActivity implements MainPckgRecyclerAdapter.OnPackageListInteraction,MainSubsRecyclerAdapter.OnSubsListInteraction,
-        MainOrderRecyclerAdapter.OnOrderInteractionListener,UserDialogFragment.OnFragmentInteractionListener {
+        MainOrderRecyclerAdapter.OnOrderInteractionListener,UserDialogFragment.OnUserFragInteractionListener {
     private ArrayList<AppData> appDataList;
     @BindView(R.id.app_recycler_list)
     RecyclerView appRecyclerList;
@@ -98,7 +101,12 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
         populatePackages();
         poplateSubscriptions();
         populateList();
+        getAdBanners();
 
+    }
+
+    private void getAdBanners() {
+        Retrofit retrofit = ApiManager.getAdapter();
     }
 
     private void poplateSubscriptions() {
@@ -183,7 +191,14 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
             manager.beginTransaction().remove(userInfo).commit();
         }
         UserDialogFragment userDialogFragment =  UserDialogFragment.newInstance();
-        userDialogFragment.show(getSupportFragmentManager(),"userInfo");
+        userDialogFragment.setCancelable(false);
+        userDialogFragment.show(manager, "userInfo");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     private void populateList() {
@@ -231,12 +246,20 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
     }
 
     @Override
-    public void onFragmentInteraction() {
+    public void onUserFragInteraction() {
+        FragmentManager manager=getSupportFragmentManager();
+        Fragment userInfo=manager.findFragmentByTag("userInfo");
+        if(userInfo!=null)
+            manager.beginTransaction().remove(userInfo).commit();
 
     }
 
     @Override
-    public void onUserInfoErrorOccured(UserDialogFragment userDialogFragment) {
-
+    public void onUserInfoErrorOccured(String message) {
+        FragmentManager manager=getSupportFragmentManager();
+        Fragment userInfo=manager.findFragmentByTag("userInfo");
+        if(userInfo!=null)
+            manager.beginTransaction().remove(userInfo).commit();
+        InfoDialogFragment infoDialogFragment=InfoDialogFragment.newInstance("Error Occured",message,false);
     }
 }
