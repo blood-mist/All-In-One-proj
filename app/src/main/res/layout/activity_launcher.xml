@@ -138,7 +138,7 @@
             android:layout_weight="1"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
-            android:background="@drawable/menu_left_bg"
+            android:background="@drawable/menu_left_bg_unselected"
             android:layout_marginEnd="5dp">
 
             <TextView
