@@ -63,4 +63,7 @@
     <string name="dismiss">dismiss</string>
     <string name="error_header">Error Occured</string>
     <string name="retry">retry</string>
+    <string name="id">ID</string>
+    <string name="order_id">Order ID</string>
+    <string name="subs_id">Subscription ID</string>
 </resources>

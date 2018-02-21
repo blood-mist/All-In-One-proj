@@ -102,7 +102,7 @@ public class MainSubsRecyclerAdapter extends  RecyclerView.Adapter<MainSubsRecyc
     public void onBindViewHolder(ViewHolder holder,  int position) {
         //bind MovieItemView here
         final SubsItem subsItem= subsArrayList.get(position);
-        holder.packageName.setText(subsItem.getId()+ " " +subsItem.getExpiry());
+        holder.packageName.setText("On" + subsItem.getUpdatedAt()+" of Id "+subsItem.getId()+ "Expiry at " +subsItem.getExpiry());
     }
 
 
@@ -121,6 +121,16 @@ public class MainSubsRecyclerAdapter extends  RecyclerView.Adapter<MainSubsRecyc
                 @Override
                 public void onClick(View view) {
                     subsListInteraction.onSubscriptionInfoClicked(subsArrayList.get(getAdapterPosition()));
+                }
+            });
+            itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if(b){
+                        packageName.setSelected(true);
+                    }else{
+                        packageName.setSelected(false);
+                    }
                 }
             });
 

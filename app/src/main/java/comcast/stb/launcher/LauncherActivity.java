@@ -30,6 +30,7 @@ import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.entity.events.FmLauncherEvent;
+import comcast.stb.subscriptions.OrderDialogFragment;
 import comcast.stb.userInfo.UserDialogFragment;
 import comcast.stb.utils.ApiManager;
 import retrofit2.Retrofit;
@@ -232,7 +233,9 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
 
     @Override
     public void onOrderInfoClicked(OrderItem orderItem) {
-
+        FragmentManager manager=getSupportFragmentManager();
+        OrderDialogFragment orderDialogFragment=OrderDialogFragment.newInstance(orderItem.getName(),orderItem.getId(),orderItem.getSubscribedId(),orderItem.getUpdatedAt(),orderItem.getExpiry(),orderItem.getTotalAmount());
+        orderDialogFragment.show(manager,"OrderDialog");
     }
 
     @Override
@@ -261,5 +264,6 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
         if(userInfo!=null)
             manager.beginTransaction().remove(userInfo).commit();
         InfoDialogFragment infoDialogFragment=InfoDialogFragment.newInstance("Error Occured",message,false);
+        infoDialogFragment.show(manager,"infoDialog");
     }
 }

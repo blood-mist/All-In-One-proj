@@ -15,6 +15,9 @@
         android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
         android:text="Demo ChannelCat"
         android:textColor="@color/white_color"
         android:textAppearance="?android:attr/textAppearanceMedium"/>

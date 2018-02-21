@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <View
+        android:id="@+id/info_view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_below="@+id/txt_orderName"
+        android:layout_alignEnd="@+id/txt_orderId"
+        android:layout_alignLeft="@+id/txt_orderName"
+        android:layout_alignRight="@id/txt_orderId"
+        android:layout_alignStart="@+id/txt_orderName"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="-10dp"
+        android:layout_marginRight="-10dp"
+        android:background="@color/white_color" />
+
+    <TextView
+        android:id="@+id/txt_orderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:text="@string/error_header"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/white_color" />
+
+    <TextView
+        android:id="@+id/order_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txt_orderName"
+        android:layout_alignStart="@+id/txt_orderName"
+        android:layout_below="@+id/info_view2"
+        android:padding="10dp"
+        android:text="@string/order_id"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:textColor="@color/white_color" />
+
+    <TextView
+        android:id="@+id/txt_orderId"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_orderName"
+        android:layout_marginLeft="10dp"
+        android:layout_alignTop="@+id/order_label"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/order_label"
+        android:layout_toRightOf="@+id/order_label"
+        android:padding="10dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <TextView
+        android:id="@+id/subs_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/order_label"
+        android:layout_alignStart="@+id/order_label"
+        android:layout_below="@+id/order_label"
+        android:padding="10dp"
+        android:text="@string/subs_id"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <TextView
+        android:id="@+id/txt_subsId"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_orderId"
+        android:layout_toEndOf="@+id/subs_label"
+        android:layout_toRightOf="@+id/subs_label"
+        android:padding="10dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <TextView
+        android:id="@+id/updated_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/subs_label"
+        android:layout_alignStart="@+id/subs_label"
+        android:layout_below="@+id/subs_label"
+        android:padding="10dp"
+        android:text="@string/updated_at"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <TextView
+        android:id="@+id/txt_updatedAt"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txt_subsId"
+        android:layout_alignStart="@+id/txt_subsId"
+        android:layout_below="@+id/txt_subsId"
+        android:padding="10dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <TextView
+        android:id="@+id/expiry_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/updated_label"
+        android:layout_alignStart="@+id/updated_label"
+        android:layout_below="@+id/updated_label"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        android:text="@string/expiry_at"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+    <TextView
+        android:id="@+id/txt_expiryAt"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txt_updatedAt"
+        android:layout_below="@+id/txt_updatedAt"
+        android:padding="10dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:layout_alignStart="@+id/txt_updatedAt" />
+    <TextView
+        android:id="@+id/price_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/expiry_label"
+        android:layout_below="@+id/expiry_label"
+        android:padding="10dp"
+        android:text="@string/price"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:layout_alignStart="@+id/expiry_label" />
+    <TextView
+        android:id="@+id/txt_totalPrice"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txt_updatedAt"
+        android:layout_below="@+id/txt_expiryAt"
+        android:padding="10dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:layout_alignStart="@+id/txt_updatedAt" />
+
+    <View
+        android:id="@+id/info_view1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignEnd="@+id/txt_totalPrice"
+        android:layout_alignLeft="@+id/txt_orderName"
+        android:layout_alignRight="@id/txt_totalPrice"
+        android:layout_alignStart="@+id/txt_orderName"
+        android:layout_below="@+id/txt_totalPrice"
+        android:layout_marginLeft="-10dp"
+        android:layout_marginRight="-10dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white_color" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/info_view2"
+        android:layout_alignLeft="@+id/info_view2"
+        android:layout_alignRight="@+id/info_view2"
+        android:layout_alignStart="@+id/info_view2"
+        android:layout_below="@+id/info_view1"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_dismiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_selector"
+            android:text="@string/dismiss" />
+    </LinearLayout>
+
+</RelativeLayout>
