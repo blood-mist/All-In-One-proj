@@ -1,4 +1,4 @@
-package comcast.stb.subscriptions;
+package comcast.stb.packageInfoDialog;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import comcast.stb.R;
 
-public class OrderDialogFragment extends DialogFragment {
+public class PackageDialogFragment extends DialogFragment {
     private static final String ORDER_NAME = "order_name";
     private static final String ORDER_ID = "order_id";
     private static final String SUBSCRIBED_ID = "subscribed_at";
@@ -49,13 +49,13 @@ public class OrderDialogFragment extends DialogFragment {
     Button dismiss;
 
 
-    public OrderDialogFragment() {
+    public PackageDialogFragment() {
         // Required empty public constructor
     }
 
 
-    public static OrderDialogFragment newInstance(String orderName, int orderId, String subscribedId, String updatedAt, String expiryAt, String totalPrice) {
-        OrderDialogFragment fragment = new OrderDialogFragment();
+    public static PackageDialogFragment newInstance(String orderName, int orderId, String subscribedId, String updatedAt, String expiryAt, String totalPrice) {
+        PackageDialogFragment fragment = new PackageDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ORDER_NAME, orderName);
         bundle.putInt(ORDER_ID, orderId);
@@ -78,14 +78,14 @@ public class OrderDialogFragment extends DialogFragment {
             expiryAt = getArguments().getString(EXPIRY_AT);
             totalPrice = getArguments().getString(TOTAL_PRICE);
         }
-        setStyle(STYLE_NO_TITLE, 0);
+        setStyle(STYLE_NO_FRAME, 0);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View dialogView = inflater.inflate(R.layout.fragment_order_dialog, container, false);
+        View dialogView = inflater.inflate(R.layout.fragment_package_dialog, container, false);
         ButterKnife.bind(this, dialogView);
         return dialogView;
     }

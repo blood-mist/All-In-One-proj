@@ -2,8 +2,6 @@ package comcast.stb.userutility;
 
 import java.util.List;
 
-import comcast.stb.entity.ChannelPckgItem;
-import comcast.stb.entity.MoviePckgItem;
 import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
@@ -38,16 +36,6 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
         userDataInteractor.getPackageInfo(packageType, token);
     }
 
-    @Override
-    public void getChannlesInaPckg(int packageId, String token) {
-        userDataInteractor.getChannlesInaPckg(packageId, token);
-
-    }
-
-    @Override
-    public void getMoviesInaPckg(int packageId, String token) {
-        userDataInteractor.getMoviesInaPckg(packageId, token);
-    }
 
     @Override
     public void takeSubsHistory(List<SubsItem> subsHistory) {
@@ -64,16 +52,6 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
         userView.setPackageInfo(channelInfoList, packageType);
     }
 
-    @Override
-    public void setChannelsInaPckg(int packageId, List<ChannelPckgItem> channelsInaPckgList) {
-        userView.setChannelsInaPckg(packageId,channelsInaPckgList);
-    }
-
-    @Override
-    public void setMoviesInaPckg(int packageId, List<MoviePckgItem> moviesInaPckgList) {
-        userView.setMoviesInaPckg(packageId,moviesInaPckgList);
-
-    }
 
     @Override
     public void onErrorOccured(String packageType, String message) {

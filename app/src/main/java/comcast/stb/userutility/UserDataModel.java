@@ -5,11 +5,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import comcast.stb.entity.ChannelPckgItem;
 import comcast.stb.entity.LoginData;
-import comcast.stb.entity.MoviePckgItem;
 import comcast.stb.entity.NewToken;
-
 import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
@@ -183,100 +180,6 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                 });
     }
 
-    @Override
-    public void getChannlesInaPckg(final int packageId, String token) {
-        Retrofit retrofit = ApiManager.getAdapter();
-        final UserApiInterface userApiInterface = retrofit.create(UserApiInterface.class);
-
-
-        Observable<Response<List<ChannelPckgItem>>> observable = userApiInterface.getChannelsInAPckg(packageId,token);
-        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
-                .subscribe(new Observer<Response<List<ChannelPckgItem>>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Response<List<ChannelPckgItem>> value) {
-                        int responseCode = value.code();
-                        if (responseCode == 200) {
-                            userDataListener.setChannelsInaPckg(packageId,value.body());
-                        } else if (responseCode == 403) {
-                            userDataListener.onChannelInaPckgError(packageId,"403");
-                        } else if (responseCode == 401) {
-//                            tokenPres.refreshTheToken(token);
-                        } else {
-                            userDataListener.onChannelInaPckgError(packageId,value.message()); //value.message()
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (e instanceof HttpException || e instanceof ConnectException) {
-                            userDataListener.onChannelInaPckgError(packageId,"No Internet Connection");
-                        } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            userDataListener.onChannelInaPckgError(packageId,"Couldn't connect to server");
-                        } else {
-                            userDataListener.onChannelInaPckgError(packageId,"Error Occured");
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    @Override
-    public void getMoviesInaPckg(final int packageId, final String token) {
-        Retrofit retrofit = ApiManager.getAdapter();
-        final UserApiInterface userApiInterface = retrofit.create(UserApiInterface.class);
-
-
-        Observable<Response<List<MoviePckgItem>>> observable = userApiInterface.getMoviesInAPckg(packageId,token);
-        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
-                .subscribe(new Observer<Response<List<MoviePckgItem>>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Response<List<MoviePckgItem>> value) {
-                        int responseCode = value.code();
-                        if (responseCode == 200) {
-                            userDataListener.setMoviesInaPckg(packageId,value.body());
-                        } else if (responseCode == 403) {
-                            userDataListener.onChannelInaPckgError(packageId,"403");
-                        } else if (responseCode == 401) {
-                            tokenPres.refreshTheToken(token);
-                        } else {
-                            userDataListener.onChannelInaPckgError(packageId,value.message()); //value.message()
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (e instanceof HttpException || e instanceof ConnectException) {
-                            userDataListener.onChannelInaPckgError(packageId,"No Internet Connection");
-                        } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            userDataListener.onChannelInaPckgError(packageId,"Couldn't connect to server");
-                        } else {
-                            userDataListener.onChannelInaPckgError(packageId,"Error Occured");
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-
-    }
 
     @Override
     public void newToken(final NewToken newToken) {
