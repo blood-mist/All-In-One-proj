@@ -14,9 +14,11 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,6 +52,12 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
     @BindView(R.id.current_category)
     TextView selectedCategory;
+
+    @BindView(R.id.category_container)
+    LinearLayout categoryLayout;
+
+    @BindView(R.id.description_container)
+    LinearLayout descriptionLayout;
 
     @BindView(R.id.txt_channel_description)
     TextView channelDescription;
@@ -132,7 +140,27 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         if (getActivity() instanceof LiveTVActivity) {
             currentChannel = ((LiveTVActivity) getActivity()).getCurrentChannel();
         }
+        categoryLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+               if(categoryLayout.getFocusedChild()==null){
+                   categoryLayout.setSelected(false);
 
+               }else{
+                   categoryLayout.setSelected(true);
+               }
+
+            }
+        });
+        descriptionLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                if(descriptionLayout.getFocusedChild()==null){
+
+                }
+
+            }
+        });
         // Inflate the layout for this fragment
         return menuView;
     }
@@ -149,7 +177,8 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     private void populateChannelWithCategory(ArrayList<ChannelCategory> channelCategoryList) {
         this.channelCategoryList = channelCategoryList;
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        categoryRecyclerAdapter = new CategoryRecyclerAdapter(getActivity(), this.channelCategoryList, MenuFragment.this);
+        if (categoryRecyclerAdapter == null)
+            categoryRecyclerAdapter = new CategoryRecyclerAdapter(getActivity(), this.channelCategoryList, MenuFragment.this);
         categoryRecyclerView.setAdapter(categoryRecyclerAdapter);
         categoryRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
@@ -165,12 +194,11 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
             }
             categoryRecyclerAdapter.setSelectedPos(channelCategoryList.indexOf(currentCategory));
             assert currentCategory != null;
-            onCategoryListClickInteraction(currentCategory.getCategoryTitle(),(ArrayList) currentCategory.getChannels());
+            onCategoryListClickInteraction(currentCategory.getCategoryTitle(), (ArrayList) currentCategory.getChannels());
             Timber.d("category:" + channelCategoryList.indexOf(currentCategory));
         }
 
         categoryRecyclerAdapter.notifyDataSetChanged();
-
 
 
     }
@@ -199,7 +227,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     }
 
     @Override
-    public void onCategoryListClickInteraction(String categoryName,ArrayList channelList) {
+    public void onCategoryListClickInteraction(String categoryName, ArrayList channelList) {
         this.channelList = channelList;
         selectedCategory.setText(categoryName);
         channelRecyclerAdapter = new ChannelRecyclerAdapter(getActivity(), this.channelList, MenuFragment.this);
@@ -219,20 +247,20 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
     @Override
     public void onChannelSelected(Channel channel) {
-        channelListContainer.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.white_selection));
+        channelListContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white_selection));
         updateChannelDescriptionUI(channel);
 
     }
 
     @Override
     public void onChannelDeselected() {
-        channelListContainer.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.white_no_selection));
+        channelListContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white_no_selection));
     }
 
 
     private void updateChannelDescriptionUI(Channel channel) {
         channelDescription.setText(channel.getChannelName() + channel.getChannelId() + channel.getExpiry());
-         Picasso.with(getActivity())
+        Picasso.with(getActivity())
                 .load(channel.getChannelLogo())
                 .into(imgDescription);
         switch (channel.getSubscriptionStatus()) {
@@ -259,7 +287,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     }
 
 
-public interface OnChannelClickedListener {
-    void onChannelClicked(Channel channel);
-}
+    public interface OnChannelClickedListener {
+        void onChannelClicked(Channel channel);
+    }
 }

@@ -1,5 +1,6 @@
 package comcast.stb.userInfo;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -80,14 +81,23 @@ public class UserDialogFragment extends DialogFragment implements LogoutApiInter
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View dialogView = inflater.inflate(R.layout.fragment_user_dialog, container, false);
+        View dialogView = inflater.inflate(R.layout.fragment_user_dialog, container);
         ButterKnife.bind(this, dialogView);
         logoutPres = new LogoutPresImpl(this);
         userInfoPresenter = new UserInfoPresenterImpl(this, logoutPres);
         displayname.setText(loginData.getUser().getName());
         return dialogView;
     }
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog d = getDialog();
+        if (d!=null){
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            d.getWindow().setLayout(width, height);
+        }
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
