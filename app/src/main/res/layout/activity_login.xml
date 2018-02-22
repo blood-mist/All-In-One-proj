@@ -1,61 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
+    android:background="@drawable/stb_bg"
     android:orientation="vertical"
-    android:gravity="center"
-    android:background="@drawable/launcher_bg">
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical">
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:scaleType="fitXY"
+        android:id="@+id/org_login_img"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
         android:adjustViewBounds="true"
+        android:scaleType="fitXY"
         android:src="@drawable/store_logo"
-        android:padding="10dp"/>
+        app:layout_heightPercent="11%"
+        app:layout_widthPercent="30%"
+        android:layout_alignParentEnd="true" />
 
-        <TextView
-            android:id="@+id/txt_user_mac"
-            android:padding="10dp"
-            android:layout_gravity="center"
-            android:layout_width="200dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/white_color"
-            android:layout_height="wrap_content"
-            android:text="XXXXXXXXXX" />
+    <View
+        android:id="@+id/line_view"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@id/org_login_img"
+        android:layout_alignRight="@id/org_login_img"
+        android:layout_below="@+id/org_login_img"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="-10dp"
+        android:layout_marginRight="-10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/white_color"
+        android:layout_alignStart="@id/org_login_img"
+        android:layout_alignEnd="@id/org_login_img" />
+
+
+    <TextView
+        android:id="@+id/txt_user_mac"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignLeft="@id/org_login_img"
+        android:layout_alignRight="@+id/org_login_img"
+        android:layout_below="@id/line_view"
+        android:layout_gravity="center"
+        android:background="@color/white_no_selection"
+        android:padding="10dp"
+        android:text="XXXXXXXXXX"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white_color"
+        app:layout_heightPercent="11%" />
 
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/input_layout_password"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_height="0dp"
+        android:layout_alignLeft="@id/txt_user_mac"
+        android:layout_alignRight="@id/txt_user_mac"
+        android:layout_below="@+id/txt_user_mac"
+        android:layout_marginTop="5dp"
+        app:layout_heightPercent="13%">
 
         <EditText
             android:id="@+id/edittext_user_password"
-            android:padding="10dp"
-            android:layout_width="200dp"
-            android:textColor="@color/white_color"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white_no_selection"
+            android:hint="@string/hint_password"
             android:inputType="textPassword"
-            android:hint="@string/hint_password" />
+            android:textColor="@color/white_color" />
 
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_login"
-        android:layout_margin="5dp"
-        android:padding="10dp"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
-        android:textColor="@color/white_color"
-        android:background="@drawable/button_selector"/>
+        android:layout_alignLeft="@id/org_login_img"
+        android:layout_alignRight="@id/org_login_img"
+        android:layout_alignStart="@id/org_login_img"
+        android:layout_below="@+id/input_layout_password"
+        android:gravity="center"
+        android:layout_alignEnd="@id/org_login_img">
 
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/button_selector"
+            android:padding="10dp"
+            android:text="@string/login"
+            android:textColor="@color/white_color" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/progressBar2"
         style="@style/AVLoadingIndicatorView.Large"
@@ -63,5 +108,5 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:indicatorColor="@color/white_color"
-        app:indicatorName="BallTrianglePathIndicator"/>
-</LinearLayout>
+        app:indicatorName="BallTrianglePathIndicator" />
+</android.support.percent.PercentRelativeLayout>
