@@ -14,13 +14,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="30dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         android:src="@drawable/store_logo"
         app:layout_heightPercent="11%"
         app:layout_widthPercent="30%"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="30dp" />
 
     <View
         android:id="@+id/line_view"
@@ -29,11 +30,11 @@
         android:layout_alignLeft="@id/org_login_img"
         android:layout_alignRight="@id/org_login_img"
         android:layout_below="@+id/org_login_img"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginLeft="-10dp"
         android:layout_marginRight="-10dp"
-        android:layout_marginTop="10dp"
-        android:background="@color/white_color"
+        android:layout_marginTop="20dp"
+        android:background="@color/white_no_selection"
         android:layout_alignStart="@id/org_login_img"
         android:layout_alignEnd="@id/org_login_img" />
 
@@ -46,12 +47,14 @@
         android:layout_alignRight="@+id/org_login_img"
         android:layout_below="@id/line_view"
         android:layout_gravity="center"
+        android:gravity="center"
         android:background="@color/white_no_selection"
-        android:padding="10dp"
         android:text="XXXXXXXXXX"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/white_color"
-        app:layout_heightPercent="11%" />
+        app:layout_heightPercent="7%"
+        android:layout_alignStart="@id/org_login_img"
+        android:layout_alignEnd="@+id/org_login_img" />
 
 
     <android.support.design.widget.TextInputLayout
@@ -61,13 +64,14 @@
         android:layout_alignLeft="@id/txt_user_mac"
         android:layout_alignRight="@id/txt_user_mac"
         android:layout_below="@+id/txt_user_mac"
-        android:layout_marginTop="5dp"
-        app:layout_heightPercent="13%">
+        android:layout_marginTop="10dp"
+        app:layout_heightPercent="9%">
 
         <EditText
             android:id="@+id/edittext_user_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:background="@color/white_no_selection"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
@@ -83,6 +87,8 @@
         android:layout_alignStart="@id/org_login_img"
         android:layout_below="@+id/input_layout_password"
         android:gravity="center"
+        android:layout_alignBottom="@+id/txt_promo"
+        android:layout_marginTop="10dp"
         android:layout_alignEnd="@id/org_login_img">
 
         <Button
@@ -90,7 +96,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
             android:background="@drawable/button_selector"
             android:padding="10dp"
             android:text="@string/login"
@@ -98,9 +103,18 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/txt_promo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignTop="@id/org_login_img"
+        android:layout_alignParentStart="true"
+        android:padding="10dp"
+        android:layout_marginLeft="20dp"
+        android:text="@string/promo_text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="40sp"
+        android:layout_marginStart="20dp" />
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/progressBar2"
         style="@style/AVLoadingIndicatorView.Large"

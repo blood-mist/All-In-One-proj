@@ -150,26 +150,6 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
     }
 
     @Override
-    public void setChannelsInaPckg(int packageId, List<ChannelPckgItem> channelsInaPckgList) {
-
-    }
-
-    @Override
-    public void setMoviesInaPckg(int packageId, List<MoviePckgItem> moviesInaPckgList) {
-
-    }
-
-    @Override
-    public void onChannelInaPckgError(int packageId, String message) {
-
-    }
-
-    @Override
-    public void onMoviesInaPckgError(int packageId, String message) {
-
-    }
-
-    @Override
     public void setOrderHistory(List<OrderItem> orderHistory) {
     this.orderItemArrayList= (ArrayList<OrderItem>) orderHistory;
     userPres.getPackageInfo(CHANNEL_PACKAGE,loginData.getToken());

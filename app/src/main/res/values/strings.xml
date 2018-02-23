@@ -66,4 +66,6 @@
     <string name="id">ID</string>
     <string name="order_id">Order ID</string>
     <string name="subs_id">Subscription ID</string>
+    <string name="promo_text">Watch TV\nShows and Movies\nIn HD\nAt affordable\nPrice</string>
+    <string name="txt_package_description">Package Desciption</string>
 </resources>

@@ -126,6 +126,5 @@ public class MainPckgRecyclerAdapter extends RecyclerView.Adapter<MainPckgRecycl
     public interface OnPackageListInteraction {
         void onPackageInfoClicked(PackagesInfo packagesInfo, String packageType);
 
-        void onPackageBuyClicked(PackagesInfo packagesInfo, String packageType);
     }
 }

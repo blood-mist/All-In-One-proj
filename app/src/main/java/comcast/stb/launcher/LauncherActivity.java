@@ -30,6 +30,7 @@ import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.entity.events.FmLauncherEvent;
+import comcast.stb.packageInfoDialog.PackageDialogFragment;
 import comcast.stb.subscriptions.OrderDialogFragment;
 import comcast.stb.userInfo.UserDialogFragment;
 import comcast.stb.utils.ApiManager;
@@ -47,7 +48,7 @@ import static comcast.stb.utils.StringData.RADIO_SERVICE;
 
 
 public class LauncherActivity extends AppCompatActivity implements MainPckgRecyclerAdapter.OnPackageListInteraction,MainSubsRecyclerAdapter.OnSubsListInteraction,
-        MainOrderRecyclerAdapter.OnOrderInteractionListener,UserDialogFragment.OnUserFragInteractionListener {
+        MainOrderRecyclerAdapter.OnOrderInteractionListener,UserDialogFragment.OnUserFragInteractionListener,PackageDialogFragment.OnFragmentInteractionListener {
     private ArrayList<AppData> appDataList;
     @BindView(R.id.app_recycler_list)
     RecyclerView appRecyclerList;
@@ -240,13 +241,11 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
 
     @Override
     public void onPackageInfoClicked(PackagesInfo packagesInfo, String packageType) {
-
+        FragmentManager manager =getSupportFragmentManager();
+        PackageDialogFragment packageFragment=PackageDialogFragment.newInstance(packageType,packagesInfo.getPackageId());
+        packageFragment.show(manager,"packageFragment");
     }
 
-    @Override
-    public void onPackageBuyClicked(PackagesInfo packagesInfo, String packageType) {
-
-    }
 
     @Override
     public void onUserFragInteraction() {
@@ -265,5 +264,11 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
             manager.beginTransaction().remove(userInfo).commit();
         InfoDialogFragment infoDialogFragment=InfoDialogFragment.newInstance("Error Occured",message,false);
         infoDialogFragment.show(manager,"infoDialog");
+    }
+
+
+    @Override
+    public void onBuyClick() {
+
     }
 }

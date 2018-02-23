@@ -31,4 +31,5 @@
     <color name="transparent_30_black">#4d111111</color>
     <color name="transp_20_black">#33111111</color>
     <color name="transp_20_primary">#338daedb</color>
+    <color name="colorblue_trans">#6695DCD4</color>
 </resources>
