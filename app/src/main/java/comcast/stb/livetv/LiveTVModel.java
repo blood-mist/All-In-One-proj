@@ -24,6 +24,8 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
+
 public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryInteractor,TokenRefreshApiInterface.TokenRefreshView{
     LiveTVApiInterface.ChannelWithCategoryListener channelWithCategoryListener;
     TokenPresImpl tokenPres;
@@ -55,11 +57,11 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                         if (responseCode == 200) {
                             channelWithCategoryListener.takeChannelsWithCategory(value.body());
                         } else if (responseCode == 403) {
-                            channelWithCategoryListener.onErrorOccured("403");
+                            channelWithCategoryListener.onErrorOccured("403",null,LIVE_CATEGORY_ERROR);
                         } else if (responseCode == 401) {
                             tokenPres.refreshTheToken(token);
                         } else {
-                            channelWithCategoryListener.onErrorOccured(value.message()); //value.message()
+                            channelWithCategoryListener.onErrorOccured(value.message(),null,LIVE_CATEGORY_ERROR); //value.message()
                         }
                     }
 
@@ -67,11 +69,11 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException ||  e instanceof ConnectException) {
-                            channelWithCategoryListener.onErrorOccured("No Internet Connection");
+                            channelWithCategoryListener.onErrorOccured("No Internet Connection",null,LIVE_CATEGORY_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            channelWithCategoryListener.onErrorOccured("Couldn't connect to server");
+                            channelWithCategoryListener.onErrorOccured("Couldn't connect to server",null,LIVE_CATEGORY_ERROR);
                         } else {
-                            channelWithCategoryListener.onErrorOccured("Error Occured");
+                            channelWithCategoryListener.onErrorOccured("Error Occured",null,LIVE_CATEGORY_ERROR);
                         }
                     }
 
@@ -99,7 +101,7 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
 
     @Override
     public void onError(String message) {
-        channelWithCategoryListener.onErrorOccured(message);
+        channelWithCategoryListener.onErrorOccured(message,null,LIVE_CATEGORY_ERROR);
     }
 
     @Override

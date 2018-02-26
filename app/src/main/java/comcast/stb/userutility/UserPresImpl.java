@@ -7,6 +7,8 @@ import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.logout.LogoutPresImpl;
 
+import static comcast.stb.StringData.PACKAGE_ERROR;
+
 
 /**
  * Created by ACER on 2/15/2018.
@@ -54,22 +56,9 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
 
 
     @Override
-    public void onErrorOccured(String packageType, String message) {
-        userView.onErrorOccured(packageType,message);
+    public void onErrorOccured(String packageType, String message,String errorType) {
+        userView.onErrorOccured(message,packageType,PACKAGE_ERROR);
     }
 
-    @Override
-    public void onChannelInaPckgError(int packageId, String message) {
-        userView.onErrorOccured(message);
-    }
 
-    @Override
-    public void onMoviesInaPckgError(int packageId, String message) {
-        userView.onErrorOccured(message);
-    }
-
-    @Override
-    public void onErrorOccured(String message) {
-        userView.onErrorOccured(message);
-    }
 }

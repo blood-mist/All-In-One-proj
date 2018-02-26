@@ -6,6 +6,7 @@ package comcast.stb.movielist;
 import java.util.List;
 
 import comcast.stb.entity.MovieCategory;
+import comcast.stb.entity.MoviesItem;
 import comcast.stb.logout.LogoutPresImpl;
 
 /**
@@ -34,8 +35,8 @@ public class MoviePresImpl implements MovieListApiInterface.MovieWithCategoryPre
     }
 
     @Override
-    public void onErrorOccured(String message) {
-        movieWithCategoryView.onErrorOccured(message);
+    public void onErrorOccured(String message,MoviesItem movie,String errorType) {
+        movieWithCategoryView.onErrorOccured(message,movie,errorType);
         movieWithCategoryView.hideProgress();
     }
 }

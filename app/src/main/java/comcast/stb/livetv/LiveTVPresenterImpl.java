@@ -4,6 +4,7 @@ package comcast.stb.livetv;
 
 import java.util.List;
 
+import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
 import comcast.stb.logout.LogoutPresImpl;
 
@@ -32,8 +33,8 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     }
 
     @Override
-    public void onErrorOccured(String message) {
-        channelWithCategoryView.onErrorOccured(message);
+    public void onErrorOccured(String message, Channel channel, String errorType) {
+        channelWithCategoryView.onErrorOccured(message,channel,errorType);
     }
 
 }

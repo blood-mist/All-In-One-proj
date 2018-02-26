@@ -73,17 +73,22 @@ public class FmBindService extends Service {
         this.fmID = intent.getIntExtra(FM_ID, 0);
         this.token = intent.getStringExtra(AUTH_TOKEN);
 
-        if (action.equals(FmBindService.ACTION_PLAY)) {
-            getFmURL(fmID, token);
-        } else if (action.equals(FmBindService.ACTION_STOP)) {
-            stopPlayer();
-            stopSelf();
-        } else if (action.equals(FmBindService.ACTION_CLOSE)) {
-            mediaPlayer.stop();
-            mediaPlayer.reset();
-            mediaPlayer.release();
-            playEvent(false);
-            stopSelf();
+        assert action != null;
+        switch (action) {
+            case FmBindService.ACTION_PLAY:
+                getFmURL(fmID, token);
+                break;
+            case FmBindService.ACTION_STOP:
+                stopPlayer();
+                stopSelf();
+                break;
+            case FmBindService.ACTION_CLOSE:
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+                mediaPlayer.release();
+                playEvent(false);
+                stopSelf();
+                break;
         }
         return START_NOT_STICKY;
     }

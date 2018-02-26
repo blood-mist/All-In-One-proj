@@ -4,6 +4,7 @@ package comcast.stb.livetv;
 
 import java.util.List;
 
+import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
 import comcast.stb.entity.TvLink;
 import io.reactivex.Observable;
@@ -25,7 +26,7 @@ public interface LiveTVApiInterface {
 
     interface ChannelWithCategoryView{
         void setChannelsWithCategory(List<ChannelCategory> channelCategoryList);
-        void onErrorOccured(String message);
+        void onErrorOccured(String message,Channel channel,String errorType);
     }
     interface ChannelWithCategoryPresenter{
         void getChannelsWithCategory(String token);
@@ -35,6 +36,6 @@ public interface LiveTVApiInterface {
     }
     interface ChannelWithCategoryListener{
         void takeChannelsWithCategory(List<ChannelCategory> channelCategoryList);
-        void onErrorOccured(String message);
+        void onErrorOccured(String message, Channel channel, String errorType);
     }
 }

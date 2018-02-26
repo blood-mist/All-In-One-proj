@@ -25,6 +25,8 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static comcast.stb.StringData.MOVIE_CATEGORY_ERROR;
+
 /**
  * Created by nitv on 12/26/17.
  */
@@ -59,11 +61,11 @@ public class MovieModel implements MovieListApiInterface.MovieWithCategoryIntera
                         if (responseCode == 200) {
                             movieWithCategoryListener.takeMoviesWithCategory(value.body());
                         } else if (responseCode == 403) {
-                            movieWithCategoryListener.onErrorOccured("403");
+                            movieWithCategoryListener.onErrorOccured("403",null,MOVIE_CATEGORY_ERROR);
                         } else if (responseCode == 401) {
                             tokenPres.refreshTheToken(token);
                         }else {
-                            movieWithCategoryListener.onErrorOccured(value.message()); //value.message()
+                            movieWithCategoryListener.onErrorOccured(value.message(),null,MOVIE_CATEGORY_ERROR); //value.message()
                         }
                     }
 
@@ -71,12 +73,12 @@ public class MovieModel implements MovieListApiInterface.MovieWithCategoryIntera
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException ||  e instanceof ConnectException) {
-                            movieWithCategoryListener.onErrorOccured("No Internet Connection");
+                            movieWithCategoryListener.onErrorOccured("No Internet Connection",null,MOVIE_CATEGORY_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            movieWithCategoryListener.onErrorOccured("Couldn't connect to server");
+                            movieWithCategoryListener.onErrorOccured("Couldn't connect to server",null,MOVIE_CATEGORY_ERROR);
                         }
                         else {
-                            movieWithCategoryListener.onErrorOccured("Error Occured");
+                            movieWithCategoryListener.onErrorOccured("Error Occured",null,MOVIE_CATEGORY_ERROR);
                         }
                     }
 
@@ -104,7 +106,7 @@ public class MovieModel implements MovieListApiInterface.MovieWithCategoryIntera
 
     @Override
     public void onError(String message) {
-        movieWithCategoryListener.onErrorOccured(message);
+        movieWithCategoryListener.onErrorOccured(message,null,MOVIE_CATEGORY_ERROR);
     }
 
     @Override

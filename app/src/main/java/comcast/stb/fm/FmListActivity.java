@@ -3,10 +3,12 @@ package comcast.stb.fm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,6 +79,10 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
     ImageView pausePlay;
     @BindView(R.id.visualizer_view)
     AudioVisualization audioVisualization;
+    @BindView(R.id.category_container)
+    LinearLayout categoryLayout;
+    @BindView(R.id.fm_list_container)
+    LinearLayout fmListLayout;
     private Realm realm;
     LoginData loginData;
     private FmsItem currentFm;
@@ -87,11 +93,38 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
         setContentView(R.layout.activity_fm_new);
         ButterKnife.bind(this);
         LogoutPresImpl logoutPres = new LogoutPresImpl(this);
+        categoryLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                if(categoryLayout.getFocusedChild()==null){
+                    categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_left_bg_unselected));
+
+                }else{
+                    categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_left_bg_selected));
+                }
+
+            }
+        });
+        fmListLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                if(fmListLayout.getFocusedChild()==null){
+                    fmListLayout.setBackgroundDrawable(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_right_bg_unselected));
+
+                }else{
+                    fmListLayout.setBackgroundDrawable(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_right_bg_selected));
+
+                }
+
+            }
+        });
         fmPresenter = new FmPresImpl(this, logoutPres);
         realm = Realm.getDefaultInstance();
         loginData = realm.where(LoginData.class).findFirst();
         noContent.setVisibility(View.VISIBLE);
         playLayout.setVisibility(View.GONE);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        fmlist.setLayoutManager(manager);
         audioVisualization.linkTo(DbmHandler.Factory.newVisualizerHandler(this, 0));
 
     }
@@ -115,7 +148,7 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
     }
 
     private void updatePlayPauseButton(FmsItem currentFm) {
-        int fmID=currentFm.getId();
+        int fmID = currentFm.getId();
         if (isPlaying) {
             pausePlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_circle_outline_black_24dp));
 
@@ -138,6 +171,7 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
         }
         startService(intent);
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(FmPlayingEvent event) {
         if (event.isPlaying()) {
@@ -155,6 +189,7 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
         isPlaying = false;
         onPlayErrorOccured(event.getMessage());
     }
+
     public void onPlayErrorOccured(String message) {
         Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
                 .setAction("Retry", new View.OnClickListener() {
@@ -165,12 +200,14 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
                 }).setActionTextColor(getResources().getColor(R.color.white_color));
         snackbar.show();
     }
+
     @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
 
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -189,9 +226,11 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
     public void setFmsWithCategory(List<FmCategory> fmCategoryList) {
         this.fmCategoryList = (ArrayList<FmCategory>) fmCategoryList;
         fmCategory.setLayoutManager(new LinearLayoutManager(FmListActivity.this, LinearLayoutManager.VERTICAL, false));
-        categoryRecyclerAdapter = new FmCategoryRecyclerAdapter(FmListActivity.this, this.fmCategoryList, FmListActivity.this);
+        if (categoryRecyclerAdapter == null)
+            categoryRecyclerAdapter = new FmCategoryRecyclerAdapter(FmListActivity.this, this.fmCategoryList, FmListActivity.this);
         fmCategory.setAdapter(categoryRecyclerAdapter);
         fmCategory.addItemDecoration(new EqualSpacingItemDecoration(10, EqualSpacingItemDecoration.HORIZONTAL));
+        fmCategory.requestFocus();
 
     }
 
@@ -237,9 +276,7 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
     public void onCategoryListClickInteraction(FmCategory fmCategory) {
         this.fmList = (ArrayList<FmsItem>) fmCategory.getFms();
         currentCategory.setText(fmCategory.getCategoryName());
-            fmRecyclerAdapter = new FmRecyclerAdapter(this, this.fmList, FmListActivity.this);
-        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        fmlist.setLayoutManager(manager);
+        fmRecyclerAdapter = new FmRecyclerAdapter(this, this.fmList, FmListActivity.this);
         fmlist.setAdapter(fmRecyclerAdapter);
         fmRecyclerAdapter.notifyDataSetChanged();
     }
@@ -250,7 +287,7 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
     }
 
     private void playFm(FmsItem fmsItem) {
-        int fmID=fmsItem.getId();
+        int fmID = fmsItem.getId();
         Intent intent = new Intent(this, FmBindService.class);
         intent.putExtra(FM_ID, fmID);
         intent.putExtra(AUTH_TOKEN, loginData.getToken());

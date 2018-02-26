@@ -6,6 +6,7 @@ import java.util.List;
 
 import comcast.stb.entity.MovieCategory;
 import comcast.stb.entity.MovieLink;
+import comcast.stb.entity.MoviesItem;
 import io.reactivex.Observable;
 import retrofit2.Response;
 import retrofit2.http.GET;
@@ -24,7 +25,7 @@ public interface MovieListApiInterface {
 
     interface MovieWithCategoryView{
         void setMoviesWithCategory(List<MovieCategory> movieCategoryList);
-        void onErrorOccured(String message);
+        void onErrorOccured(String message, MoviesItem movie, String errorType);
         void showProgress();
         void hideProgress();
     }
@@ -37,6 +38,6 @@ public interface MovieListApiInterface {
     }
     interface MovieWithCategoryListener{
         void takeMoviesWithCategory(List<MovieCategory> movieCategoryList);
-        void onErrorOccured(String message);
+        void onErrorOccured(String message,MoviesItem movie,String errorType);
     }
 }

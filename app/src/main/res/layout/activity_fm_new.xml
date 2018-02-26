@@ -90,7 +90,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/menu_left_bg_unselected"
+                android:background="@drawable/menu_left_selector"
                 android:orientation="vertical"
                 android:layout_weight="1"
                 android:layout_marginEnd="5dp">
@@ -179,9 +179,9 @@
                                 android:scaleType="fitCenter"
                                 android:adjustViewBounds="true"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_pause_circle_outline_black_24dp"
+                                android:src="@drawable/ic_play_circle_outline_black_24dp"
                                 android:tint="@color/white_color"
-                                android:background="@drawable/play_selector"/>
+                                android:background="?attr/selectableItemBackground"/>
                         </LinearLayout>
 
                        <TextView
@@ -225,7 +225,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/menu_right_bg"
+                android:background="@drawable/menu_right_selector"
                 android:orientation="vertical"
                 android:layout_marginStart="5dp">
                 <TextView

@@ -70,6 +70,7 @@
         <EditText
             android:id="@+id/edittext_user_password"
             android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="match_parent"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:background="@color/white_no_selection"
@@ -80,6 +81,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
+        android:id="@+id/login_click_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/org_login_img"
@@ -87,7 +89,6 @@
         android:layout_alignStart="@id/org_login_img"
         android:layout_below="@+id/input_layout_password"
         android:gravity="center"
-        android:layout_alignBottom="@+id/txt_promo"
         android:layout_marginTop="10dp"
         android:layout_alignEnd="@id/org_login_img">
 
@@ -110,6 +111,7 @@
         android:layout_alignTop="@id/org_login_img"
         android:layout_alignParentStart="true"
         android:padding="10dp"
+        android:layout_alignBottom="@id/login_click_layout"
         android:layout_marginLeft="20dp"
         android:text="@string/promo_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"

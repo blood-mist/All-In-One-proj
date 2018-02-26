@@ -24,6 +24,11 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static comcast.stb.StringData.ORDER_ERROR;
+import static comcast.stb.StringData.PACKAGE_ERROR;
+import static comcast.stb.StringData.SUBSCRIPTION_ERROR;
+import static comcast.stb.StringData.TOKEN_ERROR;
+
 /**
  * Created by ACER on 2/15/2018.
  */
@@ -58,11 +63,11 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                         if (responseCode == 200) {
                             userDataListener.takeSubsHistory(value.body());
                         } else if (responseCode == 403) {
-                            userDataListener.onErrorOccured("403");
+                            userDataListener.onErrorOccured("403","",SUBSCRIPTION_ERROR);
                         } else if (responseCode == 401) {
                             tokenPres.refreshTheToken(token);
                         } else {
-                            userDataListener.onErrorOccured(value.message()); //value.message()
+                            userDataListener.onErrorOccured(value.message(),"",SUBSCRIPTION_ERROR); //value.message()
                         }
                     }
 
@@ -70,11 +75,11 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException || e instanceof ConnectException) {
-                            userDataListener.onErrorOccured("No Internet Connection");
+                            userDataListener.onErrorOccured("No Internet Connection","",SUBSCRIPTION_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            userDataListener.onErrorOccured("Couldn't connect to server");
+                            userDataListener.onErrorOccured("Couldn't connect to server","",SUBSCRIPTION_ERROR);
                         } else {
-                            userDataListener.onErrorOccured("Error Occured");
+                            userDataListener.onErrorOccured("Error Occured","",SUBSCRIPTION_ERROR);
                         }
                     }
 
@@ -105,11 +110,11 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                         if (responseCode == 200) {
                             userDataListener.takeOrderHistory(value.body());
                         } else if (responseCode == 403) {
-                            userDataListener.onErrorOccured("403");
+                            userDataListener.onErrorOccured("403","",ORDER_ERROR);
                         } else if (responseCode == 401) {
                             tokenPres.refreshTheToken(token);
                         } else {
-                            userDataListener.onErrorOccured(value.message()); //value.message()
+                            userDataListener.onErrorOccured(value.message(),"",ORDER_ERROR); //value.message()
                         }
                     }
 
@@ -117,11 +122,11 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException || e instanceof ConnectException) {
-                            userDataListener.onErrorOccured("No Internet Connection");
+                            userDataListener.onErrorOccured("No Internet Connection","",ORDER_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            userDataListener.onErrorOccured("Couldn't connect to server");
+                            userDataListener.onErrorOccured("Couldn't connect to server","",ORDER_ERROR);
                         } else {
-                            userDataListener.onErrorOccured("Error Occured");
+                            userDataListener.onErrorOccured("Error Occured","",ORDER_ERROR);
                         }
                     }
 
@@ -153,11 +158,11 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                         if (responseCode == 200) {
                             userDataListener.takePackageInfo(value.body(),packageType);
                         } else if (responseCode == 403) {
-                            userDataListener.onErrorOccured(packageType,"403");
+                            userDataListener.onErrorOccured("403",packageType,PACKAGE_ERROR);
                         } else if (responseCode == 401) {
                             tokenPres.refreshTheToken(token);
                         } else {
-                            userDataListener.onErrorOccured(packageType,value.message()); //value.message()
+                            userDataListener.onErrorOccured(value.message(),"",PACKAGE_ERROR); //value.message()
                         }
                     }
 
@@ -165,11 +170,11 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException || e instanceof ConnectException) {
-                            userDataListener.onErrorOccured(packageType,"No Internet Connection");
+                            userDataListener.onErrorOccured("No Internet Connection",packageType,PACKAGE_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            userDataListener.onErrorOccured(packageType,"Couldn't connect to server");
+                            userDataListener.onErrorOccured("Couldn't connect to server",packageType,PACKAGE_ERROR);
                         } else {
-                            userDataListener.onErrorOccured(packageType,"Error Occured");
+                            userDataListener.onErrorOccured("Error Occured",packageType,PACKAGE_ERROR);
                         }
                     }
 
@@ -193,12 +198,12 @@ public class UserDataModel  implements UserApiInterface.UserDataInteractor, Toke
                 realm.insertOrUpdate(loginDatas);
             }
         });
-        getPackageInfo(packageType,newToken.getToken());
+        getSubsHistory(newToken.getToken());
     }
 
     @Override
     public void onError(String message) {
-        userDataListener.onErrorOccured(packageType,message);
+        userDataListener.onErrorOccured(message,packageType,TOKEN_ERROR);
     }
 
     @Override

@@ -14,7 +14,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 
 import com.squareup.picasso.Picasso;
 
@@ -144,10 +142,10 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
                if(categoryLayout.getFocusedChild()==null){
-                   categoryLayout.setSelected(false);
+                   categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_left_bg_unselected));
 
                }else{
-                   categoryLayout.setSelected(true);
+                   categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_left_bg_selected));
                }
 
             }
@@ -156,7 +154,10 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
                 if(descriptionLayout.getFocusedChild()==null){
+                    descriptionLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_right_bg_unselected));
 
+                }else{
+                    descriptionLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_right_bg_selected));
                 }
 
             }

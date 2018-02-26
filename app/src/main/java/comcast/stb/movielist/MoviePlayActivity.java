@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -12,14 +13,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.wang.avi.AVLoadingIndicatorView;
-
-import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -27,11 +24,11 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import comcast.stb.R;
+import comcast.stb.entity.MoviesItem;
 import comcast.stb.utils.AppConfig;
 import comcast.stb.utils.DeviceUtils;
 
 import static android.view.View.GONE;
-
 import static comcast.stb.StringData.MOVIE_ID;
 import static comcast.stb.StringData.VIDEO_URL;
 import static java.lang.Thread.sleep;
@@ -41,20 +38,17 @@ public class MoviePlayActivity extends AppCompatActivity implements SurfaceHolde
     private static final int FORWARD_REWIND_DURATION = 15000;
 
     private String videoUrl;
-    private int movieId;
+    private MoviesItem currentMovie;
     private MediaPlayer mediaPlayer;
     @BindView(R.id.video_play_view)
     SurfaceView videoPlayView;
-    @BindView(R.id.controller_layout)
-    LinearLayout controllerLayout;
-    @BindView(R.id.seekbar)
-    DiscreteSeekBar seekbar;
     Handler handler = new Handler();
     @BindView(R.id.tvboxID)
     TextView txtRandomDisplayBoxId;
     @BindView(R.id.movie_progressBar)
     AVLoadingIndicatorView loadingView;
     private final Random random = new Random();
+    Fragment controllerFragment;
 
 
     @Override
@@ -62,7 +56,12 @@ public class MoviePlayActivity extends AppCompatActivity implements SurfaceHolde
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_play);
         ButterKnife.bind(this);
+        videoUrl = getIntent().getStringExtra(VIDEO_URL);
+        currentMovie = getIntent().getParcelableExtra(MOVIE_ID);
         findViews();
+        mediaPlayer = new MediaPlayer();
+        playVideo(videoUrl);
+        threadToDisplayBoxId.start();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -86,30 +85,18 @@ public class MoviePlayActivity extends AppCompatActivity implements SurfaceHolde
         super.onPause();
     }
 
+    private void stopControllerShow() {
+
+    }
+
 
     private void findViews() {
         loadingView.setVisibility(View.VISIBLE);
         SurfaceHolder holder = videoPlayView.getHolder();
         holder.addCallback(MoviePlayActivity.this);
+        VideoControllerFragment controllerFragment = VideoControllerFragment.newInstance(currentMovie, mediaPlayer);
+        getSupportFragmentManager().beginTransaction().replace(R.id.controller_fragment, controllerFragment, "controllerFragment").hide(controllerFragment).commit();
 
-        seekbar.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (i == KeyEvent.KEYCODE_DPAD_LEFT) {
-                    if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - FORWARD_REWIND_DURATION);
-                    }
-                    return true;
-                } else if (i == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                    if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + FORWARD_REWIND_DURATION);
-                    }
-                    return true;
-                }
-
-                return false;
-            }
-        });
     }
 
 
@@ -147,9 +134,7 @@ public class MoviePlayActivity extends AppCompatActivity implements SurfaceHolde
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
                 loadingView.setVisibility(GONE);
-                seekbar.setProgress(0);
-                seekbar.setMax(mediaPlayer.getDuration());
-                startShowSeekBar();
+
             }
         });
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -296,34 +281,16 @@ public class MoviePlayActivity extends AppCompatActivity implements SurfaceHolde
     }
 
 
-    private Runnable moveSeekBarThread = new Runnable() {
-        public void run() {
-            if (mediaPlayer.isPlaying()) {
-                int mediaPos_new = mediaPlayer.getCurrentPosition();
-                seekbar.setProgress(mediaPos_new);
-                handler.postDelayed(this, 100); //Looping the thread after 0.1 second
-
-            }
-        }
-    };
-
     private boolean controllerNotVisible() {
-        if (controllerLayout.getVisibility() == GONE)
+        if (controllerFragment.isHidden())
             return true;
         else
             return false;
     }
 
     private void showFeatures() {
-        controllerLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void startShowSeekBar() {
-        handler.postDelayed(moveSeekBarThread, 100);
-    }
-
-    private void stopControllerShow() {
-        handler.removeCallbacks(moveSeekBarThread);
+        controllerFragment = getSupportFragmentManager().findFragmentById(R.id.controller_fragment);
+        getSupportFragmentManager().beginTransaction().show(controllerFragment).commit();
     }
 
     private Runnable closeFragmentRunnable = new Runnable() {
@@ -339,7 +306,7 @@ public class MoviePlayActivity extends AppCompatActivity implements SurfaceHolde
                     try {
                         if (mediaPlayer.isPlaying()) {
                             try {
-                                controllerLayout.setVisibility(GONE);
+                                getSupportFragmentManager().beginTransaction().hide(controllerFragment).commit();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -355,18 +322,13 @@ public class MoviePlayActivity extends AppCompatActivity implements SurfaceHolde
 
     @Override
     public void onResume() {
-        videoUrl = getIntent().getStringExtra(VIDEO_URL);
-        movieId = getIntent().getIntExtra(MOVIE_ID, 0);
-        mediaPlayer = new MediaPlayer();
-        playVideo(videoUrl);
-        threadToDisplayBoxId.start();
         super.onResume();
     }
 
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        controllerLayout.setVisibility(View.VISIBLE);
+        getSupportFragmentManager().beginTransaction().show(controllerFragment).commit();
         stopHandler();//stop first and then start
         startHandler();
     }

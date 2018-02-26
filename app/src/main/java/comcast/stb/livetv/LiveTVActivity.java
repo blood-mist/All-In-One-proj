@@ -6,8 +6,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,7 +16,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -46,11 +45,13 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
+import static comcast.stb.StringData.LIVE_PLAY_ERROR;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 
 
 public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterface.ChannelWithCategoryView,
-        MenuFragment.OnChannelClickedListener, LogoutApiInterface.LogoutView, SurfaceHolder.Callback {
+        MenuFragment.OnChannelClickedListener, LogoutApiInterface.LogoutView, SurfaceHolder.Callback, LiveDialogFragment.OnFragmentInteractionListener {
     private static final String TAG = "LiveTVActivity";
     private LiveTVPresenterImpl liveTVPresenter;
     private Handler hideMenuHandler;
@@ -106,28 +107,23 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         if (menuFrag != null && menuFrag.isVisible())
             getSupportFragmentManager().beginTransaction().remove(menuFrag).commit();
         else
-            getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList,loginData.getUser().getName())).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName())).commit();
     }
 
     @Override
     public void setChannelsWithCategory(List<ChannelCategory> channelCategoryList) {
         this.channelCategoryList = channelCategoryList;
         progressContainer.setVisibility(View.GONE);
-        getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance( this.channelCategoryList,loginData.getUser().getName())).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(this.channelCategoryList, loginData.getUser().getName())).commit();
 
     }
 
     @Override
-    public void onErrorOccured(String message) {
+    public void onErrorOccured(String message, Channel channel, String errorType) {
         progressContainer.setVisibility(View.GONE);
-        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
-                .setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        liveTVPresenter.getChannelsWithCategory(loginData.getToken());
-                    }
-                }).setActionTextColor(getResources().getColor(R.color.white_color));
-        snackbar.show();
+        LiveDialogFragment infoDialogFragment = LiveDialogFragment.newInstance("", message, channel, errorType, true);
+        infoDialogFragment.show(getSupportFragmentManager(), "LiveTvErrorFragment");
+
     }
 
     public void updateProgress(boolean showProgress) {
@@ -156,14 +152,14 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     private Runnable closeFragmentRunnable = new Runnable() {
         @Override
         public void run() {
-                try {
+            try {
 
-                    updateMenuUI();
+                updateMenuUI();
 
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     };
@@ -241,8 +237,8 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                     } catch (Exception ignored) {
                     }
                     player.reset();
-                    Toast.makeText(LiveTVActivity.this,"Error Playing Media",Toast.LENGTH_LONG).show();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList,loginData.getUser().getName())).commit();
+                    Toast.makeText(LiveTVActivity.this, "Error Playing Media", Toast.LENGTH_LONG).show();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName())).commit();
 
 //                    progressContainer.setVisibility(View.GONE);
 //                    showAlertDialog(getActivity().getResources().getString(R.string.server_down));
@@ -313,7 +309,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     private void showDialogFragment(Channel channel) {
         BuyChannelDialog buyChannelDialog =
                 BuyChannelDialog.newInstance(channel);
-        buyChannelDialog.show(getSupportFragmentManager(), "fragmentDialog");
+        buyChannelDialog.show(getSupportFragmentManager(), "buyFragmentDialog");
     }
 
     private void getChannelLink(final Channel channel) {
@@ -348,9 +344,9 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                             playVideo(value.body().getLink());
 //                            startControllersTimer();
                         } else if (responseCode == 403) {
-                            onErrorOccured("403");
+                            onErrorOccured("403", channel,LIVE_PLAY_ERROR);
                         } else {
-                            onErrorOccured(value.message()); //value.message()
+                            onErrorOccured(value.message(), channel,LIVE_PLAY_ERROR); //value.message()
                         }
                     }
 
@@ -358,11 +354,11 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException || e instanceof ConnectException) {
-                            onErrorOccured("No Internet Connection");
+                            onErrorOccured("No Internet Connection", channel,LIVE_PLAY_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            onErrorOccured("Couldn't connect to server");
+                            onErrorOccured("Couldn't connect to server", channel,LIVE_PLAY_ERROR);
                         } else {
-                            onErrorOccured("Error Occured");
+                            onErrorOccured("Error Occured", channel,LIVE_PLAY_ERROR);
                         }
                     }
 
@@ -373,7 +369,29 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                 });
     }
 
+
     public void setCurrentChannel(Channel currentChannel) {
         this.currentChannel = currentChannel;
+    }
+
+    @Override
+    public void onRetryBtnInteraction(String errorType,Channel channel) {
+        switch(errorType){
+            case LIVE_CATEGORY_ERROR:
+                liveTVPresenter.getChannelsWithCategory(loginData.getToken());
+                break;
+            case LIVE_PLAY_ERROR:
+                getChannelLink(channel);
+                break;
+        }
+
+    }
+
+    @Override
+    public void onDismissBtnInteraction() {
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment infoDialogFragment = manager.findFragmentByTag("LiveTvErrorFragment");
+        if (infoDialogFragment != null)
+            manager.beginTransaction().remove(infoDialogFragment).commit();
     }
 }

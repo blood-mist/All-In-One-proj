@@ -2,19 +2,19 @@ package comcast.stb.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.Password;
 import com.wang.avi.AVLoadingIndicatorView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,16 +22,35 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import comcast.stb.R;
 import comcast.stb.entity.LoginData;
+import comcast.stb.entity.OrderItem;
+import comcast.stb.entity.PackagesInfo;
+import comcast.stb.entity.SubsItem;
 import comcast.stb.launcher.LauncherActivity;
+import comcast.stb.logout.LogoutApiInterface;
+import comcast.stb.logout.LogoutPresImpl;
+import comcast.stb.userutility.UserApiInterface;
+import comcast.stb.userutility.UserPresImpl;
 import comcast.stb.utils.AppConfig;
 import comcast.stb.utils.DeviceUtils;
 import io.realm.Realm;
 
+import static comcast.stb.StringData.CHANNEL_PACKAGE;
+import static comcast.stb.StringData.CHANNEL_PCKG;
+import static comcast.stb.StringData.MOVIE_PACKAGE;
+import static comcast.stb.StringData.MOVIE_PCKG;
+import static comcast.stb.StringData.ORDER_LIST;
+import static comcast.stb.StringData.SUBSCRIPTION_LIST;
 import static comcast.stb.StringData.USER_NAME;
 
 
-public class LoginActivity extends AppCompatActivity implements LoginApiInterface.LoginView ,Validator.ValidationListener{
+public class LoginActivity extends AppCompatActivity implements LoginApiInterface.LoginView, Validator.ValidationListener,
+        LoginInfoFragment.OnFragmentInteractionListener,UserApiInterface.UserView,LogoutApiInterface.LogoutView {
     private LoginPresenterImpl loginPresenter;
+    private UserPresImpl userPres;
+    private LogoutPresImpl logoutPres;
+    private ArrayList<SubsItem> subscriptionList;
+    private ArrayList<OrderItem> orderItemArrayList;
+    private ArrayList<PackagesInfo> channelPackageslist, moviesPackagesList;
 
     @BindView(R.id.txt_user_mac)
     TextView userMac;
@@ -43,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
     AVLoadingIndicatorView progressBar;
     private Validator validator;
     Realm realm;
+    private LoginData loginData;
 
 
     @Override
@@ -53,23 +73,56 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
         validator = new Validator(this);
         validator.setValidationListener(this);
         realm = Realm.getDefaultInstance();
-        loginPresenter=new LoginPresenterImpl(this);
+        loginPresenter = new LoginPresenterImpl(this);
+        logoutPres = new LogoutPresImpl(this);
+        userPres = new UserPresImpl(this, logoutPres);
     }
+
     @OnClick(R.id.btn_login)
-    public void login(){
-       validator.validate();
+    public void login() {
+        validator.validate();
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        userMac.setText(AppConfig.isDevelopment()?AppConfig.getMac(): DeviceUtils.getMac(LoginActivity.this));
+        userMac.setText(AppConfig.isDevelopment() ? AppConfig.getMac() : DeviceUtils.getMac(LoginActivity.this));
     }
 
     @Override
     public void onSuccessfullyLoggedIn(LoginData loginData) {
         updateUI(loginData);
+        this.loginData=loginData;
+        userPres.getSubsHistory(loginData.getToken());
+    }
+
+    @Override
+    public void setSubsHistory(List<SubsItem> subsHistory) {
+        this.subscriptionList = (ArrayList<SubsItem>) subsHistory;
+        userPres.getOrderHistory(loginData.getToken());
+    }
+
+    @Override
+    public void setPackageInfo(List<PackagesInfo> channelListInfo, String packageType) {
+        switch (packageType) {
+            case CHANNEL_PACKAGE:
+                this.channelPackageslist = (ArrayList<PackagesInfo>) channelListInfo;
+                userPres.getPackageInfo(MOVIE_PACKAGE, loginData.getToken());
+                break;
+            case MOVIE_PACKAGE:
+                this.moviesPackagesList = (ArrayList<PackagesInfo>) channelListInfo;
+                Intent launcherIntent = new Intent(LoginActivity.this, LauncherActivity.class);
+                launcherIntent.putExtra(USER_NAME, loginData.getUser().getName());
+                launcherIntent.putParcelableArrayListExtra(SUBSCRIPTION_LIST, subscriptionList);
+                launcherIntent.putParcelableArrayListExtra(ORDER_LIST, orderItemArrayList);
+                launcherIntent.putParcelableArrayListExtra(CHANNEL_PCKG, channelPackageslist);
+                launcherIntent.putParcelableArrayListExtra(MOVIE_PCKG, moviesPackagesList);
+                launcherIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(launcherIntent);
+                finish();
+                break;
+        }
     }
 
     @Override
@@ -82,19 +135,22 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
         progressBar.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onErrorOccured(String error_message, String otherInfo, String errorType) {
+        errorMessage(error_message);
+    }
+
+    @Override
+    public void setOrderHistory(List<OrderItem> orderHistory) {
+        this.orderItemArrayList = (ArrayList<OrderItem>) orderHistory;
+        userPres.getPackageInfo(CHANNEL_PACKAGE, loginData.getToken());
+    }
 
     @Override
     public void errorMessage(String message) {
-        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_INDEFINITE)
-                .setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String username = userMac.getText().toString();
-                        String password = userPassword.getText().toString();
-                        loginPresenter.userTryingToLogin(username, password);
-                    }
-                }).setActionTextColor(getResources().getColor(R.color.white_color));
-        snackbar.show();
+        LoginInfoFragment loginInfoFragment = LoginInfoFragment.newInstance("", message, true);
+        loginInfoFragment.show(getSupportFragmentManager(), "LoginInfoDialog");
+
     }
 
     @Override
@@ -104,7 +160,7 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
 
     @Override
     public void onValidationSucceeded() {
-        loginPresenter.userTryingToLogin(userMac.getText().toString(),userPassword.getText().toString());
+        loginPresenter.userTryingToLogin(userMac.getText().toString(), userPassword.getText().toString());
     }
 
     @Override
@@ -130,9 +186,23 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
                 realm.insertOrUpdate(loginData);
             }
         });
-        Intent intent = new Intent(this, LauncherActivity.class);
-        intent.putExtra(USER_NAME,loginData.getUser().getName());
-        startActivity(intent);
-        finish();
+    }
+
+    @Override
+    public void onRetryBtnInteraction() {
+        String username = userMac.getText().toString();
+        String password = userPassword.getText().toString();
+        loginPresenter.userTryingToLogin(username, password);
+    }
+
+    @Override
+    public void onDismissBtnInteraction() {
+        Fragment toRemoveFrag = getSupportFragmentManager().findFragmentByTag("LoginInfoDialog");
+        getSupportFragmentManager().beginTransaction().remove(toRemoveFrag).commit();
+    }
+
+    @Override
+    public void successfulLogout() {
+
     }
 }

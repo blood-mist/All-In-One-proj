@@ -2,12 +2,15 @@ package comcast.stb.movielist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,11 +43,13 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static comcast.stb.StringData.MOVIE_CATEGORY_ERROR;
 import static comcast.stb.StringData.MOVIE_ID;
+import static comcast.stb.StringData.MOVIE_PLAY_ERROR;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 import static comcast.stb.StringData.VIDEO_URL;
 
-public class MovieNewActivity extends AppCompatActivity implements MovieListApiInterface.MovieWithCategoryView,
+public class MovieNewActivity extends AppCompatActivity implements MovieListApiInterface.MovieWithCategoryView,MovieDialogFragment.OnFragmentInteractionListener,
         MovieCategoryRecyclerAdapter.OnMovieCategoryInteraction, LogoutApiInterface.LogoutView,MovieListRecyclerAdapter.OnMovieListInteraction{
 
     @BindView(R.id.img_movie_logout)
@@ -57,6 +62,12 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
     TextView selectedCategory;
     @BindView(R.id.txt_movie_description)
     TextView movieDescription;
+
+    @BindView(R.id.category_container)
+    LinearLayout movieCategoryContainer;
+
+    @BindView(R.id.description_container)
+    LinearLayout descriptionContainer;
 
     @BindView(R.id.txt_movie_price)
     TextView moviePrice;
@@ -91,6 +102,32 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
         moviePresenter = new MoviePresImpl(this, logoutPres);
         startAnim();
         userName.setText(loginData.getUser().getName());
+        movieCategoryContainer.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                if(movieCategoryContainer.getFocusedChild()==null){
+                    movieCategoryContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this,R.drawable.menu_left_bg_unselected));
+
+
+                }else{
+                    movieCategoryContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this,R.drawable.menu_left_bg_selected));
+
+                }
+
+            }
+        });
+        descriptionContainer.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                if(descriptionContainer.getFocusedChild()==null){
+                    descriptionContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this,R.drawable.menu_right_bg_unselected));
+
+                }else{
+                    descriptionContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this,R.drawable.menu_right_bg_selected));
+                }
+
+            }
+        });
         moviePresenter.getMoviesWithCategory(authToken);
     }
     private void startAnim() {
@@ -114,7 +151,10 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
     }
 
     @Override
-    public void onErrorOccured(String message) {
+    public void onErrorOccured(String message,MoviesItem movie,String errorType) {
+       stopAnim();
+        MovieDialogFragment infoDialogFragment = MovieDialogFragment.newInstance("", message, movie, errorType, true);
+        infoDialogFragment.show(getSupportFragmentManager(), "MovieErrorFragment");
 
     }
 
@@ -133,8 +173,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
 
     @Override
     public void onCategoryClicked(MovieCategory movieCategory) {
-        MovieCategory currentCategory=movieCategory;
-        selectedCategory.setText(currentCategory.getCategoryTitle());
+        selectedCategory.setText(movieCategory.getCategoryTitle());
         movieListRecyclerAdapter = new MovieListRecyclerAdapter(this, (ArrayList<MoviesItem>) movieCategory.getMovies());
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
         manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
@@ -165,15 +204,15 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
                         int responseCode = value.code();
                         if (responseCode == 200) {
                             Intent intent = new Intent(MovieNewActivity.this, MoviePlayActivity.class);
-                            intent.putExtra(MOVIE_ID, movieId);
+                            intent.putExtra(MOVIE_ID, movie);
                             intent.putExtra(VIDEO_URL, value.body().getLink());
                             startActivity(intent);
                             stopAnim();
 //                            startControllersTimer();
                         } else if (responseCode == 403) {
-                            onErrorOccured("403");
+                            onErrorOccured("403",movie,MOVIE_PLAY_ERROR);
                         } else {
-                            onErrorOccured(value.message()); //value.message()
+                            onErrorOccured(value.message(),movie,MOVIE_PLAY_ERROR); //value.message()
                         }
                     }
 
@@ -181,11 +220,11 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException || e instanceof ConnectException) {
-                            onErrorOccured("No Internet Connection");
+                            onErrorOccured("No Internet Connection",movie,MOVIE_PLAY_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            onErrorOccured("Couldn't connect to server");
+                            onErrorOccured("Couldn't connect to server",movie,MOVIE_PLAY_ERROR);
                         } else {
-                            onErrorOccured("Error Occured");
+                            onErrorOccured("Error Occured",movie,MOVIE_PLAY_ERROR);
                         }
                     }
 
@@ -231,5 +270,25 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
         }else{
             stopAnim();
         }
+    }
+
+    @Override
+    public void onRetryBtnInteraction(String errorType, MoviesItem movie) {
+        switch(errorType){
+            case MOVIE_CATEGORY_ERROR:
+                moviePresenter.getMoviesWithCategory(loginData.getToken());
+                break;
+            case MOVIE_PLAY_ERROR:
+                getMovieLink(movie);
+                break;
+        }
+    }
+
+    @Override
+    public void onDismissBtnInteraction() {
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment infoDialogFragment = manager.findFragmentByTag("MovieErrorFragment");
+        if (infoDialogFragment != null)
+            manager.beginTransaction().remove(infoDialogFragment).commit();
     }
 }

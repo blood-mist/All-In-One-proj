@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -13,7 +14,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import comcast.stb.R;
-import comcast.stb.entity.ChannelPckgItem;
 import comcast.stb.entity.ChannelsItem;
 import comcast.stb.entity.MoviesItem;
 
@@ -64,34 +64,53 @@ public class PackageRecyclerAdapter extends  RecyclerView.Adapter<PackageRecycle
 
     public class ViewHolder extends  RecyclerView.ViewHolder {
 
-        private ImageView channelView;
-        private TextView channelName;
-
+        private TextView channelTitle;
+        private LinearLayout itemLayout;
+        private View shadeView;
+        private ImageView channelImage;
         public ViewHolder(final View itemView) {
             super(itemView);
-            channelView=itemView.findViewById(R.id.img_channel_logo);
-            channelName=itemView.findViewById(R.id.txt_pkg_channel_name);
+            shadeView = itemView.findViewById(R.id.shade_view);
+            channelTitle = itemView.findViewById(R.id.txt_channelname);
+            channelImage = itemView.findViewById(R.id.img_channel);
+            itemLayout = itemView.findViewById(R.id.channel_item_layout);
 
-
+            itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
+                        shadeView.setVisibility(View.GONE);
+                        itemView.setScaleX(1.05f);
+                        itemView.setScaleY(1.05f);
+                        channelTitle.setSelected(true);
+                    } else {
+                        shadeView.setVisibility(View.VISIBLE);
+                        itemView.setScaleX(1.0f);
+                        itemView.setScaleY(1.0f);
+                        channelTitle.setSelected(false);
+                    }
+                }
+            });
         }
+
 
         public void populateItemsForChannel() {
             final ChannelsItem pckgItem= (ChannelsItem) pckgList.get(getAdapterPosition());
-            channelName.setText(pckgItem.getChannelName());
+            channelTitle.setText(pckgItem.getChannelName());
             Picasso.with(mContext)
                     .load(pckgItem.getChannelLogo())
                     .resize(70,70)
                     .placeholder(R.drawable.placeholder)
-                    .into(channelView);
+                    .into(channelImage);
         }
         public void populateItemsForMovies() {
             final MoviesItem pckgItem= (MoviesItem) pckgList.get(getAdapterPosition());
-            channelName.setText(pckgItem.getMovieName());
+            channelTitle.setText(pckgItem.getMovieName());
             Picasso.with(mContext)
                     .load(pckgItem.getMoviePicture())
                     .resize(70,70)
                     .placeholder(R.drawable.placeholder)
-                    .into(channelView);
+                    .into(channelImage);
         }
     }
 }

@@ -30,8 +30,7 @@ public interface UserApiInterface {
         void setPackageInfo(List<PackagesInfo> channelListInfo,String packageType);
         void showProgress();
         void hideProgress();
-        void onErrorOccured(String message);
-        void onErrorOccured(String packageType,String message);
+        void onErrorOccured(String error_message,String otherInfo,String errorType);
         void setOrderHistory(List<OrderItem> orderHistory);
     }
 
@@ -53,9 +52,6 @@ public interface UserApiInterface {
         void takeSubsHistory(List<SubsItem> subsHistory);
         void takeOrderHistory(List<OrderItem>orderHistory);
         void takePackageInfo(List<PackagesInfo> channelInfoList,String packageType);
-        void onErrorOccured(String packageType,String message);
-        void onChannelInaPckgError(int packageId,String message);
-        void onMoviesInaPckgError(int packageId,String message);
-        void onErrorOccured(String message);
+        void onErrorOccured(String error_message,String otherInfo,String errorType);
     }
 }

@@ -35,7 +35,7 @@ public class LoginModel implements LoginApiInterface.LoginInteractor {
 
 
     @Override
-    public void checkCredentials(String userName, String password) {
+    public void checkCredentials(final String userName, final String password) {
         Retrofit retrofit = ApiManager.getAdapter();
         final LoginApiInterface loginApiInterface = retrofit.create(LoginApiInterface.class);
 

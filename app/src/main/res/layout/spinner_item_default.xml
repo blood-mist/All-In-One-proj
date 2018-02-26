@@ -1,0 +1,11 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    android:singleLine="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/white_color"
+    android:text="Select Months"
+    android:ellipsize="marquee"
+    android:paddingLeft="30dp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    />
