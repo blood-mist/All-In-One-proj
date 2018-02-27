@@ -134,6 +134,7 @@ public class MoviePlayActivity extends AppCompatActivity implements SurfaceHolde
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
                 loadingView.setVisibility(GONE);
+                showFeatures();
 
             }
         });

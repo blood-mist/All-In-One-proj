@@ -203,7 +203,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
                     public void onNext(Response<MovieLink> value) {
                         int responseCode = value.code();
                         if (responseCode == 200) {
-                            Intent intent = new Intent(MovieNewActivity.this, MoviePlayActivity.class);
+                            Intent intent = new Intent(MovieNewActivity.this, MovieExoPlay.class);
                             intent.putExtra(MOVIE_ID, movie);
                             intent.putExtra(VIDEO_URL, value.body().getLink());
                             startActivity(intent);

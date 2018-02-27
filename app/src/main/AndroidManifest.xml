@@ -54,7 +54,8 @@
 
         <activity android:name=".account.AccountActivity" />
         <activity android:name=".movielist.MovieNewActivity" />
-        <activity android:name=".fm.FMActivity"></activity>
+        <activity android:name=".fm.FMActivity" />
+        <activity android:name=".movielist.MovieExoPlay"></activity>
     </application>
 
 </manifest>
