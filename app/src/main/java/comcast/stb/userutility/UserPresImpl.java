@@ -56,7 +56,7 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
 
 
     @Override
-    public void onErrorOccured(String packageType, String message,String errorType) {
+    public void onErrorOccured( String message,String packageType,String errorType) {
         userView.onErrorOccured(message,packageType,PACKAGE_ERROR);
     }
 
