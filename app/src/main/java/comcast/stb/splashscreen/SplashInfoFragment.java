@@ -115,8 +115,6 @@ public class SplashInfoFragment extends DialogFragment {
 
 
     private void updateUI() {
-        if (!infoHeader.equals(""))
-            header.setText(infoHeader);
         body.setText(infoBody);
     }
 

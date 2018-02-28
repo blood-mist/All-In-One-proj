@@ -1,29 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
 
-    <View
-        android:id="@+id/info_view2"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_above="@+id/txt_infoHeader"
-        android:layout_alignEnd="@+id/txt_infoBody"
-        android:layout_alignLeft="@+id/txt_infoBody"
-        android:layout_alignRight="@id/txt_infoBody"
-        android:layout_alignStart="@+id/txt_infoBody"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="-10dp"
-        android:layout_marginRight="-10dp"
-        android:background="@color/white_color" />
 
     <TextView
         android:id="@+id/txt_infoHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:padding="10dp"
         android:text="@string/error_header"
@@ -34,52 +20,47 @@
         android:id="@+id/txt_infoBody"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_infoHeader"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:textColor="@color/white_color"
+        android:text="Error Body"
+        android:gravity="center"
         android:maxLines="4"
         android:padding="10dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
-
     <View
         android:id="@+id/info_view1"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:layout_alignEnd="@+id/txt_infoBody"
-        android:layout_alignLeft="@+id/txt_infoBody"
-        android:layout_alignRight="@id/txt_infoBody"
-        android:layout_alignStart="@+id/txt_infoBody"
-        android:layout_below="@+id/txt_infoBody"
         android:layout_marginLeft="-10dp"
         android:layout_marginRight="-10dp"
         android:layout_marginTop="20dp"
         android:background="@color/white_color" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/info_view2"
-        android:layout_alignStart="@+id/info_view2"
-        android:layout_alignRight="@+id/info_view2"
-        android:layout_alignEnd="@+id/info_view2"
-        android:layout_below="@+id/info_view1"
-        android:layout_marginTop="20dp"
+        android:layout_margin="10dp"
         android:orientation="horizontal"
         android:gravity="center">
 
         <Button
             android:id="@+id/btn_retry"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:textColor="@color/white_color"
             android:background="@drawable/button_selector"
-            android:text="@string/retry" />
+            android:text="@string/retry"
+            android:textAllCaps="true"/>
         <Button
             android:id="@+id/btn_dismiss"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
+            android:textColor="@color/white_color"
             android:background="@drawable/button_selector"
+            android:textAllCaps="true"
             android:text="@string/dismiss" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
