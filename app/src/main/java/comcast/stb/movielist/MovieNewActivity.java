@@ -11,9 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -49,8 +51,8 @@ import static comcast.stb.StringData.MOVIE_PLAY_ERROR;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 import static comcast.stb.StringData.VIDEO_URL;
 
-public class MovieNewActivity extends AppCompatActivity implements MovieListApiInterface.MovieWithCategoryView,MovieDialogFragment.OnFragmentInteractionListener,
-        MovieCategoryRecyclerAdapter.OnMovieCategoryInteraction, LogoutApiInterface.LogoutView,MovieListRecyclerAdapter.OnMovieListInteraction{
+public class MovieNewActivity extends AppCompatActivity implements MovieListApiInterface.MovieWithCategoryView, MovieDialogFragment.OnFragmentInteractionListener,
+        MovieCategoryRecyclerAdapter.OnMovieCategoryInteraction, LogoutApiInterface.LogoutView, MovieListRecyclerAdapter.OnMovieListInteraction {
 
     @BindView(R.id.img_movie_logout)
     ImageView logout;
@@ -80,6 +82,9 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
     @BindView(R.id.buy_movie_option_container)
     LinearLayout buylayout;
 
+    @BindView(R.id.btn_movie_buy)
+    Button btnMovieBuy;
+
     @BindView(R.id.movie_list_layout)
     LinearLayout movieListContainer;
     @BindView(R.id.img_movie_desc)
@@ -90,6 +95,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
     MoviePresImpl moviePresenter;
     private Realm realm;
     LoginData loginData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,12 +111,12 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
         movieCategoryContainer.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                if(movieCategoryContainer.getFocusedChild()==null){
-                    movieCategoryContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this,R.drawable.menu_left_bg_unselected));
+                if (movieCategoryContainer.getFocusedChild() == null) {
+                    movieCategoryContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this, R.drawable.menu_left_bg_unselected));
 
 
-                }else{
-                    movieCategoryContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this,R.drawable.menu_left_bg_selected));
+                } else {
+                    movieCategoryContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this, R.drawable.menu_left_bg_selected));
 
                 }
 
@@ -119,17 +125,18 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
         descriptionContainer.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                if(descriptionContainer.getFocusedChild()==null){
-                    descriptionContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this,R.drawable.menu_right_bg_unselected));
+                if (descriptionContainer.getFocusedChild() == null) {
+                    descriptionContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this, R.drawable.menu_right_bg_unselected));
 
-                }else{
-                    descriptionContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this,R.drawable.menu_right_bg_selected));
+                } else {
+                    descriptionContainer.setBackgroundDrawable(ContextCompat.getDrawable(MovieNewActivity.this, R.drawable.menu_right_bg_selected));
                 }
 
             }
         });
         moviePresenter.getMoviesWithCategory(authToken);
     }
+
     private void startAnim() {
         progressbar.smoothToShow();
     }
@@ -141,7 +148,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
 
     @Override
     public void setMoviesWithCategory(List<MovieCategory> movieCategoryList) {
-        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         MovieCategoryRecyclerAdapter categoryRecyclerAdapter = new MovieCategoryRecyclerAdapter(this, (ArrayList<MovieCategory>) movieCategoryList);
         movieCategoryRecycler.setLayoutManager(manager);
         movieCategoryRecycler.setAdapter(categoryRecyclerAdapter);
@@ -151,8 +158,8 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
     }
 
     @Override
-    public void onErrorOccured(String message,MoviesItem movie,String errorType) {
-       stopAnim();
+    public void onErrorOccured(String message, MoviesItem movie, String errorType) {
+        stopAnim();
         MovieDialogFragment infoDialogFragment = MovieDialogFragment.newInstance("", message, movie, errorType, true);
         infoDialogFragment.show(getSupportFragmentManager(), "MovieErrorFragment");
 
@@ -162,6 +169,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
     public void showProgress() {
 
     }
+
     private void stopAnim() {
         progressbar.smoothToHide();
     }
@@ -183,6 +191,22 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
 
     @Override
     public void onMovieClicked(MoviesItem movie) {
+
+        switch (movie.getSubscriptionStatus()) {
+            case PURCHASE_TYPE_BUY:
+                btnMovieBuy.requestFocus();
+                Toast.makeText(this, getString(R.string.purchase_body), Toast.LENGTH_LONG).show();
+                break;
+            default:
+                if (movie.getExpiryFlag()) {
+                    btnMovieBuy.requestFocus();
+                    Toast.makeText(this, getString(R.string.purchase_body), Toast.LENGTH_LONG).show();
+                } else {
+                    getMovieLink(movie);
+                }
+                break;
+
+        }
         getMovieLink(movie);
     }
 
@@ -210,9 +234,9 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
                             stopAnim();
 //                            startControllersTimer();
                         } else if (responseCode == 403) {
-                            onErrorOccured("403",movie,MOVIE_PLAY_ERROR);
+                            onErrorOccured("403", movie, MOVIE_PLAY_ERROR);
                         } else {
-                            onErrorOccured(value.message(),movie,MOVIE_PLAY_ERROR); //value.message()
+                            onErrorOccured(value.message(), movie, MOVIE_PLAY_ERROR); //value.message()
                         }
                     }
 
@@ -220,11 +244,11 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException || e instanceof ConnectException) {
-                            onErrorOccured("No Internet Connection",movie,MOVIE_PLAY_ERROR);
+                            onErrorOccured("No Internet Connection", movie, MOVIE_PLAY_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            onErrorOccured("Couldn't connect to server",movie,MOVIE_PLAY_ERROR);
+                            onErrorOccured("Couldn't connect to server", movie, MOVIE_PLAY_ERROR);
                         } else {
-                            onErrorOccured("Error Occured",movie,MOVIE_PLAY_ERROR);
+                            onErrorOccured("Error Occured", movie, MOVIE_PLAY_ERROR);
                         }
                     }
 
@@ -237,7 +261,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
 
     @Override
     public void onMovieSelected(MoviesItem movie) {
-        movieListContainer.setBackgroundColor(ContextCompat.getColor(this,R.color.white_selection));
+        movieListContainer.setBackgroundColor(ContextCompat.getColor(this, R.color.white_selection));
         updateMovieDescriptionUI(movie);
     }
 
@@ -261,20 +285,20 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
 
     @Override
     public void onMovieDeselected() {
-        movieListContainer.setBackgroundColor(ContextCompat.getColor(this,R.color.white_no_selection));
+        movieListContainer.setBackgroundColor(ContextCompat.getColor(this, R.color.white_no_selection));
     }
 
     public void updateProgress(boolean b) {
-        if(b){
+        if (b) {
             startAnim();
-        }else{
+        } else {
             stopAnim();
         }
     }
 
     @Override
     public void onRetryBtnInteraction(String errorType, MoviesItem movie) {
-        switch(errorType){
+        switch (errorType) {
             case MOVIE_CATEGORY_ERROR:
                 moviePresenter.getMoviesWithCategory(loginData.getToken());
                 break;

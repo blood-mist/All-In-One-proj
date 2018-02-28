@@ -108,8 +108,8 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
     LinearLayout rootLayout;
     @BindView(R.id.movie_progressBar)
     AVLoadingIndicatorView loadingView;
-    @BindView(R.id.debug_text_view)
-    TextView debugTextView;
+ /*   @BindView(R.id.debug_text_view)
+    TextView debugTextView;*/
     private final Random random = new Random();
     private DataSource.Factory mediaDataSourceFactory;
     private SimpleExoPlayer player;
@@ -234,62 +234,21 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
             TrackSelection.Factory adaptiveTrackSelectionFactory =
                     new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
             trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
-            trackSelectionHelper = new TrackSelectionHelper(trackSelector, adaptiveTrackSelectionFactory);
             lastSeenTrackGroupArray = null;
             eventLogger = new EventLogger(trackSelector);
 
-            DrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
-            if (intent.hasExtra(DRM_SCHEME_EXTRA) || intent.hasExtra(DRM_SCHEME_UUID_EXTRA)) {
-                String drmLicenseUrl = intent.getStringExtra(DRM_LICENSE_URL);
-                String[] keyRequestPropertiesArray = intent.getStringArrayExtra(DRM_KEY_REQUEST_PROPERTIES);
-                boolean multiSession = intent.getBooleanExtra(DRM_MULTI_SESSION, false);
-                int errorStringId = R.string.error_drm_unknown;
-                if (Util.SDK_INT < 18) {
-                    errorStringId = R.string.error_drm_not_supported;
-                } else {
-                    try {
-                        String drmSchemeExtra = intent.hasExtra(DRM_SCHEME_EXTRA) ? DRM_SCHEME_EXTRA
-                                : DRM_SCHEME_UUID_EXTRA;
-                        UUID drmSchemeUuid = Util.getDrmUuid(intent.getStringExtra(drmSchemeExtra));
-                        if (drmSchemeUuid == null) {
-                            errorStringId = R.string.error_drm_unsupported_scheme;
-                        } else {
-                            drmSessionManager =
-                                    buildDrmSessionManagerV18(
-                                            drmSchemeUuid, drmLicenseUrl, keyRequestPropertiesArray, multiSession);
-                        }
-                    } catch (UnsupportedDrmException e) {
-                        errorStringId = e.reason == UnsupportedDrmException.REASON_UNSUPPORTED_SCHEME
-                                ? R.string.error_drm_unsupported_scheme : R.string.error_drm_unknown;
-                    }
-                }
-                if (drmSessionManager == null) {
-                    showToast(errorStringId);
-                    return;
-                }
-            }
 
-            boolean preferExtensionDecoders = intent.getBooleanExtra(PREFER_EXTENSION_DECODERS, false);
-            @DefaultRenderersFactory.ExtensionRendererMode int extensionRendererMode =
-                    ((MainApplication) getApplication()).useExtensionRenderers()
-                            ? (preferExtensionDecoders ? DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
-                            : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
-                            : DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF;
-            DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(this,
-                    drmSessionManager, extensionRendererMode);
-
-            player = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector);
+            player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
             player.addListener(new PlayerEventListener());
             player.addListener(eventLogger);
             player.addMetadataOutput(eventLogger);
             player.addAudioDebugListener(eventLogger);
             player.addVideoDebugListener(eventLogger);
             player.setPlayWhenReady(shouldAutoPlay);
-
             playerView.setPlayer(player);
             playerView.setPlaybackPreparer(this);
-            debugViewHelper = new DebugTextViewHelper(player, debugTextView);
-            debugViewHelper.start();
+            /*debugViewHelper = new DebugTextViewHelper(player, debugTextView);
+            debugViewHelper.start();*/
         }
 
         MediaSource mediaSource =buildMediaSource(Uri.parse(videoUrl), mainHandler, eventLogger);
@@ -401,39 +360,6 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
 
     private void updateButtonVisibilities() {
         rootLayout.removeAllViews();
-        if (player == null) {
-            return;
-        }
-
-        MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-        if (mappedTrackInfo == null) {
-            return;
-        }
-
-        for (int i = 0; i < mappedTrackInfo.length; i++) {
-            TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(i);
-            if (trackGroups.length != 0) {
-                Button button = new Button(this);
-                int label;
-                switch (player.getRendererType(i)) {
-                    case C.TRACK_TYPE_AUDIO:
-                        label = R.string.audio;
-                        break;
-                    case C.TRACK_TYPE_VIDEO:
-                        label = R.string.video;
-                        break;
-                    case C.TRACK_TYPE_TEXT:
-                        label = R.string.text;
-                        break;
-                    default:
-                        continue;
-                }
-                button.setText(label);
-                button.setTag(i);
-                button.setOnClickListener(this);
-                rootLayout.addView(button, rootLayout.getChildCount() - 1);
-            }
-        }
     }
 
     private void showControls() {
