@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
 import comcast.stb.R;
 import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
+import comcast.stb.entity.EventItem;
 import comcast.stb.entity.LoginData;
 import comcast.stb.entity.TvLink;
 import comcast.stb.login.LoginActivity;
@@ -97,24 +98,51 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            updateMenuUI();
+            showMenu();
         }
         return super.onKeyDown(keyCode, event);
     }
 
+    private void showMenu() {
+        Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
+        if (menuFrag == null)
+            getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName())).commit();
+        else {
+            if (menuFrag.isHidden())
+                getSupportFragmentManager().beginTransaction().show(menuFrag).commit();
+            else
+                getSupportFragmentManager().beginTransaction().hide(menuFrag).commit();
+
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
+        if (menuFrag != null)
+            getSupportFragmentManager().beginTransaction().hide(menuFrag).commit();
+        else
+            finish();
+        super.onBackPressed();
+    }
+
     private void updateMenuUI() {
         Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
-        if (menuFrag != null && menuFrag.isVisible())
-            getSupportFragmentManager().beginTransaction().remove(menuFrag).commit();
-        else
-            getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName())).commit();
+        if (menuFrag != null)
+            getSupportFragmentManager().beginTransaction().hide(menuFrag).commit();
+
     }
 
     @Override
     public void setChannelsWithCategory(List<ChannelCategory> channelCategoryList) {
         this.channelCategoryList = channelCategoryList;
         progressContainer.setVisibility(View.GONE);
-        getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(this.channelCategoryList, loginData.getUser().getName())).commit();
+        showMenu();
+    }
+
+    @Override
+    public void setEpg(List<EventItem> epgChannelList) {
 
     }
 
@@ -187,7 +215,6 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     @Override
     protected void onPause() {
-        super.onPause();
         try {
             player.stop();
             player.release();
@@ -198,6 +225,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     }
 
     private void playVideo(String link) {
+        player.reset();
 //        channelLink = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
         try {
             player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -218,7 +246,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
             });
 
             player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            player.setDataSource(this, Uri.parse(link));
+            player.setDataSource(LiveTVActivity.this, Uri.parse(link));
             try {
 
                 player.prepareAsync();
@@ -238,8 +266,13 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                     }
                     player.reset();
                     Toast.makeText(LiveTVActivity.this, "Error Playing Media", Toast.LENGTH_LONG).show();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName())).commit();
-
+                    Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
+                    if (menuFrag == null)
+                        getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName())).commit();
+                    else {
+                        if (menuFrag.isHidden())
+                            getSupportFragmentManager().beginTransaction().show(menuFrag).commit();
+                    }
 //                    progressContainer.setVisibility(View.GONE);
 //                    showAlertDialog(getActivity().getResources().getString(R.string.server_down));
                     return false;
@@ -344,9 +377,9 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                             playVideo(value.body().getLink());
 //                            startControllersTimer();
                         } else if (responseCode == 403) {
-                            onErrorOccured("403", channel,LIVE_PLAY_ERROR);
+                            onErrorOccured("403", channel, LIVE_PLAY_ERROR);
                         } else {
-                            onErrorOccured(value.message(), channel,LIVE_PLAY_ERROR); //value.message()
+                            onErrorOccured(value.message(), channel, LIVE_PLAY_ERROR); //value.message()
                         }
                     }
 
@@ -354,11 +387,11 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (e instanceof HttpException || e instanceof ConnectException) {
-                            onErrorOccured("No Internet Connection", channel,LIVE_PLAY_ERROR);
+                            onErrorOccured("No Internet Connection", channel, LIVE_PLAY_ERROR);
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            onErrorOccured("Couldn't connect to server", channel,LIVE_PLAY_ERROR);
+                            onErrorOccured("Couldn't connect to server", channel, LIVE_PLAY_ERROR);
                         } else {
-                            onErrorOccured("Error Occured", channel,LIVE_PLAY_ERROR);
+                            onErrorOccured("Error Occured", channel, LIVE_PLAY_ERROR);
                         }
                     }
 
@@ -375,8 +408,8 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     }
 
     @Override
-    public void onRetryBtnInteraction(String errorType,Channel channel) {
-        switch(errorType){
+    public void onRetryBtnInteraction(String errorType, Channel channel) {
+        switch (errorType) {
             case LIVE_CATEGORY_ERROR:
                 liveTVPresenter.getChannelsWithCategory(loginData.getToken());
                 break;

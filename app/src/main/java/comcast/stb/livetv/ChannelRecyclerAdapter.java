@@ -105,7 +105,6 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
                 @Override
                 public void onClick(View view) {
                     onChannelClicked(channelList.get(getAdapterPosition()));
-                    notifyDataSetChanged();
 
                 }
             });

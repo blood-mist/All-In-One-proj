@@ -46,7 +46,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static comcast.stb.StringData.MOVIE_CATEGORY_ERROR;
-import static comcast.stb.StringData.MOVIE_ID;
 import static comcast.stb.StringData.MOVIE_PLAY_ERROR;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 import static comcast.stb.StringData.VIDEO_URL;
@@ -198,7 +197,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
                 Toast.makeText(this, getString(R.string.purchase_body), Toast.LENGTH_LONG).show();
                 break;
             default:
-                if (movie.getExpiryFlag()) {
+                if (movie.isExpiryFlag()) {
                     btnMovieBuy.requestFocus();
                     Toast.makeText(this, getString(R.string.purchase_body), Toast.LENGTH_LONG).show();
                 } else {
@@ -228,7 +227,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
                         int responseCode = value.code();
                         if (responseCode == 200) {
                             Intent intent = new Intent(MovieNewActivity.this, MovieExoPlay.class);
-                            intent.putExtra(MOVIE_ID, movie);
+//                            intent.putExtra(MOVIE_ID, movie);
                             intent.putExtra(VIDEO_URL, value.body().getLink());
                             startActivity(intent);
                             stopAnim();
@@ -274,7 +273,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
                 buylayout.setVisibility(View.VISIBLE);
                 break;
             default:
-                if (movie.getExpiryFlag()) {
+                if (movie.isExpiryFlag()) {
                     buylayout.setVisibility(View.VISIBLE);
                 } else {
                     buylayout.setVisibility(View.GONE);

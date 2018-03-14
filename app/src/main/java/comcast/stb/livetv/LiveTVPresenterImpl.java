@@ -6,6 +6,7 @@ import java.util.List;
 
 import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
+import comcast.stb.entity.EventItem;
 import comcast.stb.logout.LogoutPresImpl;
 
 /**
@@ -28,8 +29,18 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     }
 
     @Override
+    public void getEpg(int channelId,String token) {
+        channelWithCategoryInteractor.getEpg(channelId,token);
+    }
+
+    @Override
     public void takeChannelsWithCategory(List<ChannelCategory> channelCategoryList) {
         channelWithCategoryView.setChannelsWithCategory(channelCategoryList);
+    }
+
+    @Override
+    public void takeEpgList(List<EventItem> epgList) {
+        channelWithCategoryView.setEpg(epgList);
     }
 
     @Override

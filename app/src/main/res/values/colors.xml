@@ -20,7 +20,7 @@
     <color name="transp60blue">#9995DCD4</color>
     <color name="transp25blue">#4095DCD4</color>
     <color name="white_no_selection">#40ffffff</color>
-    <color name="white_selection">#99ffffff</color>
+    <color name="white_selection">#66ffffff</color>
     <color name="tabTextColor">#d1c9c9 </color>
     <color name="itemNameColor">#97DCD4</color>
     <color name="tabSelectedTextColor">#FFF</color>

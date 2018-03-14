@@ -59,7 +59,6 @@ dependencies {
     compile 'com.google.android.exoplayer:exoplayer-ui:2.7.0'
     compile 'com.google.android.exoplayer:exoplayer-hls:2.7.0'
     compile 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.7.0'
-
     compile 'com.cleveroad:audiovisualization:1.0.0'
     compile 'com.google.android.exoplayer:exoplayer:2.7.0'
 

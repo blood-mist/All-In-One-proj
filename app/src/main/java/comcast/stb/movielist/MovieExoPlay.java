@@ -12,22 +12,14 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackPreparer;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.drm.DefaultDrmSessionManager;
-import com.google.android.exoplayer2.drm.DrmSessionManager;
-import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
-import com.google.android.exoplayer2.drm.FrameworkMediaDrm;
-import com.google.android.exoplayer2.drm.HttpMediaDrmCallback;
-import com.google.android.exoplayer2.drm.UnsupportedDrmException;
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil;
 import com.google.android.exoplayer2.source.BehindLiveWindowException;
@@ -45,7 +37,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.ui.DebugTextViewHelper;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -59,37 +50,18 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Random;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import comcast.stb.MainApplication;
 import comcast.stb.R;
-import comcast.stb.entity.MoviesItem;
 
-import static comcast.stb.StringData.MOVIE_ID;
 import static comcast.stb.StringData.VIDEO_URL;
 
 public class MovieExoPlay extends AppCompatActivity implements View.OnClickListener, PlaybackPreparer, PlayerControlView.VisibilityListener {
-    private static final int FORWARD_REWIND_DURATION = 15000;
-    public static final String DRM_SCHEME_EXTRA = "drm_scheme";
-    public static final String DRM_LICENSE_URL = "drm_license_url";
-    public static final String DRM_KEY_REQUEST_PROPERTIES = "drm_key_request_properties";
-    public static final String DRM_MULTI_SESSION = "drm_multi_session";
-    public static final String PREFER_EXTENSION_DECODERS = "prefer_extension_decoders";
 
-    public static final String ACTION_VIEW = "com.google.android.exoplayer.demo.action.VIEW";
-    public static final String EXTENSION_EXTRA = "extension";
-
-    public static final String ACTION_VIEW_LIST =
-            "com.google.android.exoplayer.demo.action.VIEW_LIST";
-    public static final String URI_LIST_EXTRA = "uri_list";
-    public static final String EXTENSION_LIST_EXTRA = "extension_list";
-
-    // For backwards compatibility.
-    private static final String DRM_SCHEME_UUID_EXTRA = "drm_scheme_uuid";
     private String videoUrl;
-    private MoviesItem currentMovie;
+//    private MoviesItem currentMovie;
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
     private static final CookieManager DEFAULT_COOKIE_MANAGER;
     static {
@@ -102,8 +74,6 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.player_view)
     PlayerView playerView;
     Handler handler = new Handler();
-    @BindView(R.id.tvboxID)
-    TextView txtRandomDisplayBoxId;
     @BindView(R.id.controls_root)
     LinearLayout rootLayout;
     @BindView(R.id.movie_progressBar)
@@ -114,7 +84,6 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
     private DataSource.Factory mediaDataSourceFactory;
     private SimpleExoPlayer player;
     private DefaultTrackSelector trackSelector;
-    private DebugTextViewHelper debugViewHelper;
     private boolean inErrorState;
     private TrackSelectionHelper trackSelectionHelper;
     private TrackGroupArray lastSeenTrackGroupArray;
@@ -136,7 +105,7 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_movie_exo_play);
         ButterKnife.bind(this);
         videoUrl = getIntent().getStringExtra(VIDEO_URL);
-        currentMovie = getIntent().getParcelableExtra(MOVIE_ID);
+//        currentMovie = getIntent().getParcelableExtra(MOVIE_ID);
         playerView.setControllerVisibilityListener(this);
         playerView.requestFocus();
     }
@@ -235,15 +204,15 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
                     new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
             trackSelector = new DefaultTrackSelector(adaptiveTrackSelectionFactory);
             lastSeenTrackGroupArray = null;
-            eventLogger = new EventLogger(trackSelector);
+          //  eventLogger = new EventLogger(trackSelector);
 
 
             player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
             player.addListener(new PlayerEventListener());
-            player.addListener(eventLogger);
+          /*  player.addListener(eventLogger);
             player.addMetadataOutput(eventLogger);
             player.addAudioDebugListener(eventLogger);
-            player.addVideoDebugListener(eventLogger);
+            player.addVideoDebugListener(eventLogger);*/
             player.setPlayWhenReady(shouldAutoPlay);
             playerView.setPlayer(player);
             playerView.setPlaybackPreparer(this);
@@ -290,25 +259,9 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private DrmSessionManager<FrameworkMediaCrypto> buildDrmSessionManagerV18(UUID uuid,
-                                                                              String licenseUrl, String[] keyRequestPropertiesArray, boolean multiSession)
-            throws UnsupportedDrmException {
-        HttpMediaDrmCallback drmCallback = new HttpMediaDrmCallback(licenseUrl,
-                buildHttpDataSourceFactory(false));
-        if (keyRequestPropertiesArray != null) {
-            for (int i = 0; i < keyRequestPropertiesArray.length - 1; i += 2) {
-                drmCallback.setKeyRequestProperty(keyRequestPropertiesArray[i],
-                        keyRequestPropertiesArray[i + 1]);
-            }
-        }
-        return new DefaultDrmSessionManager<>(uuid, FrameworkMediaDrm.newInstance(uuid), drmCallback,
-                null, mainHandler, eventLogger, multiSession);
-    }
 
     private void releasePlayer() {
         if (player != null) {
-            debugViewHelper.stop();
-            debugViewHelper = null;
             shouldAutoPlay = player.getPlayWhenReady();
             updateResumePosition();
             player.release();
