@@ -20,6 +20,8 @@ import android.widget.Toast;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -142,8 +144,8 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     }
 
     @Override
-    public void setEpg(List<EventItem> epgChannelList) {
-
+    public void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
+    Log.d("hashmp",epgChannelList.size()+"");
     }
 
     @Override
@@ -316,6 +318,11 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
         }
 
+    }
+
+    @Override
+    public void onChannelSelected(Channel channel) {
+        liveTVPresenter.getEpg(channel.getChannelId(),loginData.getToken());
     }
 
     @Override

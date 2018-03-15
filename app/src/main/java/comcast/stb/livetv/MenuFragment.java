@@ -249,6 +249,8 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     public void onChannelSelected(Channel channel) {
         channelListContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white_selection));
         updateChannelDescriptionUI(channel);
+        clickListener.onChannelSelected(channel);
+
 
     }
 
@@ -289,5 +291,6 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
     public interface OnChannelClickedListener {
         void onChannelClicked(Channel channel);
+        void onChannelSelected(Channel channel);
     }
 }

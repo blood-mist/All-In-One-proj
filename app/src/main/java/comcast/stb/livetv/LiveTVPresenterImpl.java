@@ -2,6 +2,8 @@ package comcast.stb.livetv;
 
 
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import comcast.stb.entity.Channel;
@@ -39,7 +41,7 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     }
 
     @Override
-    public void takeEpgList(List<EventItem> epgList) {
+    public void takeEpgList(LinkedHashMap<String, ArrayList<EventItem>> epgList) {
         channelWithCategoryView.setEpg(epgList);
     }
 

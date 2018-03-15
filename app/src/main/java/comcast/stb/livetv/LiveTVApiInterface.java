@@ -1,6 +1,8 @@
 package comcast.stb.livetv;
 
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import comcast.stb.entity.Channel;
@@ -29,7 +31,7 @@ public interface LiveTVApiInterface {
 
     interface ChannelWithCategoryView{
         void setChannelsWithCategory(List<ChannelCategory> channelCategoryList);
-        void setEpg(List<EventItem> epgChannelList);
+        void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList);
         void onErrorOccured(String message,Channel channel,String errorType);
     }
     interface ChannelWithCategoryPresenter{
@@ -42,7 +44,7 @@ public interface LiveTVApiInterface {
     }
     interface ChannelWithCategoryListener{
         void takeChannelsWithCategory(List<ChannelCategory> channelCategoryList);
-        void takeEpgList(List<EventItem> epgList);
+        void takeEpgList(LinkedHashMap<String, ArrayList<EventItem>> epgList);
         void onErrorOccured(String message, Channel channel, String errorType);
     }
 }
