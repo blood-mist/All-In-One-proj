@@ -1,14 +1,11 @@
 package comcast.stb.utils;
 
-import comcast.stb.BuildConfig;
-
-
 /**
  * Created by blood-mist on 1/12/18.
  */
 
 public class AppConfig {
-    private static boolean isFromDevelopment = BuildConfig.DEBUG;
+    private static boolean isFromDevelopment = false;
 
     public static boolean isDevelopment() {
         return isFromDevelopment;

@@ -11,9 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,8 +232,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         this.channelList = channelList;
         selectedCategory.setText(categoryName);
         channelRecyclerAdapter = new ChannelRecyclerAdapter(getActivity(), this.channelList, MenuFragment.this);
-        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(5, StaggeredGridLayoutManager.VERTICAL);
-        manager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        GridLayoutManager manager = new GridLayoutManager(getActivity(),5);
         channelRecyclerView.setLayoutManager(manager);
         channelRecyclerView.setAdapter(channelRecyclerAdapter);
         if (currentChannel != null) {

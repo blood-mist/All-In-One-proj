@@ -1,17 +1,25 @@
 package comcast.stb.fm;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cleveroad.audiovisualization.AudioVisualization;
 import com.cleveroad.audiovisualization.DbmHandler;
@@ -56,6 +64,7 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
     public static final String ACTION_STOP = "ACTION_STOP";
     public static final String ACTION_PLAY = "ACTION_PLAY";
     public static final String ACTION_CLOSE = "ACTION_CLOSE";
+    private static final int REQUEST_CODE = 1;
 
     @BindView(R.id.img_fm_logout)
     ImageView logout;
@@ -125,10 +134,64 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
         playLayout.setVisibility(View.GONE);
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         fmlist.setLayoutManager(manager);
-        audioVisualization.linkTo(DbmHandler.Factory.newVisualizerHandler(this, 0));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS) == PackageManager.PERMISSION_GRANTED) {
+            audioVisualization.linkTo(DbmHandler.Factory.newVisualizerHandler(this, 0));
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.MODIFY_AUDIO_SETTINGS)) {
+                AlertDialog.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                            requestPermissions();
+                        } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                            permissionsNotGranted();
+                        }
+                    }
+                };
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.title_permissions))
+                        .setMessage(Html.fromHtml(getString(R.string.message_permissions)))
+                        .setPositiveButton(getString(R.string.allow), onClickListener)
+                        .setNegativeButton(getString(R.string.btn_cancel), onClickListener)
+                        .show();
+            } else {
+                requestPermissions();
+            }
+        }
+
 
     }
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS},
+                REQUEST_CODE
+        );
+    }
 
+    private void permissionsNotGranted() {
+        Toast.makeText(this, R.string.toast_permissions_not_granted, Toast.LENGTH_SHORT).show();
+        finish();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE) {
+            boolean bothGranted = true;
+            for (int i = 0; i < permissions.length; i++) {
+                if (Manifest.permission.RECORD_AUDIO.equals(permissions[i]) || Manifest.permission.MODIFY_AUDIO_SETTINGS.equals(permissions[i])) {
+                    bothGranted &= grantResults[i] == PackageManager.PERMISSION_GRANTED;
+                }
+            }
+            if (bothGranted) {
+                audioVisualization.linkTo(DbmHandler.Factory.newVisualizerHandler(this, 0));
+            } else {
+                permissionsNotGranted();
+            }
+        }
+    }
     @Override
     protected void onResume() {
         super.onResume();

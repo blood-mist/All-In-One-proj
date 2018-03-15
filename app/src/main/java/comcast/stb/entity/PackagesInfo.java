@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import javax.annotation.Generated;
 
 @Generated("com.robohorse.robopojogenerator")
-public class PackagesInfo implements Parcelable{
+public class PackagesInfo implements Parcelable {
 
 	@SerializedName("recommend_group")
 	private int recommendGroup;
@@ -88,20 +88,6 @@ public class PackagesInfo implements Parcelable{
 	}
 
 	@Override
- 	public String toString(){
-		return 
-			"PackagesInfo{" + 
-			"recommend_group = '" + recommendGroup + '\'' + 
-			",subscription_status = '" + subscriptionStatus + '\'' + 
-			",expiry_flag = '" + expiryFlag + '\'' + 
-			",package_name = '" + packageName + '\'' + 
-			",package_id = '" + packageId + '\'' + 
-			",expiry = '" + expiry + '\'' + 
-			",package_price = '" + packagePrice + '\'' + 
-			"}";
-		}
-
-	@Override
 	public int describeContents() {
 		return 0;
 	}
@@ -130,7 +116,7 @@ public class PackagesInfo implements Parcelable{
 		this.packagePrice = in.readString();
 	}
 
-	public static final Creator<PackagesInfo> CREATOR = new Creator<PackagesInfo>() {
+	public static final Parcelable.Creator<PackagesInfo> CREATOR = new Parcelable.Creator<PackagesInfo>() {
 		@Override
 		public PackagesInfo createFromParcel(Parcel source) {
 			return new PackagesInfo(source);
