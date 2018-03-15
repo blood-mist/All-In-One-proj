@@ -102,8 +102,6 @@ public class MovieExoPlay extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.player_view)
     PlayerView playerView;
     Handler handler = new Handler();
-    @BindView(R.id.tvboxID)
-    TextView txtRandomDisplayBoxId;
     @BindView(R.id.controls_root)
     LinearLayout rootLayout;
     @BindView(R.id.movie_progressBar)
