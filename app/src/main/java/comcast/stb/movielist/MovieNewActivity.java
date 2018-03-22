@@ -297,6 +297,7 @@ public class MovieNewActivity extends AppCompatActivity implements MovieListApiI
 
     @Override
     public void onRetryBtnInteraction(String errorType, MoviesItem movie) {
+        onDismissBtnInteraction();
         switch (errorType) {
             case MOVIE_CATEGORY_ERROR:
                 moviePresenter.getMoviesWithCategory(loginData.getToken());

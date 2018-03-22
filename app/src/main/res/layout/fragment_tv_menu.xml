@@ -199,37 +199,66 @@
                 android:src="@drawable/placeholder"
                 android:scaleType="fitXY"
                 android:adjustViewBounds="true"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/buy_option_container">
-                <TextView
-                    android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/white_color"
-                    android:textStyle="bold"
-                    android:text="buy now to get exclusive offers"
-                    android:textAllCaps="true"
-                    android:padding="10dp"/>
-                <TextView
-                    android:id="@+id/txt_menu_price"
-                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/buy_option_container">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/white_color"
+                        android:textStyle="bold"
+                        android:text="buy now to get exclusive offers"
+                        android:textAllCaps="true"
+                        android:padding="10dp"/>
+                    <TextView
+                        android:id="@+id/txt_menu_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:padding="10dp"
+                        android:text="Price:"
+                        android:textColor="@color/white_color"/>
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="buy"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:background="@drawable/button_selector"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:orientation="vertical"
                     android:padding="10dp"
-                    android:text="Price:"
-                    android:textColor="@color/white_color"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="buy"
-                    android:layout_margin="5dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:background="@drawable/button_selector"/>
-            </LinearLayout>
+                    android:visibility="gone"
+                    android:id="@+id/epg_container">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAllCaps="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:text="EPG GUIDE"
+                        android:textStyle="bold"
+                        android:textColor="@color/white_color"/>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/day_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/pgm_guide_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+            </FrameLayout>
+
         </LinearLayout>
     </LinearLayout>
 

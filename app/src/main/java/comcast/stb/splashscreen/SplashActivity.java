@@ -162,6 +162,7 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
 
     @Override
     public void onRetryBtnInteraction(String errorType, String otherData) {
+        onDismissBtnInteraction();
         switch (errorType) {
             case SUBSCRIPTION_ERROR:
                 userPres.getSubsHistory(loginData.getToken());

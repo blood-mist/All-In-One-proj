@@ -175,7 +175,7 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
     }
 
     private void poplateSubscriptions() {
-        if (subscriptionList.size() > 0) {
+        if (subscriptionList!=null && subscriptionList.size() > 0) {
             MainSubsRecyclerAdapter subsRecyclerAdapter = new MainSubsRecyclerAdapter(this, subscriptionList);
             LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             subscriptionRecycler.setLayoutManager(manager);
@@ -187,7 +187,7 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
             subscriptionRecycler.setVisibility(View.GONE);
             noSubscription.setVisibility(View.VISIBLE);
         }
-        if (orderItemArrayList.size() > 0) {
+        if (orderItemArrayList!=null && orderItemArrayList.size() > 0) {
             MainOrderRecyclerAdapter orderRecyclerAdapter = new MainOrderRecyclerAdapter(this, orderItemArrayList);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             orderRecyclerlist.setLayoutManager(layoutManager);
@@ -201,7 +201,7 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
     }
 
     private void populatePackages() {
-        if (channelPackageslist.size() > 0) {
+        if (channelPackageslist!=null && channelPackageslist.size() > 0) {
             MainPckgRecyclerAdapter channelPckgAdapter = new MainPckgRecyclerAdapter(LauncherActivity.this, channelPackageslist, CHANNEL_PACKAGE);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             channelPckgRecycler.setLayoutManager(layoutManager);
@@ -212,7 +212,7 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
             channelPckgRecycler.setVisibility(View.GONE);
             noChanelpkg.setVisibility(View.VISIBLE);
         }
-        if (moviesPackagesList.size() > 0) {
+        if (moviesPackagesList!=null && moviesPackagesList.size() > 0) {
             MainPckgRecyclerAdapter moviePckgAdapter = new MainPckgRecyclerAdapter(LauncherActivity.this, moviesPackagesList, MOVIE_PACKAGE);
             LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             moviePckgRecycler.setLayoutManager(manager);

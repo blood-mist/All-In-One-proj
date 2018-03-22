@@ -23,9 +23,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.internal.bind.DateTypeAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -80,11 +82,21 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
     @BindView(R.id.img_desc)
     ImageView imgDescription;
+
+    @BindView(R.id.epg_container)
+    LinearLayout EpgContainer;
+
+    @BindView(R.id.day_recycler)
+    RecyclerView dayRecyclerList;
+
+    @BindView(R.id.pgm_guide_recycler)
+    RecyclerView pgmRecyclerList;
     private Channel currentChannel;
 
     private static final String CHANNEL_LIST = "channel_list";
 
     private ArrayList<ChannelCategory> channelCategoryList;
+    private ArrayList<Calendar>calendarList;
 
     private ArrayList<Channel> channelList;
     private String username;
@@ -141,23 +153,23 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         categoryLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-               if(categoryLayout.getFocusedChild()==null){
-                   categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_left_bg_unselected));
+                if (categoryLayout.getFocusedChild() == null) {
+                    categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.menu_left_bg_unselected));
 
-               }else{
-                   categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_left_bg_selected));
-               }
+                } else {
+                    categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.menu_left_bg_selected));
+                }
 
             }
         });
         descriptionLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                if(descriptionLayout.getFocusedChild()==null){
-                    descriptionLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_right_bg_unselected));
+                if (descriptionLayout.getFocusedChild() == null) {
+                    descriptionLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.menu_right_bg_unselected));
 
-                }else{
-                    descriptionLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_right_bg_selected));
+                } else {
+                    descriptionLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.menu_right_bg_selected));
                 }
 
             }
@@ -232,7 +244,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         this.channelList = channelList;
         selectedCategory.setText(categoryName);
         channelRecyclerAdapter = new ChannelRecyclerAdapter(getActivity(), this.channelList, MenuFragment.this);
-        GridLayoutManager manager = new GridLayoutManager(getActivity(),5);
+        GridLayoutManager manager = new GridLayoutManager(getActivity(), 5);
         channelRecyclerView.setLayoutManager(manager);
         channelRecyclerView.setAdapter(channelRecyclerAdapter);
         if (currentChannel != null) {
@@ -268,12 +280,15 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         switch (channel.getSubscriptionStatus()) {
             case PURCHASE_TYPE_BUY:
                 buylayout.setVisibility(View.VISIBLE);
+                EpgContainer.setVisibility(View.GONE);
                 break;
             default:
                 if (channel.isExpiryFlag()) {
                     buylayout.setVisibility(View.VISIBLE);
+                    EpgContainer.setVisibility(View.GONE);
                 } else {
                     buylayout.setVisibility(View.GONE);
+                    EpgContainer.setVisibility(View.VISIBLE);
                 }
                 break;
         }
@@ -288,9 +303,24 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
     }
 
+    public void populateDayList(ArrayList<Calendar> calendarList) {
+      DateAdapter dateAdapter;
+        if(this.calendarList!=null)
+            calendarList.clear();
+        this.calendarList= (ArrayList<Calendar>) calendarList.subList(0,3);
+        if(dateAdapter==null){
+             dateAdapter=new DateTypeAdapter(getActivity(),calendarList);
+        }
+        dateAdapter
+
+        dayRecyclerList.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+
+    }
+
 
     public interface OnChannelClickedListener {
         void onChannelClicked(Channel channel);
+
         void onChannelSelected(Channel channel);
     }
 }

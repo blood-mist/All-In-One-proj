@@ -190,6 +190,7 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
 
     @Override
     public void onRetryBtnInteraction() {
+        onDismissBtnInteraction();
         String username = userMac.getText().toString();
         String password = userPassword.getText().toString();
         loginPresenter.userTryingToLogin(username, password);
