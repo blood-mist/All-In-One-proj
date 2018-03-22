@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/stb_bg"
     tools:context="comcast.stb.launcher.LauncherActivity">
 
@@ -238,22 +239,20 @@
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:foregroundGravity="center" />
-
-            <ImageView
+            <com.daimajia.slider.library.SliderLayout
                 android:id="@+id/img_ad"
                 android:layout_width="match_parent"
+                custom:pager_animation="Accordion"
+                custom:auto_cycle="true"
+                custom:indicator_visibility="visible"
+                custom:pager_animation_span="1100"
                 android:layout_height="60dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:adjustViewBounds="true"
-                android:background="@color/white_no_selection"
-                android:scaleType="fitXY"
-                android:src="@drawable/ad" />
+                android:layout_alignParentStart="true"/>
+
 
         </RelativeLayout>
 

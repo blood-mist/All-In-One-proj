@@ -42,6 +42,7 @@ public class StringData {
     public static final String LIVE_PLAY_ERROR="live_play_error";
     public static final String MOVIE_PLAY_ERROR="movie_play_error";
     public static final String MOVIE_CATEGORY_ERROR="movie_category_error";
+    public static final String LIVE_EPG_ERROR="epg_error";
 
 
 

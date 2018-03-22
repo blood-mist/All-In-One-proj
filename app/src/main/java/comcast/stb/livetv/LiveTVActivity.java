@@ -32,11 +32,14 @@ import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
 import comcast.stb.entity.EventItem;
 import comcast.stb.entity.LoginData;
+import comcast.stb.entity.NewToken;
 import comcast.stb.entity.TvLink;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
 import comcast.stb.purchase.livetvpurchase.BuyChannelDialog;
+import comcast.stb.tokenrefresh.TokenPresImpl;
+import comcast.stb.tokenrefresh.TokenRefreshApiInterface;
 import comcast.stb.utils.ApiManager;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -49,12 +52,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
+import static comcast.stb.StringData.LIVE_EPG_ERROR;
 import static comcast.stb.StringData.LIVE_PLAY_ERROR;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 
 
 public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterface.ChannelWithCategoryView,
-        MenuFragment.OnChannelClickedListener, LogoutApiInterface.LogoutView, SurfaceHolder.Callback, LiveDialogFragment.OnFragmentInteractionListener {
+        MenuFragment.OnChannelClickedListener, LogoutApiInterface.LogoutView, SurfaceHolder.Callback, LiveDialogFragment.OnFragmentInteractionListener
+        , TokenRefreshApiInterface.TokenRefreshView {
     private static final String TAG = "LiveTVActivity";
     private LiveTVPresenterImpl liveTVPresenter;
     private Handler hideMenuHandler;
@@ -145,14 +150,22 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     @Override
     public void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
-    Log.d("hashmp",epgChannelList.size()+"");
+        Log.d("hashmp", epgChannelList.size() + "");
     }
 
     @Override
     public void onErrorOccured(String message, Channel channel, String errorType) {
         progressContainer.setVisibility(View.GONE);
-        LiveDialogFragment infoDialogFragment = LiveDialogFragment.newInstance("", message, channel, errorType, true);
-        infoDialogFragment.show(getSupportFragmentManager(), "LiveTvErrorFragment");
+        switch (errorType) {
+            case LIVE_EPG_ERROR:
+                Toast.makeText(LiveTVActivity.this, "Couldn't load EPG.", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                LiveDialogFragment infoDialogFragment = LiveDialogFragment.newInstance("", message, channel, errorType, true);
+                infoDialogFragment.show(getSupportFragmentManager(), "LiveTvErrorFragment");
+                break;
+        }
+
 
     }
 
@@ -203,15 +216,16 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     @Override
     protected void onStop() {
-        super.onStop();
         if (player != null) {
             try {
                 player.stop();
+                player.reset();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         finish();
+        super.onStop();
     }
 
 
@@ -322,7 +336,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     @Override
     public void onChannelSelected(Channel channel) {
-        liveTVPresenter.getEpg(channel.getChannelId(),loginData.getToken());
+        liveTVPresenter.getEpg(channel.getChannelId(), loginData.getToken());
     }
 
     @Override
@@ -385,6 +399,9 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 //                            startControllersTimer();
                         } else if (responseCode == 403) {
                             onErrorOccured("403", channel, LIVE_PLAY_ERROR);
+                        } else if (responseCode == 401) {
+                            TokenPresImpl tokenPres = new TokenPresImpl(LiveTVActivity.this);
+                            tokenPres.refreshTheToken(loginData.getToken());
                         } else {
                             onErrorOccured(value.message(), channel, LIVE_PLAY_ERROR); //value.message()
                         }
@@ -416,6 +433,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     @Override
     public void onRetryBtnInteraction(String errorType, Channel channel) {
+        onDismissBtnInteraction();
         switch (errorType) {
             case LIVE_CATEGORY_ERROR:
                 liveTVPresenter.getChannelsWithCategory(loginData.getToken());
@@ -433,5 +451,29 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         Fragment infoDialogFragment = manager.findFragmentByTag("LiveTvErrorFragment");
         if (infoDialogFragment != null)
             manager.beginTransaction().remove(infoDialogFragment).commit();
+    }
+
+    @Override
+    public void newToken(final NewToken newToken) {
+        Realm mRealm = Realm.getDefaultInstance();
+        final LoginData loginDatas = mRealm.where(LoginData.class).findFirst();
+
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                loginDatas.setToken(newToken.getToken());
+                realm.insertOrUpdate(loginDatas);
+            }
+        });
+    }
+
+    @Override
+    public void onError(String message) {
+        onErrorOccured(message, currentChannel, LIVE_PLAY_ERROR);
+    }
+
+    @Override
+    public void logout() {
+        //
     }
 }

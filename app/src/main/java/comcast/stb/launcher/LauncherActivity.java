@@ -17,16 +17,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daimajia.slider.library.SliderLayout;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import comcast.stb.R;
+import comcast.stb.adBanner.AdApiInterface;
+import comcast.stb.adBanner.AdPresImpl;
+import comcast.stb.entity.AdItem;
 import comcast.stb.entity.AppData;
 import comcast.stb.entity.BuyResponse;
 import comcast.stb.entity.LoginData;
@@ -34,6 +40,8 @@ import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.entity.events.FmLauncherEvent;
+import comcast.stb.logout.LogoutApiInterface;
+import comcast.stb.logout.LogoutPresImpl;
 import comcast.stb.packageInfoDialog.PackageDialogFragment;
 import comcast.stb.purchase.channelPckgPurchase.ChannelPckgApiInterface;
 import comcast.stb.purchase.channelPckgPurchase.ChannelPckgBuyPresImpl;
@@ -41,9 +49,7 @@ import comcast.stb.purchase.moviePckgPurchase.MoviePckgApiInterface;
 import comcast.stb.purchase.moviePckgPurchase.MoviePckgBuyPresImpl;
 import comcast.stb.subscriptions.OrderDialogFragment;
 import comcast.stb.userInfo.UserDialogFragment;
-import comcast.stb.utils.ApiManager;
 import io.realm.Realm;
-import retrofit2.Retrofit;
 
 import static comcast.stb.StringData.CHANNEL_PACKAGE;
 import static comcast.stb.StringData.CHANNEL_PCKG;
@@ -59,7 +65,8 @@ import static comcast.stb.utils.StringData.RADIO_SERVICE;
 
 public class LauncherActivity extends AppCompatActivity implements MainPckgRecyclerAdapter.OnPackageListInteraction, MainSubsRecyclerAdapter.OnSubsListInteraction,
         MainOrderRecyclerAdapter.OnOrderInteractionListener, UserDialogFragment.OnUserFragInteractionListener, PackageDialogFragment.OnFragmentInteractionListener
-        , ChannelPckgApiInterface.ChannelPcgkBuyView, MoviePckgApiInterface.MoviePcgkBuyView,LauncherInfoFragment.OnFragmentInteractionListener{
+        , ChannelPckgApiInterface.ChannelPcgkBuyView, MoviePckgApiInterface.MoviePcgkBuyView,LauncherInfoFragment.OnFragmentInteractionListener,LogoutApiInterface.LogoutView
+,AdApiInterface.AdView{
     private ArrayList<AppData> appDataList;
     @BindView(R.id.app_recycler_list)
     RecyclerView appRecyclerList;
@@ -78,7 +85,7 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
     @BindView(R.id.order_recycler_list)
     RecyclerView orderRecyclerlist;
     @BindView(R.id.img_ad)
-    ImageView ad_banner;
+    SliderLayout ad_banner;
     @BindView(R.id.channel_pckg_recycler)
     RecyclerView channelPckgRecycler;
     @BindView(R.id.movie_pckg_recycler)
@@ -106,6 +113,8 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
     private MoviePckgBuyPresImpl moviePckgBuyPres;
     private Realm realm;
     private LoginData loginData;
+    private AdPresImpl adPres;
+    private LogoutPresImpl logoutPres;
 
 
     @Override
@@ -116,7 +125,10 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
         ButterKnife.bind(this);
         realm = Realm.getDefaultInstance();
         loginData = realm.where(LoginData.class).findFirst();
+        logoutPres=new LogoutPresImpl(this);
         String user = getIntent().getStringExtra(USER_NAME);
+        adPres=new AdPresImpl(this,logoutPres);
+        adPres.getAdBanners(loginData.getToken());
         purchaseLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
@@ -166,16 +178,12 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
         populatePackages();
         poplateSubscriptions();
         populateList();
-        getAdBanners();
 
     }
 
-    private void getAdBanners() {
-        Retrofit retrofit = ApiManager.getAdapter();
-    }
 
     private void poplateSubscriptions() {
-        if (subscriptionList.size() > 0) {
+        if (subscriptionList!=null && subscriptionList.size() > 0) {
             MainSubsRecyclerAdapter subsRecyclerAdapter = new MainSubsRecyclerAdapter(this, subscriptionList);
             LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             subscriptionRecycler.setLayoutManager(manager);
@@ -187,7 +195,7 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
             subscriptionRecycler.setVisibility(View.GONE);
             noSubscription.setVisibility(View.VISIBLE);
         }
-        if (orderItemArrayList.size() > 0) {
+        if (orderItemArrayList!=null && orderItemArrayList.size() > 0) {
             MainOrderRecyclerAdapter orderRecyclerAdapter = new MainOrderRecyclerAdapter(this, orderItemArrayList);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             orderRecyclerlist.setLayoutManager(layoutManager);
@@ -201,7 +209,7 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
     }
 
     private void populatePackages() {
-        if (channelPackageslist.size() > 0) {
+        if (channelPackageslist!=null && channelPackageslist.size() > 0) {
             MainPckgRecyclerAdapter channelPckgAdapter = new MainPckgRecyclerAdapter(LauncherActivity.this, channelPackageslist, CHANNEL_PACKAGE);
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             channelPckgRecycler.setLayoutManager(layoutManager);
@@ -212,7 +220,7 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
             channelPckgRecycler.setVisibility(View.GONE);
             noChanelpkg.setVisibility(View.VISIBLE);
         }
-        if (moviesPackagesList.size() > 0) {
+        if (moviesPackagesList!=null && moviesPackagesList.size() > 0) {
             MainPckgRecyclerAdapter moviePckgAdapter = new MainPckgRecyclerAdapter(LauncherActivity.this, moviesPackagesList, MOVIE_PACKAGE);
             LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             moviePckgRecycler.setLayoutManager(manager);
@@ -398,6 +406,22 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
 
     @Override
     public void onRetryBtnInteraction(int packageId,String packagetype) {
+
+    }
+
+    @Override
+    public void successfulLogout() {
+
+    }
+
+    @Override
+    public void setAdBanners(List<AdItem> bannerList) {
+
+
+    }
+
+    @Override
+    public void onErrorOccured(String message) {
 
     }
 }

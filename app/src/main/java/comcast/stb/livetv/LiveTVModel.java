@@ -1,6 +1,8 @@
 package comcast.stb.livetv;
 
 
+import android.util.Log;
+
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -32,6 +34,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
+import static comcast.stb.StringData.LIVE_EPG_ERROR;
 
 public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryInteractor, TokenRefreshApiInterface.TokenRefreshView {
     LiveTVApiInterface.ChannelWithCategoryListener channelWithCategoryListener;
@@ -110,13 +113,9 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                         int responseCode = value.code();
                         if (responseCode == 200) {
                             channelWithCategoryListener.takeEpgList(getFilteredEpg(value.body()));
-//                            channelWithCategoryListener.takeEpgList(value.body());
-                        } else if (responseCode == 403) {
-                            channelWithCategoryListener.onErrorOccured("403", null, LIVE_CATEGORY_ERROR);
-                        } else if (responseCode == 401) {
-                            tokenPres.refreshTheToken(token);
+//
                         } else {
-                            channelWithCategoryListener.onErrorOccured(value.message(), null, LIVE_CATEGORY_ERROR); //value.message()
+                            channelWithCategoryListener.onErrorOccured(value.message(), null, LIVE_EPG_ERROR); //value.message()
                         }
                     }
 
@@ -156,6 +155,7 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                 Date epgDuration = epgDurationFormat.parse(duration);
                 epgStartCal.setTime(epgStartDate);
                 epgEndCal.setTime(new Date(epgStartDate.getTime() + epgDuration.getTime()));
+                Log.d("endTime",epgParseDateFormat.format(epgEndCal.getTime()));
                 if (epgEndCal.after(currentCal)) {
                     SimpleDateFormat dateDayFormat = new SimpleDateFormat("MMM DD,EEE");
                     String dayString = dateDayFormat.format(epgStartDate);

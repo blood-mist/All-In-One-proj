@@ -61,7 +61,7 @@ dependencies {
     compile 'com.google.android.exoplayer:exoplayer-smoothstreaming:2.7.0'
     compile 'com.cleveroad:audiovisualization:1.0.0'
     compile 'com.google.android.exoplayer:exoplayer:2.7.0'
-
-
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.slider:library:1.1.5@aar'
 }
 

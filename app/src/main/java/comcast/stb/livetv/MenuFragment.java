@@ -14,6 +14,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,6 +163,8 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
             }
         });
+        userName.setText(username);
+        populateChannelWithCategory(channelCategoryList);
         // Inflate the layout for this fragment
         return menuView;
     }
@@ -169,14 +172,13 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        userName.setText(username);
-        populateChannelWithCategory(channelCategoryList);
 
 
     }
 
     private void populateChannelWithCategory(ArrayList<ChannelCategory> channelCategoryList) {
         this.channelCategoryList = channelCategoryList;
+        Log.d("catsize ",channelCategoryList.size()+"");
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         if (categoryRecyclerAdapter == null)
             categoryRecyclerAdapter = new CategoryRecyclerAdapter(getActivity(), this.channelCategoryList, MenuFragment.this);
