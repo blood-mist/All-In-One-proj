@@ -1,6 +1,8 @@
 package comcast.stb.livetv;
 
 
+import android.util.Log;
+
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -11,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 
 import comcast.stb.entity.ChannelCategory;
 import comcast.stb.entity.EpgResponse;
@@ -21,6 +24,7 @@ import comcast.stb.logout.LogoutPresImpl;
 import comcast.stb.tokenrefresh.TokenPresImpl;
 import comcast.stb.tokenrefresh.TokenRefreshApiInterface;
 import comcast.stb.utils.ApiManager;
+import comcast.stb.utils.DurationUtil;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -137,6 +141,7 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
     }
 
     private LinkedHashMap<String, ArrayList<EventItem>> getFilteredEpg(EpgResponse epgResponse) {
+        String previousDate="";
         List<EventItem> datewiseEpgList = null;
         LinkedHashMap<String, ArrayList<EventItem>> epgHash = new LinkedHashMap<>();
         List<EventItem> allEpgFrmServer = epgResponse.getEvents();
@@ -146,18 +151,24 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
         for (EventItem epgItem : allEpgFrmServer) {
             String startDate = epgItem.getBeginTime();
             String duration = epgItem.getDuration();
-            SimpleDateFormat epgDurationFormat = new SimpleDateFormat("hhmmss");
-            SimpleDateFormat epgParseDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            DurationUtil durationUtil=new DurationUtil(duration);
+            SimpleDateFormat epgDurationFormat = new SimpleDateFormat("HH:mm", Locale.US);
+            SimpleDateFormat epgParseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             try {
                 Date epgStartDate = epgParseDateFormat.parse(startDate);
-                Date epgDuration = epgDurationFormat.parse(duration);
                 epgStartCal.setTime(epgStartDate);
-                epgEndCal.setTime(new Date(epgStartDate.getTime() + epgDuration.getTime()));
+                epgEndCal.setTime(new Date(epgStartDate.getTime()));
+                epgEndCal.add(Calendar.HOUR_OF_DAY,durationUtil.getDurationHour());
+                epgEndCal.add(Calendar.MINUTE,durationUtil.getDurationMinute());
+                epgEndCal.add(Calendar.SECOND,durationUtil.getDurationSecond());
+                Log.d("endDateTime",startDate+"-"+epgParseDateFormat.format(epgEndCal.getTime()));
                 if (epgEndCal.after(currentCal)) {
-                    SimpleDateFormat dateDayFormat = new SimpleDateFormat("MMM DD,EEE");
+                    epgItem.setStartHour(epgDurationFormat.format(epgStartCal.getTime()) );
+                    epgItem.setEndHour(epgDurationFormat.format(epgEndCal.getTime()));
+                    Log.d("filteredEndDateTime",startDate+"-"+epgParseDateFormat.format(epgEndCal.getTime()));
+                    SimpleDateFormat dateDayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                     String dayString = dateDayFormat.format(epgStartDate);
-                    if (epgHash.containsKey(dayString)) {
-
+                    if (dayString.equals(previousDate)) {
                         //if contains key
                         assert datewiseEpgList != null;
                         datewiseEpgList.add(epgItem);
@@ -165,9 +176,12 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                             epgHash.put(dayString, (ArrayList<EventItem>) datewiseEpgList);
                         }
                     } else {
-                        epgHash.put(dayString, (ArrayList<EventItem>) datewiseEpgList);
+                        if (datewiseEpgList != null)
+                            epgHash.put(previousDate, (ArrayList<EventItem>) datewiseEpgList);
+
                         datewiseEpgList = new ArrayList<>();
                         datewiseEpgList.add(epgItem);
+                        previousDate=dayString;
                         if (allEpgFrmServer.indexOf(epgItem) == allEpgFrmServer.size() - 1)
                             epgHash.put(dayString, (ArrayList<EventItem>) datewiseEpgList);
                     }

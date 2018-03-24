@@ -125,4 +125,5 @@
     <string name="allow">allow</string>
     <string name="btn_cancel">cancel</string>
     <string name="toast_permissions_not_granted">Permissions not granted.</string>
+    <string name="error_epg">Error Loading Epg.\\nEpg couldn\'t be loaded</string>
 </resources>

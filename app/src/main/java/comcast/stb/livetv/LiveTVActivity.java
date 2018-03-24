@@ -14,7 +14,6 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -164,13 +163,13 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
             }
             calendarList.add(calendar);
         }
-        updateEpginMenu(calendarList);
+        updateEpginMenu(calendarList,epgChannelList);
     }
 
-    private void updateEpginMenu(ArrayList<Calendar> calendarList) {
+    private void updateEpginMenu(ArrayList<Calendar> calendarList,LinkedHashMap<String,ArrayList<EventItem>>epgChannelList) {
         Log.d("CalendarListSize", calendarList.size() + "");
         MenuFragment menuFragment= (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
-        menuFragment.populateDayList(calendarList);
+        menuFragment.populateDayList(calendarList,epgChannelList);
 
     }
 
@@ -179,6 +178,8 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         switch (errorType) {
             case LIVE_EPG_ERROR:
                 Toast.makeText(LiveTVActivity.this, "Couldn't load EEPG.", Toast.LENGTH_LONG).show();
+                MenuFragment menuFragment= (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
+                menuFragment.hideEpgMenu();
                 break;
             default:
                 progressContainer.setVisibility(View.GONE);

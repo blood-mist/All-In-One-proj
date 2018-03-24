@@ -251,11 +251,20 @@
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/day_recycler"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="50dp"/>
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/pgm_guide_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:id="@+id/txt_errorEpgText"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="@drawable/white_border"
+                        android:text="@string/error_epg"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:visibility="gone"/>
                 </LinearLayout>
             </FrameLayout>
 

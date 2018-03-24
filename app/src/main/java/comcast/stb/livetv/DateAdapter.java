@@ -5,125 +5,93 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import comcast.stb.R;
-import comcast.stb.entity.Channel;
 
 /**
  * Created by ACER on 3/22/2018.
  */
 
 class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
-private ArrayList<Calendar> calendarArrayList;
+    private ArrayList<Calendar> calendarArrayList;
+    private OnDayClickListener listener;
+    private Context mContext;
+    private int focusedItem = 0;
+    int tryFocusItem;
 
-        Context mContext;
-        private int focusedItem = 0;
-        int tryFocusItem;
-
-public int getSelectedChannel() {
+    public int getSelectedChannel() {
         return selectedChannel;
-        }
+    }
 
-public void setSelectedChannel(int selectedChannelPos) {
+    public void setSelectedChannel(int selectedChannelPos) {
         this.selectedChannel = selectedChannelPos;
-        }
+    }
 
-private int selectedChannel=-1;
+    private int selectedChannel = -1;
 
-public DateAdapter(Context context, ArrayList<Calendar> calendarArrayList) {
+    DateAdapter(Context context, ArrayList<Calendar> calendarArrayList, OnDayClickListener listener) {
         this.calendarArrayList = calendarArrayList;
         this.mContext = context;
-        }
+        this.listener = listener;
+    }
 
 
-@Override
-public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel, null);
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single_text, null);
 
 
         return new ViewHolder(v);
-        }
+    }
 
-@Override
-public void onAttachedToRecyclerView(final RecyclerView recyclerView) {
+    @Override
+    public void onAttachedToRecyclerView(final RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
 
-        }
+    }
 
 
-
-@Override
-public void onBindViewHolder(DateAdapter.ViewHolder holder, final int position) {
+    @Override
+    public void onBindViewHolder(DateAdapter.ViewHolder holder, final int position) {
 
 //        holder.itemView.setSelected(tryFocusItem==position);
 
         Calendar calendar = calendarArrayList.get(position);
-        holder.channelTitle.setText(channel.getChannelName());
-        if (position == getSelectedChannel()) {
-        holder.itemLayout.setSelected(true);
-        } else {
-        holder.itemLayout.setSelected(false);
-        }
+        holder.days.setText(new SimpleDateFormat("E, MMM d", Locale.US).format(calendar.getTime()));
 
-        }
+    }
 
-@Override
-public int getItemCount() {
+    @Override
+    public int getItemCount() {
         return calendarArrayList.size();
-        }
+    }
 
-public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView channelTitle;
-    private LinearLayout itemLayout;
-    private View shadeView;
-    private ImageView channelImage;
-    public ViewHolder(final View itemView) {
-        super(itemView);
-        shadeView=itemView.findViewById(R.id.shade_view);
-        channelTitle = itemView.findViewById(R.id.txt_channelname);
-        channelImage=itemView.findViewById(R.id.img_channel);
-        itemLayout = itemView.findViewById(R.id.channel_item_layout);
-        itemLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onChannelClicked(calendarArrayList.get(getAdapterPosition()));
+        private TextView days;
+        private LinearLayout parentLayout;
 
-            }
-        });
-
-        itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    onChannelSelected(calendarArrayList.get(getAdapterPosition()));
-                    shadeView.setVisibility(View.GONE);
-                    itemView.setScaleX(1.05f);
-                    itemView.setScaleY(1.05f);
-                } else {
-                    shadeView.setVisibility(View.VISIBLE);
-                    itemView.setScaleX(1.0f);
-                    itemView.setScaleY(1.0f);
-                    mListener.onChannelDeselected();
-
+        public ViewHolder(final View itemView) {
+            super(itemView);
+            days = itemView.findViewById(R.id.txt_day_name);
+            parentLayout=itemView.findViewById(R.id.layout_epg);
+            parentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onDayClicked(getAdapterPosition());
                 }
-            }
-        });
+            });
+        }
+    }
 
+    public interface OnDayClickListener {
+        void onDayClicked(int position);
     }
 }
-
-
-    private void onChannelSelected(Channel channel) {
-        mListener.onChannelSelected(channel);
-    }
-
-    private void onChannelClicked(Channel channel) {
-        mListener.onChannelClickInteraction(channel);
-    }
