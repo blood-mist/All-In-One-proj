@@ -52,7 +52,7 @@
         android:text="XXXXXXXXXX"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/white_color"
-        app:layout_heightPercent="7%"
+        app:layout_heightPercent="9%"
         android:layout_alignStart="@id/org_login_img"
         android:layout_alignEnd="@+id/org_login_img" />
 
@@ -65,7 +65,9 @@
         android:layout_alignRight="@id/txt_user_mac"
         android:layout_below="@+id/txt_user_mac"
         android:layout_marginTop="10dp"
-        app:layout_heightPercent="9%">
+        android:background="@color/white_no_selection"
+        app:layout_heightPercent="9%"
+       >
 
         <EditText
             android:id="@+id/edittext_user_password"
@@ -73,7 +75,7 @@
             android:gravity="center"
             android:layout_height="match_parent"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:background="@color/white_no_selection"
+            android:windowSoftInputMode="adjustResize"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
             android:textColor="@color/white_color" />

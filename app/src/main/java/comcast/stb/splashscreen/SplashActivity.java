@@ -18,6 +18,7 @@ import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.launcher.LauncherActivity;
+import comcast.stb.launcher.LauncherModifiedActivity;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
@@ -118,7 +119,7 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
                 break;
             case MOVIE_PACKAGE:
                 this.moviesPackagesList = (ArrayList<PackagesInfo>) channelListInfo;
-                Intent launcherIntent = new Intent(SplashActivity.this, LauncherActivity.class);
+                Intent launcherIntent = new Intent(SplashActivity.this, LauncherModifiedActivity.class);
                 launcherIntent.putExtra(USER_NAME, loginData.getUser().getName());
                 launcherIntent.putParcelableArrayListExtra(SUBSCRIPTION_LIST, subscriptionList);
                 launcherIntent.putParcelableArrayListExtra(ORDER_LIST, orderItemArrayList);

@@ -1,10 +1,12 @@
 package comcast.stb.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.launcher.LauncherActivity;
+import comcast.stb.launcher.LauncherModifiedActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
 import comcast.stb.userutility.UserApiInterface;
@@ -76,6 +79,15 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
         loginPresenter = new LoginPresenterImpl(this);
         logoutPres = new LogoutPresImpl(this);
         userPres = new UserPresImpl(this, logoutPres);
+        userPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b){
+                    InputMethodManager imm =  (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        });
     }
 
     @OnClick(R.id.btn_login)
@@ -112,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
                 break;
             case MOVIE_PACKAGE:
                 this.moviesPackagesList = (ArrayList<PackagesInfo>) channelListInfo;
-                Intent launcherIntent = new Intent(LoginActivity.this, LauncherActivity.class);
+                Intent launcherIntent = new Intent(LoginActivity.this, LauncherModifiedActivity.class);
                 launcherIntent.putExtra(USER_NAME, loginData.getUser().getName());
                 launcherIntent.putParcelableArrayListExtra(SUBSCRIPTION_LIST, subscriptionList);
                 launcherIntent.putParcelableArrayListExtra(ORDER_LIST, orderItemArrayList);

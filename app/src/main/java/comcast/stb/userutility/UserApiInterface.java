@@ -22,8 +22,8 @@ public interface UserApiInterface {
     @GET("user/orders")
     Observable<Response<List<OrderItem>> >getOrderHistory(@Query("token") String token);
 
-    @GET("user/{choose-package}")
-    Observable<Response<List<PackagesInfo>>> getChannelPackage(@Path("choose-package")String packageType, @Query("token") String token);
+    @GET("user/{choose-package_icon}")
+    Observable<Response<List<PackagesInfo>>> getChannelPackage(@Path("choose-package_icon")String packageType, @Query("token") String token);
 
     interface UserView {
         void setSubsHistory(List<SubsItem> subsHistory);

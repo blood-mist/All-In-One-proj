@@ -39,7 +39,6 @@
         <activity android:name=".movielist.MovieListActivity" />
         <activity android:name=".movielist.MoviePlayActivity" />
         <activity android:name=".fm.FmListActivity" />
-        <activity android:name=".fm.FmPlayActivity" />
 
         <service android:name=".fm.FmBindService" />
 
@@ -56,6 +55,12 @@
         <activity android:name=".movielist.MovieNewActivity" />
         <activity android:name=".fm.FMActivity" />
         <activity android:name=".movielist.MovieExoPlay"></activity>
+        <activity android:name=".launcher.LauncherModifiedActivity">
+        <intent-filter>
+            <category android:name="android.intent.category.HOME" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
     </application>
 
 </manifest>

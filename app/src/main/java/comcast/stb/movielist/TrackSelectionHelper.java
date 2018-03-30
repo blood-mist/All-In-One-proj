@@ -44,7 +44,7 @@ import comcast.stb.R;
 /**
  * Helper class for displaying track selection dialogs.
  */
-/* package */ final class TrackSelectionHelper implements View.OnClickListener,
+/* package_icon */ final class TrackSelectionHelper implements View.OnClickListener,
     DialogInterface.OnClickListener {
 
   private static final TrackSelection.Factory FIXED_FACTORY = new FixedTrackSelection.Factory();

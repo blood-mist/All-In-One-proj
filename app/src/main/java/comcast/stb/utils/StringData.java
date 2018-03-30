@@ -9,5 +9,8 @@ public class StringData {
     public static final String MOVIE="movie";
     public static final String RADIO_SERVICE="radio";
     public static final String USER_ACCOUNTS="accounts";
+    public static final String SUBSCRIPTIONS="subscriptions";
+    public static final String PACKAGES="packages";
+    public static  final String SETTINGS="settings";
 
 }

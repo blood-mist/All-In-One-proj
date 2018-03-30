@@ -15,11 +15,11 @@ import retrofit2.http.Query;
  */
 
 public interface PackageApiInterface {
-    @GET("package/{package-id}/channels")
-    Observable<Response<List<ChannelPckgItem>>> getChannelsInAPckg(@Path("package-id")int packageId, @Query("token") String token);
+    @GET("package_icon/{package_icon-id}/channels")
+    Observable<Response<List<ChannelPckgItem>>> getChannelsInAPckg(@Path("package_icon-id")int packageId, @Query("token") String token);
 
-    @GET("package/{package-id}/movies")
-    Observable<Response<List<MoviePckgItem>>> getMoviesInAPckg(@Path("package-id")int packageId, @Query("token") String token);
+    @GET("package_icon/{package_icon-id}/movies")
+    Observable<Response<List<MoviePckgItem>>> getMoviesInAPckg(@Path("package_icon-id")int packageId, @Query("token") String token);
 interface PackagesView{
     void setChannelsInaPckg(int packageId,List<ChannelPckgItem> channelsInaPckgList);
     void setMoviesInaPckg(int packageId,List<MoviePckgItem> moviesInaPckgList );
