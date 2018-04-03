@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,7 +51,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel, null);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel, parent,false);
 
 
         return new ViewHolder(v);
@@ -93,11 +94,9 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
         private TextView channelTitle;
         private LinearLayout itemLayout;
-        private View shadeView;
         private ImageView channelImage;
         public ViewHolder(final View itemView) {
             super(itemView);
-            shadeView=itemView.findViewById(R.id.shade_view);
            channelTitle = itemView.findViewById(R.id.txt_channelname);
             channelImage=itemView.findViewById(R.id.img_channel);
             itemLayout = itemView.findViewById(R.id.channel_item_layout);
@@ -114,13 +113,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
                 public void onFocusChange(View view, boolean b) {
                     if (b) {
                         onChannelSelected(channelList.get(getAdapterPosition()));
-                        shadeView.setVisibility(View.GONE);
-                        itemView.setScaleX(1.05f);
-                        itemView.setScaleY(1.05f);
                     } else {
-                        shadeView.setVisibility(View.VISIBLE);
-                        itemView.setScaleX(1.0f);
-                        itemView.setScaleY(1.0f);
                         mListener.onChannelDeselected();
 
                     }

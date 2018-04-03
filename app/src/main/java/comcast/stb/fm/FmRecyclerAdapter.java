@@ -5,8 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -46,7 +49,7 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel_category, null);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel, parent,false);
 
 
         return new ViewHolder(v);
@@ -67,6 +70,11 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
 
         FmsItem fm = fmList.get(position);
         holder.fmName.setText(fm.getName());
+        Picasso.with(mContext)
+                .load(fm.getImage())
+                .resize(200,200)
+                .placeholder(R.drawable.placeholder)
+                .into(holder.channelImage);
         if (position == getSelectedChannel()) {
             holder.itemLayout.setSelected(true);
         } else {
@@ -84,11 +92,14 @@ public class FmRecyclerAdapter extends RecyclerView.Adapter<FmRecyclerAdapter.Vi
 
         private TextView fmName;
         private LinearLayout itemLayout;
+        private ImageView channelImage;
+
 
         public ViewHolder(final View itemView) {
             super(itemView);
-            fmName = itemView.findViewById(R.id.txt_cat_title);
-            itemLayout = itemView.findViewById(R.id.channel_category_layout);
+            fmName = itemView.findViewById(R.id.txt_channelname);
+            itemLayout = itemView.findViewById(R.id.channel_item_layout);
+            channelImage=itemView.findViewById(R.id.img_channel);
             itemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

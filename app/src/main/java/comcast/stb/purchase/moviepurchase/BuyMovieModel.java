@@ -50,7 +50,9 @@ class BuyMovieModel implements BuyMovieApiInterface.BuyInteractor {
                             buyListener.onError("403");
                         } else if (responseCode == 401) {
 //                            tokenPres.refreshTheToken(token);
-                        } else {
+                        } else if(responseCode==400){
+                            buyListener.onError("You do not have sufficient balance to make this purchase");
+                        }else {
                             buyListener.onError(value.message()); //value.message()
                         }
                     }

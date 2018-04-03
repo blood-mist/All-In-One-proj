@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import comcast.stb.entity.FmsItem;
 import comcast.stb.entity.LoginData;
 import comcast.stb.entity.events.FmErrorEvent;
 import comcast.stb.entity.events.FmPlayingEvent;
+import comcast.stb.livetv.LiveTVActivity;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
@@ -67,7 +69,7 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
     private static final int REQUEST_CODE = 1;
 
     @BindView(R.id.img_fm_logout)
-    ImageView logout;
+    ImageButton logout;
     @BindView(R.id.txt_fm_username)
     TextView username;
     @BindView(R.id.recycler_fm_category_list)
@@ -101,15 +103,21 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fm_new);
         ButterKnife.bind(this);
-        LogoutPresImpl logoutPres = new LogoutPresImpl(this);
+        final LogoutPresImpl logoutPres = new LogoutPresImpl(this);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logoutPres.logout();
+            }
+        });
         categoryLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
                 if(categoryLayout.getFocusedChild()==null){
-                    categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_left_bg_unselected));
+                    categoryLayout.setBackground(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_left_bg_unselected));
 
                 }else{
-                    categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_left_bg_selected));
+                    categoryLayout.setBackground(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_left_bg_selected));
                 }
 
             }
@@ -118,10 +126,10 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
                 if(fmListLayout.getFocusedChild()==null){
-                    fmListLayout.setBackgroundDrawable(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_right_bg_unselected));
+                    fmListLayout.setBackground(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_right_bg_unselected));
 
                 }else{
-                    fmListLayout.setBackgroundDrawable(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_right_bg_selected));
+                    fmListLayout.setBackground(ContextCompat.getDrawable(FmListActivity.this,R.drawable.menu_right_bg_selected));
 
                 }
 
@@ -292,7 +300,6 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
         if (categoryRecyclerAdapter == null)
             categoryRecyclerAdapter = new FmCategoryRecyclerAdapter(FmListActivity.this, this.fmCategoryList, FmListActivity.this);
         fmCategory.setAdapter(categoryRecyclerAdapter);
-        fmCategory.addItemDecoration(new EqualSpacingItemDecoration(10, EqualSpacingItemDecoration.HORIZONTAL));
         fmCategory.requestFocus();
 
     }
@@ -329,7 +336,9 @@ public class FmListActivity extends AppCompatActivity implements FmApiInterface.
 
     @Override
     public void successfulLogout() {
+        Toast.makeText(FmListActivity.this, "User successfully logged out", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }

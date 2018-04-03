@@ -19,9 +19,11 @@ import comcast.stb.entity.AppData;
 import comcast.stb.fm.FmListActivity;
 import comcast.stb.livetv.LiveTVActivity;
 import comcast.stb.movielist.MovieNewActivity;
+import comcast.stb.valueAddedPackages.PackageActivity;
 
 import static comcast.stb.utils.StringData.LIVE_TV;
 import static comcast.stb.utils.StringData.MOVIE;
+import static comcast.stb.utils.StringData.PACKAGES;
 import static comcast.stb.utils.StringData.RADIO_SERVICE;
 
 
@@ -147,7 +149,12 @@ public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecycler
                             mContext.startActivity(radioIntent);
                             break;
                         case "settings":
-                            ((LauncherActivity) mContext).startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                            ((LauncherModifiedActivity) mContext).startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                            break;
+
+                        case PACKAGES:
+                            Intent packageIntent=new Intent(mContext, PackageActivity.class);
+                            mContext.startActivity(packageIntent);
                             break;
                     }
                 }

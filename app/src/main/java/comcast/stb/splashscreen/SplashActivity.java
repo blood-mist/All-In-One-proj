@@ -17,7 +17,6 @@ import comcast.stb.entity.LoginData;
 import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
-import comcast.stb.launcher.LauncherActivity;
 import comcast.stb.launcher.LauncherModifiedActivity;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
@@ -68,7 +67,12 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
         super.onStart();
         loginData = realm.where(LoginData.class).findFirst();
         if (loginData != null) {
-            userPres.getSubsHistory(loginData.getToken());
+//            userPres.getSubsHistory(loginData.getToken());
+            Intent launcherIntent = new Intent(SplashActivity.this, LauncherModifiedActivity.class);
+            launcherIntent.putExtra(USER_NAME, loginData.getUser().getName());
+            launcherIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(launcherIntent);
+            finish();
 
         } else {
             showLogin();
@@ -78,6 +82,7 @@ public class SplashActivity extends AppCompatActivity implements UserApiInterfac
     private void showLogin() {
         Intent loginIntent = new Intent(SplashActivity.this, LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(loginIntent);
         finish();
     }

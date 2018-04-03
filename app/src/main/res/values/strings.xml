@@ -9,8 +9,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="purchase_channel_title">Purchase Channel</string>
-    <string name="purchase_movie_title">Purchase Movie</string>
+    <string name="purchase_channel_title">Buy Channel</string>
+    <string name="purchase_movie_title">Buy Movie</string>
     <string name="purchase_body">You must purchase this element first to view it\'s contents.</string>
     <string name="buy_success">Purchase Successful</string>
     <string name="user_info">User Ifo</string>
@@ -42,7 +42,7 @@
     <string name="cancel">cancel</string>
     <string name="no_movie">No Movie added to this category yet.</string>
     <string name="current_selection">Currrent Selection: </string>
-    <string name="purchase_history">Purchases</string>
+    <string name="purchase_history">Purchase History</string>
     <string name="no_subscription">Subscription History not available.</string>
     <string name="categories">Categories</string>
     <string name="current_position">Current position:</string>
@@ -57,7 +57,7 @@
     <string name="purchase_successful_body"> successfully bought</string>
     <string name="txt_description">Channel Description</string>
     <string name="no_content">Nothing to show</string>
-    <string name="description_demo">Here will be channel description.</string>
+    <string name="description_demo">Enjoy this channel in HD,only on Comcast STB.</string>
     <string name="txt_movie_description">Movie Description</string>
     <string name="nothing_selected">No Content Selected.\nPlease select a channel to play.</string>
     <string name="dismiss">dismiss</string>
@@ -125,5 +125,10 @@
     <string name="allow">allow</string>
     <string name="btn_cancel">cancel</string>
     <string name="toast_permissions_not_granted">Permissions not granted.</string>
-    <string name="error_epg">Error Loading Epg.\\nEpg couldn\'t be loaded</string>
+    <string name="error_epg">Error Loading Epg.\nEpg couldn\'t be loaded</string>
+    <string name="description_demo_movie">Watch Movies in HD only on Comcast STB.</string>
+    <string name="confirm_purchase">Are you sure you want to purchase this Movie?</string>
+    <string name="title_activity_package">Value Added Packages</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

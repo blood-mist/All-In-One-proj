@@ -1,3 +1,4 @@
+/*
 package comcast.stb.launcher;
 
 import android.app.PendingIntent;
@@ -34,7 +35,6 @@ import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
 import comcast.stb.entity.events.FmLauncherEvent;
-import comcast.stb.packageInfoDialog.PackageDialogFragment;
 import comcast.stb.purchase.channelPckgPurchase.ChannelPckgApiInterface;
 import comcast.stb.purchase.channelPckgPurchase.ChannelPckgBuyPresImpl;
 import comcast.stb.purchase.moviePckgPurchase.MoviePckgApiInterface;
@@ -58,7 +58,7 @@ import static comcast.stb.utils.StringData.RADIO_SERVICE;
 
 
 public class LauncherActivity extends AppCompatActivity implements MainPckgRecyclerAdapter.OnPackageListInteraction, MainSubsRecyclerAdapter.OnSubsListInteraction,
-        MainOrderRecyclerAdapter.OnOrderInteractionListener, UserDialogFragment.OnUserFragInteractionListener, PackageDialogFragment.OnFragmentInteractionListener
+        MainOrderRecyclerAdapter.OnOrderInteractionListener, UserDialogFragment.OnUserFragInteractionListener,
         , ChannelPckgApiInterface.ChannelPcgkBuyView, MoviePckgApiInterface.MoviePcgkBuyView,LauncherInfoFragment.OnFragmentInteractionListener{
     private ArrayList<AppData> appDataList;
     @BindView(R.id.app_recycler_list)
@@ -302,12 +302,14 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
         orderDialogFragment.show(manager, "OrderDialog");
     }
 
-    @Override
+ */
+/*   @Override
     public void onPackageInfoClicked(PackagesInfo packagesInfo, String packageType) {
         FragmentManager manager = getSupportFragmentManager();
-        PackageDialogFragment packageFragment = PackageDialogFragment.newInstance(packageType, packagesInfo.getPackageId());
+        PackageActivity packageFragment = PackageActivity.newInstance(packageType, packagesInfo.getPackageId());
         packageFragment.show(manager, "packageFragment");
-    }
+    }*//*
+
 
 
     @Override
@@ -330,7 +332,8 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
     }
 
 
-    @Override
+   */
+/* @Override
     public void onBuyClick(String packageType, int packageId, int duration) {
         switch (packageType) {
             case CHANNEL_PACKAGE:
@@ -341,7 +344,8 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
                 break;
 
         }
-    }
+    }*//*
+
 
     @Override
     public void setChannelPcgkBuyRespone(BuyResponse buyRespone) {
@@ -402,3 +406,4 @@ public class LauncherActivity extends AppCompatActivity implements MainPckgRecyc
     }
 }
 
+*/

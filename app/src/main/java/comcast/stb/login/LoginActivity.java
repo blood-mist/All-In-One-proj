@@ -27,7 +27,6 @@ import comcast.stb.entity.LoginData;
 import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
-import comcast.stb.launcher.LauncherActivity;
 import comcast.stb.launcher.LauncherModifiedActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;

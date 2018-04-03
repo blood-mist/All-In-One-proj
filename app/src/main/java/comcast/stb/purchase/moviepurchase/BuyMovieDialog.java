@@ -14,6 +14,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +26,7 @@ import comcast.stb.entity.BuyResponse;
 import comcast.stb.entity.LoginData;
 import comcast.stb.entity.MoviesItem;
 
+import comcast.stb.entity.events.BuyEvent;
 import comcast.stb.movielist.MovieNewActivity;
 import io.realm.Realm;
 
@@ -98,6 +102,8 @@ public class BuyMovieDialog extends DialogFragment implements BuyMovieApiInterfa
         final View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_buy_dialog, new LinearLayout(getActivity()), false);
         ButterKnife.bind(this,view);
         mMovies = getArguments().getParcelable(MOVIE_INFO);
+        purchaseTitle.setText("Buy "+ mMovies.getMovieName());
+        purchaseBody.setText(getString(R.string.confirm_purchase));
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.Theme_AppCompat_Light_Dialog_Alert);
         showProgress();
         builder.setView(view);
@@ -121,27 +127,17 @@ public class BuyMovieDialog extends DialogFragment implements BuyMovieApiInterfa
         hideProgress();
         mMovies.setSubscriptionStatus(PURCHASE_TYPE_BOUGHT);
         mMovies.setExpiry(buyRespone.getNewExpiry());
-        final AlertDialog d = (AlertDialog) getDialog();
-        if (d != null) {
-            purchaseTitle.setText(getString(R.string.buy_success));
-            purchaseBody.setText(mMovies.getMovieName() + " bought successfully");
-            purchase.setVisibility(View.GONE);
-        }
-
+        mMovies.setExpiryFlag(false);
+        Toast.makeText(getActivity(),mMovies.getMovieName()+" has been bought successfully.",Toast.LENGTH_SHORT).show();
+        EventBus.getDefault().post(new BuyEvent());
+        getDialog().dismiss();
 
     }
 
     @Override
     public void onError(String message) {
         hideProgress();
-        Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
-                .setAction("Retry", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        buyMoviePresenter.buyMovie(mMovies.getMovieId(),1,loginData.getToken());
-                    }
-                }).setActionTextColor(getResources().getColor(R.color.white_color));
-        snackbar.show();
+        Toast.makeText(getActivity(),message,Toast.LENGTH_SHORT).show();
     }
 
     @Override

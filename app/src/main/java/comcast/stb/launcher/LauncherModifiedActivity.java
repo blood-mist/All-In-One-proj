@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,6 +41,7 @@ import comcast.stb.entity.events.FmLauncherEvent;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
+import comcast.stb.movielist.MovieNewActivity;
 import comcast.stb.utils.AppConfig;
 import comcast.stb.utils.Connectivity;
 import comcast.stb.utils.DeviceUtils;
@@ -224,6 +226,7 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
 
     @Override
     public void successfulLogout() {
+        Toast.makeText(LauncherModifiedActivity.this,"User successfully logged out",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(LauncherModifiedActivity.this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

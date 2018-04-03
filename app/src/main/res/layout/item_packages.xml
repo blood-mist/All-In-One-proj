@@ -1,15 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:id="@+id/layout_package_prnt"
-    android:padding="4dp">
+
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/color_red"
+        android:background="@drawable/app_selector"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_gravity="center"
+        android:padding="5dp"
         android:id="@+id/layout_package">
         <TextView
             android:id="@+id/txt_package_name"
@@ -19,73 +19,41 @@
             android:padding="5dp"
             android:marqueeRepeatLimit="marquee_forever"
             android:textColor="@color/white_color"
+            android:background="@color/color_smkblck"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="English Movies"
             android:textAllCaps="true"
             android:textStyle="bold"
             android:singleLine="true" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:padding="5dp"
-            android:background="@color/white_color"/>
-        <TextView
-            android:id="@+id/txt_package_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/type"
-            android:padding="5dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/white_color"/>
-        <TextView
-            android:id="@+id/txt_package_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/price"
-            android:padding="5dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/white_color"/>
-        <TextView
-            android:id="@+id/txt_package_expiry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/expiry_at"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
+            android:orientation="vertical"
             android:padding="5dp"
-            android:gravity="center"
-            android:weightSum="2">
-            <Button
-                android:id="@+id/btn_package_info"
-                android:gravity="center"
-                android:layout_width="0dp"
+            android:background="@color/white_color">
+            <TextView
+                android:id="@+id/txt_package_price"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/info"
-                android:background="@drawable/button_selector"
-                android:layout_weight="1"/>
-            <Button
-                android:id="@+id/btn_package_buy"
-                android:gravity="center"
-                android:layout_width="0dp"
+                android:text="@string/price"
+                android:padding="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/transparent_black"/>
+            <TextView
+                android:id="@+id/txt_package_subscribed"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/purchase"
-                android:background="@drawable/button_selector"
-                android:layout_weight="1"/>
+                android:textColor="@color/transparent_black"
+                android:padding="5dp"
+                android:text="Status:"/>
+            <TextView
+                android:id="@+id/txt_package_expiry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textColor="@color/transparent_black"
+                android:text="@string/expiry_at"/>
         </LinearLayout>
-    </LinearLayout>
-    <View
-        android:focusable="false"
-        android:padding="5dp"
-        android:layout_width="180dp"
-        android:layout_gravity="center"
-        android:layout_height="180dp"
-        android:id="@+id/shade_view"
-        android:background="@color/transp_50_black"
-        android:visibility="visible"/>
 
-</FrameLayout>
+    </LinearLayout>

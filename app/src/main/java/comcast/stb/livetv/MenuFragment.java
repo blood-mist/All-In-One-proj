@@ -11,9 +11,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +22,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import comcast.stb.R;
 import comcast.stb.entity.Channel;
@@ -41,6 +43,7 @@ import comcast.stb.entity.EventItem;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 import static comcast.stb.StringData.USER_NAME;
 
@@ -69,20 +72,20 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     @BindView(R.id.txt_menu_price)
     TextView channelPrice;
 
+    @BindView(R.id.txt_tv_description)
+    TextView descriptionTitle;
+
     @BindView(R.id.txt_tv_username)
     TextView userName;
 
     @BindView(R.id.img_tv_logout)
-    ImageView logout;
+    ImageButton logout;
 
     @BindView(R.id.buy_option_container)
     LinearLayout buylayout;
 
     @BindView(R.id.channel_list_layout)
     LinearLayout channelListContainer;
-
-    @BindView(R.id.txt_tv_description)
-    TextView descTitle;
 
     @BindView(R.id.txt_errorEpgText)
     TextView errorEpgTxt;
@@ -91,13 +94,19 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     ImageView imgDescription;
 
     @BindView(R.id.epg_container)
-    LinearLayout EpgContainer;
+    RelativeLayout epgContainer;
 
     @BindView(R.id.day_recycler)
     RecyclerView dayRecyclerList;
 
     @BindView(R.id.pgm_guide_recycler)
     RecyclerView pgmRecyclerList;
+
+    @BindView(R.id.description_category)
+    TextView descriptionCategory;
+
+    @BindView(R.id.epg_list_layout)
+    LinearLayout epgListlayouut;
     private Channel currentChannel;
     private LinkedHashMap<String, ArrayList<EventItem>> epghashMap;
 
@@ -114,6 +123,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     CategoryRecyclerAdapter categoryRecyclerAdapter;
     ChannelRecyclerAdapter channelRecyclerAdapter;
     ProgramRecyclerAdapter programRecyclerAdapter;
+    DateAdapter dateAdapter;
 
     public MenuFragment() {
     }
@@ -184,6 +194,8 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
             }
         });
+        categoryRecyclerView.setNextFocusRightId(epgListlayouut.getVisibility() == VISIBLE ? dayRecyclerList.getId() : channelRecyclerView.getId());
+        channelRecyclerView.setNextFocusLeftId(epgListlayouut.getVisibility() == VISIBLE ? dayRecyclerList.getId() : categoryRecyclerView.getId());
         // Inflate the layout for this fragment
         return menuView;
     }
@@ -195,6 +207,10 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         populateChannelWithCategory(channelCategoryList);
 
 
+    }
+    @OnClick(R.id.img_tv_logout)
+    public void logout(){
+        clickListener.onLogoutClicked();
     }
 
     private void populateChannelWithCategory(ArrayList<ChannelCategory> channelCategoryList) {
@@ -253,10 +269,14 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     public void onCategoryListClickInteraction(String categoryName, ArrayList channelList) {
         this.channelList = channelList;
         selectedCategory.setText(categoryName);
-        channelRecyclerAdapter = new ChannelRecyclerAdapter(getActivity(), this.channelList, MenuFragment.this);
-        GridLayoutManager manager = new GridLayoutManager(getActivity(), 5);
-        channelRecyclerView.setLayoutManager(manager);
-        channelRecyclerView.setAdapter(channelRecyclerAdapter);
+        if (channelRecyclerAdapter == null) {
+            channelRecyclerAdapter = new ChannelRecyclerAdapter(getActivity(), this.channelList, MenuFragment.this);
+            LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            channelRecyclerView.setLayoutManager(manager);
+            channelRecyclerView.setAdapter(channelRecyclerAdapter);
+        } else {
+            channelRecyclerView.swapAdapter(new ChannelRecyclerAdapter(getActivity(), this.channelList, MenuFragment.this), true);
+        }
         if (currentChannel != null) {
             channelRecyclerAdapter.setSelectedChannel(channelList.indexOf(currentChannel));
         }
@@ -283,60 +303,45 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
 
     private void updateChannelDescriptionUI(Channel channel) {
-        channelDescription.setText(channel.getChannelName() + channel.getChannelId() + channel.getExpiry());
+        descriptionTitle.setText(channel.getChannelName());
+        descriptionCategory.setText("Category Type: "+selectedCategory.getText().toString());
         Picasso.with(getActivity())
                 .load(channel.getChannelLogo())
                 .into(imgDescription);
         switch (channel.getSubscriptionStatus()) {
             case PURCHASE_TYPE_BUY:
                 buylayout.setVisibility(View.VISIBLE);
-                EpgContainer.setVisibility(GONE);
+                epgContainer.setVisibility(GONE);
                 break;
             default:
                 if (channel.isExpiryFlag()) {
                     buylayout.setVisibility(View.VISIBLE);
-                    EpgContainer.setVisibility(GONE);
+                    epgContainer.setVisibility(GONE);
                 } else {
                     buylayout.setVisibility(GONE);
-                    EpgContainer.setVisibility(View.VISIBLE);
+                    epgContainer.setVisibility(View.VISIBLE);
                 }
                 break;
         }
     }
 
-    private void updateCategoryDescriptionUI(ChannelCategory category) {
-        descTitle.setText("Category Description");
-        buylayout.setVisibility(GONE);
-        /*Picasso.with(getActivity())
-                .load(category.getCategoryImage())
-                .into(imgDescription);*/
-
-    }
-
     public void populateDayList(ArrayList<Calendar> calendarList, LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
         epghashMap = epgChannelList;
-        DateAdapter dateAdapter = null;
-        if (this.calendarList != null)
-            calendarList.clear();
         if (calendarList.size() > 3)
             this.calendarList = new ArrayList<>(calendarList.subList(0, 3));
         else
             this.calendarList = calendarList;
-        dateAdapter = new DateAdapter(getActivity(), calendarList, MenuFragment.this);
-        dayRecyclerList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        dayRecyclerList.setAdapter(dateAdapter);
-        mDividerItemDecoration = new DividerItemDecoration(
-                dayRecyclerList.getContext(),
-                DividerItemDecoration.HORIZONTAL
-        );
-        dayRecyclerList.addItemDecoration(mDividerItemDecoration);
-        onDayClicked(0);
-        if (errorEpgTxt.getVisibility() == View.VISIBLE) {
-            dayRecyclerList.setVisibility(View.VISIBLE);
-            pgmRecyclerList.setVisibility(View.VISIBLE);
-            errorEpgTxt.setVisibility(GONE);
+        if (dateAdapter == null) {
+            dateAdapter = new DateAdapter(getActivity(), this.calendarList, MenuFragment.this);
+            dayRecyclerList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            dayRecyclerList.setAdapter(dateAdapter);
+        } else {
+            dateAdapter = new DateAdapter(getActivity(), this.calendarList, MenuFragment.this);
+            dayRecyclerList.swapAdapter(dateAdapter, false);
         }
-
+        onDayClicked(0);
+        epgListlayouut.setVisibility(View.VISIBLE);
+        errorEpgTxt.setVisibility(GONE);
 
     }
 
@@ -347,7 +352,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         if (programRecyclerAdapter == null) {
             programList = clickedDayEpgList;
             programRecyclerAdapter = new ProgramRecyclerAdapter(getActivity(), programList);
-            pgmRecyclerList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+            pgmRecyclerList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             pgmRecyclerList.setAdapter(programRecyclerAdapter);
         } else {
             programList = clickedDayEpgList;
@@ -357,11 +362,8 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     }
 
     public void hideEpgMenu() {
-        if (errorEpgTxt.getVisibility() == GONE) {
-            pgmRecyclerList.setVisibility(GONE);
-            dayRecyclerList.setVisibility(GONE);
-            errorEpgTxt.setVisibility(View.VISIBLE);
-        }
+        epgListlayouut.setVisibility(GONE);
+        errorEpgTxt.setVisibility(View.VISIBLE);
     }
 
 
@@ -369,5 +371,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         void onChannelClicked(Channel channel);
 
         void onChannelSelected(Channel channel);
+
+        void onLogoutClicked();
     }
 }

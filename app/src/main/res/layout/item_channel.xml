@@ -1,49 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:padding="4dp">
+    android:background="@drawable/white_border"
+    >
 
     <LinearLayout
-        android:id="@+id/channel_item_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:clickable="true"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:background="@drawable/category_list_selector"
+        android:importantForAccessibility="yes"
+        android:id="@+id/channel_item_layout"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:clickable="true"
+        android:focusableInTouchMode="true">
+        <ImageView
+            android:id="@+id/img_channel"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:focusable="false"
+            android:src="@drawable/placeholder"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/movie_image"
+            android:scaleType="fitXY" />
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-            <ImageView
-                android:id="@+id/img_channel"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:focusable="false"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/movie_image"
-                android:scaleType="fitXY" />
-            <View
-                android:id="@+id/shade_view"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:background="@color/transp_50_black"
-                android:focusable="false"
-                android:visibility="visible" />
-        </FrameLayout>
 
         <TextView
             android:id="@+id/txt_channelname"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:ellipsize="marquee"
-            android:gravity="center"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:padding="10dp"
             android:layout_gravity="center"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
@@ -52,4 +45,7 @@
             android:textColor="@color/white_color" />
     </LinearLayout>
 
-</FrameLayout>
+
+
+    </LinearLayout>
+

@@ -38,7 +38,7 @@ public class MovieListRecyclerAdapter  extends  RecyclerView.Adapter<MovieListRe
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, null);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel, parent,false);
 
 
         return new ViewHolder(v);
@@ -105,12 +105,12 @@ public class MovieListRecyclerAdapter  extends  RecyclerView.Adapter<MovieListRe
     public void onBindViewHolder(ViewHolder holder,  int position) {
         //bind MovieItemView here
         final MoviesItem movie= moviesArrayList.get(position);
-        holder.movieTitle.setText(movie.getMovieName());
+        holder.channelTitle.setText(movie.getMovieName());
         Picasso.with(mContext)
                 .load(movie.getMoviePicture())
                 .resize(250,250)
                 .placeholder(R.drawable.placeholder)
-                .into(holder.movieImage);
+                .into(holder.channelImage);
     }
 
     @Override
@@ -119,29 +119,20 @@ public class MovieListRecyclerAdapter  extends  RecyclerView.Adapter<MovieListRe
     }
 
     public class ViewHolder extends  RecyclerView.ViewHolder {
-
-        private TextView movieTitle;
+        private TextView channelTitle;
         private LinearLayout itemLayout;
-        private View shadeView;
-        private ImageView movieImage;
+        private ImageView channelImage;
         public ViewHolder(final View itemView) {
             super(itemView);
-            shadeView=itemView.findViewById(R.id.shade_view);
-            movieTitle =  itemView.findViewById( R.id.txt_moviename);
-            movieImage=itemView.findViewById(R.id.img_movie);
-            itemLayout=itemView.findViewById(R.id.movie_item_layout);
+            channelTitle = itemView.findViewById(R.id.txt_channelname);
+            channelImage=itemView.findViewById(R.id.img_channel);
+            itemLayout = itemView.findViewById(R.id.channel_item_layout);
             itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
                     if(b){
-                        shadeView.setVisibility(View.GONE);
-                        itemView.setScaleX(1.05f);
-                        itemView.setScaleY(1.05f);
                         movieInteraction.onMovieSelected(moviesArrayList.get(getAdapterPosition()));
                     }else{
-                        shadeView.setVisibility(View.VISIBLE);
-                        itemView.setScaleX(1.0f);
-                        itemView.setScaleY(1.0f);
                         movieInteraction.onMovieDeselected();
                     }
                 }

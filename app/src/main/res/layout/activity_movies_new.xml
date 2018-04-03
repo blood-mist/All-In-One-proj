@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/stb_bg">
+    android:background="@color/color_smkblck">
 
     <ImageView
         android:id="@+id/org_logo"
@@ -21,7 +21,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/store_logo" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/img_movie_logout"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -47,9 +47,7 @@
         android:layout_margin="5dp"
         android:layout_toLeftOf="@+id/img_movie_logout"
         android:layout_toStartOf="@+id/img_movie_logout"
-        android:clickable="true"
         android:ellipsize="marquee"
-        android:focusable="true"
         android:gravity="center"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
@@ -109,6 +107,7 @@
                     android:id="@+id/recycler_movie_category_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:nextFocusRight="@+id/recycler_movie_list"
                     android:padding="10dp" />
             </LinearLayout>
             <RelativeLayout
@@ -116,14 +115,124 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2">
                 <LinearLayout
+                    android:id="@+id/description_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/img_movie_ad"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/txt_movie_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="@string/txt_movie_description"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/white_color"
+                        android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/img_movie_desc"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/placeholder"
+                        android:scaleType="fitXY"
+                        android:padding="10dp"
+                        android:adjustViewBounds="true"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/txt_channel_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textColor="@color/white_color"
+                            android:text="@string/description_demo_movie"
+                            android:padding="10dp"/>
+                        <TextView
+                            android:id="@+id/description_category"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Channel Category: "
+                            android:padding="10dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Casts: N/A"
+                            android:padding="10dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="IMDB: N/A"
+                            android:padding="10dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="More Descrition can be added here about the movie"
+                            android:padding="10dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                    </LinearLayout>
+                </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:id="@+id/buy_movie_option_container">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/white_color"
+                            android:textStyle="bold"
+                            android:text="buy now to get exclusive offers"
+                            android:textAllCaps="true"
+                            android:padding="10dp"/>
+                        <TextView
+                            android:id="@+id/txt_movie_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:padding="10dp"
+                            android:text="Price:"
+                            android:textColor="@color/white_color"/>
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/btn_movie_buy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="buy"
+                        android:layout_margin="5dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:background="@drawable/button_selector"/>
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/movie_list_layout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/menu_right_selector"
+                android:orientation="vertical"
+                android:layout_marginStart="5dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:id="@+id/movie_list_layout"
                     android:layout_alignParentTop="true"
-                    android:background="@color/white_no_selection"
                     android:orientation="vertical">
                     <TextView
                         android:id="@+id/current_movie_category"
@@ -139,102 +248,10 @@
                         android:id="@+id/recycler_movie_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:nextFocusLeft="@+id/recycler_movie_category_list"
                         android:padding="10dp" />
                 </LinearLayout>
 
-
-                <ImageView
-                    android:id="@+id/img_movie_ad"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:adjustViewBounds="true"
-                    android:background="@color/white_no_selection"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ad" />
-
-            </RelativeLayout>
-            <LinearLayout
-                android:id="@+id/description_container"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/menu_right_selector"
-                android:orientation="vertical"
-                android:layout_marginStart="5dp">
-                <TextView
-                    android:id="@+id/txt_movie_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@string/txt_movie_description"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/white_color"
-                    android:textStyle="bold" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="Description:"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/white_color" />
-
-                <TextView
-                    android:id="@+id/txt_channel_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/white_color"
-                    android:text="@string/description_demo"
-                    android:padding="10dp"/>
-                <ImageView
-                    android:id="@+id/img_movie_desc"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/placeholder"
-                    android:scaleType="fitXY"
-                    android:adjustViewBounds="true"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/buy_movie_option_container">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/white_color"
-                        android:textStyle="bold"
-                        android:text="buy now to get exclusive offers"
-                        android:textAllCaps="true"
-                        android:padding="10dp"/>
-                    <TextView
-                        android:id="@+id/txt_movie_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:padding="10dp"
-                        android:text="Price:"
-                        android:textColor="@color/white_color"/>
-                    <Button
-                        android:id="@+id/btn_movie_buy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="buy"
-                        android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:layout_gravity="center"
-                        android:background="@drawable/button_selector"/>
-                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
         <com.wang.avi.AVLoadingIndicatorView

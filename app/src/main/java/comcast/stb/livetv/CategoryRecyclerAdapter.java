@@ -87,7 +87,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
             categoryOrChannelName = itemView.findViewById(R.id.txt_cat_title);
             itemLayout = itemView.findViewById(R.id.channel_category_layout);
 
-            itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
                     if (b) {

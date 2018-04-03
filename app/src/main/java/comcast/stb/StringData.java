@@ -44,8 +44,5 @@ public class StringData {
     public static final String MOVIE_CATEGORY_ERROR="movie_category_error";
     public static final String LIVE_EPG_ERROR="epg_error";
     public static final String MENU_FRAGMENT ="menu_fragment" ;
-
-
-
-
+    public static final String BUY_ERROR="buy_error";
 }

@@ -138,7 +138,6 @@ public class FmBindService extends Service {
     }
 
     public void startPlayer(String channelLink) {
-        channelLink= "https://www.ssaurel.com/tmp/mymusic.mp3";
         try {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(this, Uri.parse(channelLink));

@@ -2,38 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:focusable="true"
-    android:orientation="horizontal"
-    android:id="@+id/program_layout"
-    android:clickable="true"
-    android:focusableInTouchMode="true"
-    android:padding="5dp"
-    android:background="@drawable/category_list_selector">
-    <TextView
-        android:id="@+id/txt_timeDuration"
-        android:layout_width="80dp"
-        android:layout_gravity="center"
-        android:padding="5dp"
-        android:textColor="@color/white_color"
-        android:text="1:00-2:00"
-        android:layout_height="wrap_content" />
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorBlue"
-        android:layout_marginRight="4dp"
-        android:layout_marginLeft="4dp"/>
-    <TextView
-        android:id="@+id/txt_cat_title"
-        android:layout_gravity="center"
-        android:padding="5dp"
+
+    android:layout_gravity="center">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="marquee"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:singleLine="true"
-        android:text="Demo ChannelCat"
-        android:textColor="@color/white_color"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:orientation="horizontal"
+        android:id="@+id/program_layout"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:padding="5dp"
+        android:background="@drawable/category_list_selector"
+        android:focusable="true">
+        <TextView
+            android:id="@+id/txt_timeDuration"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:textColor="@color/white_color"
+            android:text="11:00-12:00"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/white_color"
+            android:layout_margin="6dp"/>
+        <TextView
+            android:id="@+id/txt_cat_title"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:text="Demo ChannelCat"
+            android:textColor="@color/white_color"
+            android:textAppearance="?android:attr/textAppearanceSmall"/>
+    </LinearLayout>
+
 </LinearLayout>
 
