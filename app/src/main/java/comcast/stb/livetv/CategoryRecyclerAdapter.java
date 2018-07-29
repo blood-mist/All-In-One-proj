@@ -12,7 +12,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import comcast.stb.R;
-import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
 
 
@@ -92,7 +91,8 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
                 public void onFocusChange(View view, boolean b) {
                     if (b) {
                         setSelectedPos(getAdapterPosition());
-                        onCategoryClicked(channelCategoryList.get(getAdapterPosition()).getCategoryTitle(),(ArrayList<Channel>) channelCategoryList.get(getAdapterPosition()).getChannels());
+
+                        onCategoryClicked(channelCategoryList.get(getAdapterPosition()));
                     }
                 }
             });
@@ -100,11 +100,11 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
         }
     }
 
-    private void onCategoryClicked(String categoryName,ArrayList<Channel> channels) {
-        mListener.onCategoryListClickInteraction(categoryName,channels);
+    private void onCategoryClicked(ChannelCategory category) {
+        mListener.onCategoryListClickInteraction(category);
     }
 
     public interface OnCategoryListInteractionListener {
-        void onCategoryListClickInteraction(String categoryname,ArrayList<Channel> channelList);
+        void onCategoryListClickInteraction(ChannelCategory category);
     }
 }

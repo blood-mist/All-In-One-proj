@@ -5,15 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import comcast.stb.R;
 import comcast.stb.entity.Channel;
@@ -23,7 +21,7 @@ import comcast.stb.entity.Channel;
  */
 
 public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecyclerAdapter.ViewHolder> {
-    private ArrayList<Channel> channelList;
+    private List<Channel> channelList;
     private OnChannelListInteractionListener mListener;
 
     Context mContext;
@@ -40,7 +38,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
     private int selectedChannel=-1;
 
-    public ChannelRecyclerAdapter(Context context, ArrayList<Channel> channelList, ChannelRecyclerAdapter.OnChannelListInteractionListener mListener) {
+    public ChannelRecyclerAdapter(Context context, List<Channel> channelList, ChannelRecyclerAdapter.OnChannelListInteractionListener mListener) {
         this.channelList = channelList;
         this.mContext = context;
         this.mListener = mListener;
@@ -71,10 +69,10 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 //        holder.itemView.setSelected(tryFocusItem==position);
 
         Channel channel = channelList.get(position);
-        holder.channelTitle.setText(channel.getChannelName());
+//        holder.channelTitle.setText(channel.getChannelName());
         Picasso.with(mContext)
                 .load(channel.getChannelLogo())
-                .resize(200,200)
+//                .resize(200,200)
                 .placeholder(R.drawable.placeholder)
                 .into(holder.channelImage);
         if (position == getSelectedChannel()) {
@@ -92,12 +90,12 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView channelTitle;
+//        private TextView channelTitle;
         private LinearLayout itemLayout;
         private ImageView channelImage;
         public ViewHolder(final View itemView) {
             super(itemView);
-           channelTitle = itemView.findViewById(R.id.txt_channelname);
+//           channelTitle = itemView.findViewById(R.id.txt_channelname);
             channelImage=itemView.findViewById(R.id.img_channel);
             itemLayout = itemView.findViewById(R.id.channel_item_layout);
             itemLayout.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +117,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
                     }
                 }
             });
+
 
         }
     }

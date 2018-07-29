@@ -7,6 +7,7 @@ import java.util.List;
 
 import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
+import comcast.stb.entity.DvrResponse;
 import comcast.stb.entity.EpgResponse;
 import comcast.stb.entity.EventItem;
 import comcast.stb.entity.TvLink;
@@ -27,24 +28,32 @@ public interface LiveTVApiInterface {
     Observable<Response<TvLink>> getChannelLink(@Path("channel-id") int channelID, @Query("token") String token);
     @GET("epg/channel/{channel-id}")
     Observable<Response<EpgResponse>> getEpg(@Path("channel-id") int channelID, @Query("token")String token);
-
+//getDVRlist?dvrPath=cinevision
+    @GET("getDVRlist")
+    Observable<Response<List<DvrResponse>>> getDvr(@Query("dvrPath") String dvrPath, @Query("token")String token);
 
     interface ChannelWithCategoryView{
         void setChannelsWithCategory(List<ChannelCategory> channelCategoryList);
         void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList);
-        void onErrorOccured(String message,Channel channel,String errorType);
+        void onErrorOccured(String message, Channel channel, String errorType);
+
+        void setDvr(List<DvrResponse> dvrList);
     }
     interface ChannelWithCategoryPresenter{
         void getChannelsWithCategory(String token);
         void getEpg(int channelId,String token);
+        void getDvr(String channelId, String token);
+
     }
     interface ChannelWithCategoryInteractor{
         void getChannelsWithCategory(String token);
         void getEpg(int channelId,String token);
+        void getDvr(String channelId, String token);
     }
     interface ChannelWithCategoryListener{
         void takeChannelsWithCategory(List<ChannelCategory> channelCategoryList);
         void takeEpgList(LinkedHashMap<String, ArrayList<EventItem>> epgList);
+        void takeDvrList(List<DvrResponse> dvrList);
         void onErrorOccured(String message, Channel channel, String errorType);
     }
 }

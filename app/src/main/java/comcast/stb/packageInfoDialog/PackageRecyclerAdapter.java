@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import comcast.stb.R;
-import comcast.stb.entity.ChannelsItem;
+import comcast.stb.entity.Channel;
 import comcast.stb.entity.MoviesItem;
 
 import static comcast.stb.StringData.CHANNEL_PACKAGE;
@@ -95,7 +95,7 @@ public class PackageRecyclerAdapter extends  RecyclerView.Adapter<PackageRecycle
 
 
         public void populateItemsForChannel() {
-            final ChannelsItem pckgItem= (ChannelsItem) pckgList.get(getAdapterPosition());
+            final Channel pckgItem= (Channel) pckgList.get(getAdapterPosition());
             channelTitle.setText(pckgItem.getChannelName());
             Picasso.with(mContext)
                     .load(pckgItem.getChannelLogo())

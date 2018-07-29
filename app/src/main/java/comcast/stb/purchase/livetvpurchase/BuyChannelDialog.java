@@ -105,7 +105,7 @@ public class BuyChannelDialog extends DialogFragment implements BuyChannelApiInt
     public void setBuyRespone(BuyResponse buyRespone) {
         hideProgress();
         mChannel.setSubscriptionStatus(PURCHASE_TYPE_BOUGHT);
-        mChannel.setExpiry(buyRespone.getNewExpiry());
+        mChannel.setExpiry(Boolean.parseBoolean(buyRespone.getNewExpiry()));
         final AlertDialog d = (AlertDialog) getDialog();
         if (d != null) {
             purchaseTitle.setText(getString(R.string.buy_success));

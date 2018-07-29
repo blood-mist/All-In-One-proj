@@ -39,6 +39,7 @@ public class StringData {
     public static final String PACKAGE_ERROR="package_error";
     public static final String TOKEN_ERROR="token_error";
     public static final String LIVE_CATEGORY_ERROR="live_category_error";
+    public static final String LIVE_DVR_ERROR="live_dvr_error";
     public static final String LIVE_PLAY_ERROR="live_play_error";
     public static final String MOVIE_PLAY_ERROR="movie_play_error";
     public static final String MOVIE_CATEGORY_ERROR="movie_category_error";

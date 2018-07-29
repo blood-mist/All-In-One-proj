@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import comcast.stb.entity.ChannelCategory;
+import comcast.stb.entity.DvrResponse;
 import comcast.stb.entity.EpgResponse;
 import comcast.stb.entity.EventItem;
 import comcast.stb.entity.LoginData;
@@ -36,6 +37,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
+import static comcast.stb.StringData.LIVE_DVR_ERROR;
 import static comcast.stb.StringData.LIVE_EPG_ERROR;
 
 public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryInteractor, TokenRefreshApiInterface.TokenRefreshView {
@@ -118,6 +120,53 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
 //                            channelWithCategoryListener.takeEpgList(value.body());
                         } else {
                             channelWithCategoryListener.onErrorOccured(value.message(), null, LIVE_EPG_ERROR); //value.message()
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (e instanceof HttpException || e instanceof ConnectException) {
+                            channelWithCategoryListener.onErrorOccured("No Internet Connection", null, LIVE_CATEGORY_ERROR);
+                        } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
+                            channelWithCategoryListener.onErrorOccured("Couldn't connect to server", null, LIVE_CATEGORY_ERROR);
+                        } else {
+                            channelWithCategoryListener.onErrorOccured("Error Occured", null, LIVE_CATEGORY_ERROR);
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @Override
+    public void getDvr(String dvrPath, String token) {
+        dvrPath="cinevision";
+        Retrofit retrofit = ApiManager.getAdapter();
+        final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
+        Observable<Response<List<DvrResponse>>> observable = channelApiInterface.getDvr(dvrPath, token);
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response<List<DvrResponse>>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<List<DvrResponse>> value) {
+                        int responseCode = value.code();
+                        if (responseCode == 200) {
+
+                            Log.d("dvr value", "onNext: "+value.body());
+
+
+                            channelWithCategoryListener.takeDvrList(value.body());
+//                            channelWithCategoryListener.takeEpgList(value.body());
+                        } else {
+                            channelWithCategoryListener.onErrorOccured(value.message(), null, LIVE_DVR_ERROR); //value.message()
                         }
                     }
 

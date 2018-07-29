@@ -27,10 +27,6 @@ import static comcast.stb.utils.StringData.PACKAGES;
 import static comcast.stb.utils.StringData.RADIO_SERVICE;
 
 
-/**
- * Created by Mitab on 11/10/2016.
- */
-
 public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecyclerAdapter.ViewHolder> {
     private ArrayList<AppData> appList;
     Context mContext;

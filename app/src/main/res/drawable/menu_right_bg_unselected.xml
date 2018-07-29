@@ -5,8 +5,8 @@
         android:width="1dp"
         android:color="@color/white_no_selection" />
     <solid android:color="@color/white_no_selection" />
-    <corners
+   <!-- <corners
         android:bottomLeftRadius="10dp"
-        android:topLeftRadius="10dp" />
+        android:topLeftRadius="10dp" />-->
 
 </shape>

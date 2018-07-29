@@ -8,6 +8,7 @@ import java.util.List;
 
 import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
+import comcast.stb.entity.DvrResponse;
 import comcast.stb.entity.EventItem;
 import comcast.stb.logout.LogoutPresImpl;
 
@@ -36,6 +37,11 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     }
 
     @Override
+    public void getDvr(String dvrPath, String token) {
+        channelWithCategoryInteractor.getDvr(dvrPath,token);
+    }
+
+    @Override
     public void takeChannelsWithCategory(List<ChannelCategory> channelCategoryList) {
         channelWithCategoryView.setChannelsWithCategory(channelCategoryList);
     }
@@ -46,8 +52,14 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     }
 
     @Override
+    public void takeDvrList(List<DvrResponse> dvrList) {
+        channelWithCategoryView.setDvr(dvrList);
+    }
+
+    @Override
     public void onErrorOccured(String message, Channel channel, String errorType) {
         channelWithCategoryView.onErrorOccured(message,channel,errorType);
     }
+
 
 }

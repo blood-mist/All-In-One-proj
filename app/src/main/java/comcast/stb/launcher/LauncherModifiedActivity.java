@@ -5,16 +5,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,13 +44,11 @@ import comcast.stb.entity.events.FmLauncherEvent;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
-import comcast.stb.movielist.MovieNewActivity;
 import comcast.stb.utils.AppConfig;
 import comcast.stb.utils.Connectivity;
 import comcast.stb.utils.DeviceUtils;
 import io.realm.Realm;
 import ss.com.bannerslider.banners.Banner;
-import ss.com.bannerslider.banners.DrawableBanner;
 import ss.com.bannerslider.banners.RemoteBanner;
 import ss.com.bannerslider.views.BannerSlider;
 
@@ -60,7 +61,8 @@ import static comcast.stb.utils.StringData.SETTINGS;
 import static comcast.stb.utils.StringData.SUBSCRIPTIONS;
 
 public class LauncherModifiedActivity extends AppCompatActivity implements AdApiInterface.AdView, LogoutApiInterface.LogoutView {
-    private ArrayList<AppData> appDataList;
+    @BindView(R.id.lst_basic)
+    ListView lstBasic;
     @BindView(R.id.app_recycler_list)
     RecyclerView appRecyclerList;
     @BindView(R.id.receiver_layout)
@@ -77,12 +79,14 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
     TextView userName;
     @BindView(R.id.txt_boxId)
     TextView boxId;
-
     @BindView(R.id.banner_slider1)
     BannerSlider bannerSlider;
+    private ArrayList<AppData> appDataList;
+    String listItems[] = {"Home","Apps","Settings","Refresh"};
+
     private PendingIntent resultPendingIntent;
     private BroadcastReceiver mNetworkReceiver;
-    AdPresImpl adPres;
+//    AdPresImpl adPres;
     private LoginData loginData;
     LogoutPresImpl logoutPres;
     private Realm realm;
@@ -90,7 +94,7 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launcher_modified);
+        setContentView(R.layout.activity_launcher_sadip);
         EventBus.getDefault().register(this);
         mNetworkReceiver = new NetworkChangeReceiver();
         ButterKnife.bind(this);
@@ -99,19 +103,30 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
         loginData = realm.where(LoginData.class).findFirst();
         String user = getIntent().getStringExtra(USER_NAME);
         logoutPres = new LogoutPresImpl(this);
-        adPres = new AdPresImpl(this, null);
+//        adPres = new AdPresImpl(this, null);
         setTime();
         checkNetwork();
         userName.setText(user);
         boxId.setText(AppConfig.isDevelopment()?AppConfig.getMac(): DeviceUtils.getMac(this));
+        lstBasic.setAdapter(new ArrayAdapter<>(this,  R.layout.simple_list_item, listItems));
+        lstBasic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                if(position ==3)
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+
+            }
+        });
+
+
         addItemsToList();
         populateList();
-        getAdBanners();
+//        getAdBanners();
 
     }
 
     private void getAdBanners() {
-        adPres.getAdBanners(loginData.getToken());
+//        adPres.getAdBanners(loginData.getToken());
 
     }
 
@@ -176,7 +191,7 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
         AppListRecyclerAdapter appListRecyclerAdapter = new AppListRecyclerAdapter(LauncherModifiedActivity.this, appDataList, appRecyclerList);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-        appRecyclerList.setLayoutManager(layoutManager);
+        appRecyclerList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         appRecyclerList.setAdapter(appListRecyclerAdapter);
         appRecyclerList.setNestedScrollingEnabled(false);
         appRecyclerList.setHasFixedSize(true);

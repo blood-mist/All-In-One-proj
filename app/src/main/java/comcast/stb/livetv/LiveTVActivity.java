@@ -34,13 +34,13 @@ import butterknife.ButterKnife;
 import comcast.stb.R;
 import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
+import comcast.stb.entity.DvrResponse;
 import comcast.stb.entity.EventItem;
 import comcast.stb.entity.LoginData;
 import comcast.stb.entity.TvLink;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
-import comcast.stb.movielist.MovieNewActivity;
 import comcast.stb.purchase.livetvpurchase.BuyChannelDialog;
 import comcast.stb.utils.ApiManager;
 import io.reactivex.Observable;
@@ -54,6 +54,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
+import static comcast.stb.StringData.LIVE_DVR_ERROR;
 import static comcast.stb.StringData.LIVE_EPG_ERROR;
 import static comcast.stb.StringData.LIVE_PLAY_ERROR;
 import static comcast.stb.StringData.MENU_FRAGMENT;
@@ -179,9 +180,11 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     public void onErrorOccured(String message, Channel channel, String errorType) {
         switch (errorType) {
             case LIVE_EPG_ERROR:
+            case LIVE_DVR_ERROR:
                 MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
                 menuFragment.hideEpgMenu();
                 break;
+
             default:
                 progressContainer.setVisibility(View.GONE);
                 LiveDialogFragment infoDialogFragment = LiveDialogFragment.newInstance("", message, channel, errorType, true);
@@ -189,6 +192,13 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                 break;
         }
 
+
+    }
+
+    @Override
+    public void setDvr(List<DvrResponse> dvrList) {
+        MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
+        menuFragment.populateDvr(dvrList);
 
     }
 
@@ -266,7 +276,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     private void playVideo(String link) {
         player.reset();
-//        channelLink = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+        link= "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
         try {
             player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -347,7 +357,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                 showDialogFragment(channel);
                 break;
             default:
-                if (channel.isExpiryFlag()) {
+                if (channel.getExpiry()) {
                     showDialogFragment(channel);
                 } else {
                     getChannelLink(channel);
@@ -357,10 +367,19 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         }
 
     }
+    @Override
+    public void OnEPGClicked(Channel channel){
+        liveTVPresenter.getEpg(channel.getChannelId(), loginData.getToken());
 
+    }
+    @Override
+    public void OnDVRClicked(Channel channel){
+        liveTVPresenter.getDvr(channel.getDvrPath(), loginData.getToken());
+    }
     @Override
     public void onChannelSelected(Channel channel) {
-        liveTVPresenter.getEpg(channel.getChannelId(), loginData.getToken());
+//        liveTVPresenter.getDvr(channel.getDvrPath(),loginData.getToken());
+
     }
 
     @Override
