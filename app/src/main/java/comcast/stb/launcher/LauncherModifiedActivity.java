@@ -189,9 +189,9 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
 
     private void populateList() {
         AppListRecyclerAdapter appListRecyclerAdapter = new AppListRecyclerAdapter(LauncherModifiedActivity.this, appDataList, appRecyclerList);
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL);
-        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-        appRecyclerList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        appRecyclerList.setLayoutManager(/*new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)*/layoutManager);
         appRecyclerList.setAdapter(appListRecyclerAdapter);
         appRecyclerList.setNestedScrollingEnabled(false);
         appRecyclerList.setHasFixedSize(true);

@@ -60,6 +60,8 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     Button btnEpg;
     @BindView(R.id.btn_dvr)
     Button btnDvr;
+    @BindView(R.id.txt_epg_title)
+    TextView txtEpgTitle;
 //    @BindView(R.id.current_category)
 //    TextView selectedCategory;
 
@@ -120,7 +122,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
     private ArrayList<ChannelCategory> channelCategoryList;
     private ArrayList<Calendar> calendarList;
-    private ArrayList<EventItem> programList;
+//    private ArrayList<EventItem> programList;
 
     private List<Channel> channelList;
     private String username;
@@ -129,6 +131,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     CategoryRecyclerAdapter categoryRecyclerAdapter;
     ChannelRecyclerAdapter channelRecyclerAdapter;
     ProgramRecyclerAdapter programRecyclerAdapter;
+    DvrRecyclerAdapter dvrRecyclerAdapter;
     DateAdapter dateAdapter;
 
     public MenuFragment() {
@@ -173,22 +176,10 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
                              Bundle savedInstanceState) {
         View menuView = inflater.inflate(R.layout.fragment_tv_menu_, container, false);
         ButterKnife.bind(this, menuView);
+        pgmRecyclerList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         if (getActivity() instanceof LiveTVActivity) {
             currentChannel = ((LiveTVActivity) getActivity()).getCurrentChannel();
         }
-        /*categoryLayout.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
-            @Override
-            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                if (categoryLayout.getFocusedChild() == null) {
-                    categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.menu_left_bg_unselected));
-
-                } else {
-                    categoryLayout.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.menu_left_bg_selected));
-                }
-
-            }
-        });*/
-
         layoutCatChannels.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
             @Override
             public void onGlobalFocusChanged(View oldFocus, View newFocus) {
@@ -265,6 +256,21 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
    }
    public void loadDvr(Channel channel){
+       switch (channel.getSubscriptionStatus()) {
+           case PURCHASE_TYPE_BUY:
+               buylayout.setVisibility(View.VISIBLE);
+               epgContainer.setVisibility(GONE);
+               break;
+           default:
+               if (channel.getExpiry()) {
+                   buylayout.setVisibility(View.VISIBLE);
+                   epgContainer.setVisibility(GONE);
+               } else {
+                   buylayout.setVisibility(GONE);
+                   epgContainer.setVisibility(View.VISIBLE);
+               }
+               break;
+       }
 
    }
 
@@ -348,6 +354,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     @Override
     public void onChannelSelected(Channel channel) {
 //        channelListContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white_selection));
+        ((LiveTVActivity)getContext()).cancelEpgDvrLoad();
         epgContainer.setVisibility(GONE);
         updateChannelDescriptionUI(channel);
         //hide epg dvr
@@ -370,6 +377,9 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         btnEpg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dayRecyclerList.setAdapter(null);
+                pgmRecyclerList.setAdapter(null);
+                txtEpgTitle.setText("EPG CONTENT");
                 ((LiveTVActivity)getContext()).OnEPGClicked(channel);
                 loadEpg(channel);
 
@@ -378,6 +388,9 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         btnDvr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dayRecyclerList.setAdapter(null);
+                pgmRecyclerList.setAdapter(null);
+                txtEpgTitle.setText("DVR CONTENT");
                 ((LiveTVActivity)getContext()).OnDVRClicked(channel);
                 loadDvr(channel);
             }
@@ -408,16 +421,8 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     public void onDayClicked(int position) {
         ArrayList<EventItem> clickedDayEpgList = epghashMap.get((epghashMap.keySet().toArray())[position]);
         Log.d("onDayClicked: ", clickedDayEpgList.size() + "");
-        if (programRecyclerAdapter == null) {
-            programList = clickedDayEpgList;
-            programRecyclerAdapter = new ProgramRecyclerAdapter(getActivity(), programList);
-            pgmRecyclerList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-            pgmRecyclerList.setAdapter(programRecyclerAdapter);
-        } else {
-            programList = clickedDayEpgList;
-            programRecyclerAdapter = new ProgramRecyclerAdapter(getActivity(), programList);
-            pgmRecyclerList.setAdapter(programRecyclerAdapter);
-        }
+        programRecyclerAdapter = new ProgramRecyclerAdapter(getActivity(), clickedDayEpgList);
+        pgmRecyclerList.setAdapter(programRecyclerAdapter);
     }
 
     public void hideEpgMenu() {
@@ -425,19 +430,25 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         errorEpgTxt.setVisibility(View.VISIBLE);
     }
 
-    public void populateDvr(List<DvrResponse> dvrList) {
+    public void populateDvr(List<DvrResponse> dvrList, final Channel channel) {
         dayRecyclerList.setAdapter(null);
-        DvrRecyclerAdapter programRecyclerAdapter = new DvrRecyclerAdapter(getActivity(), dvrList);
-        pgmRecyclerList.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        pgmRecyclerList.setAdapter(programRecyclerAdapter);
-        epgContainer.setVisibility(View.VISIBLE);
+        pgmRecyclerList.setAdapter(null);
+        dvrList = dvrList.subList(0,20);
+        dvrRecyclerAdapter = new DvrRecyclerAdapter(getActivity(), dvrList, new DvrRecyclerAdapter.DvrItemClickListener() {
+            @Override
+            public void onDvrItemClick(DvrResponse dvrResponse) {
+                ((LiveTVActivity)getContext()).onDvrClicked(channel,dvrResponse);
+            }
+        });
+        Timber.d(dvrList.size()+"","dvrSize");
+        pgmRecyclerList.setAdapter(dvrRecyclerAdapter);
     }
 
 
     public interface OnChannelClickedListener {
         void onChannelClicked(Channel channel);
+        void onDvrClicked(Channel channel, DvrResponse dvrResponse);
 
-        void onChannelSelected(Channel channel);
         void OnEPGClicked(Channel channel);
         void OnDVRClicked(Channel channel);
 

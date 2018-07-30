@@ -15,7 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
+import comcast.stb.entity.DvrLink;
 import comcast.stb.entity.DvrResponse;
 import comcast.stb.entity.EpgResponse;
 import comcast.stb.entity.EventItem;
@@ -143,7 +145,9 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
     }
 
     @Override
-    public void getDvr(String dvrPath, String token) {
+    public void getDvr(final Channel channel, String token) {
+
+        String dvrPath=channel.getDvrPath();
         dvrPath="cinevision";
         Retrofit retrofit = ApiManager.getAdapter();
         final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
@@ -163,7 +167,7 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                             Log.d("dvr value", "onNext: "+value.body());
 
 
-                            channelWithCategoryListener.takeDvrList(value.body());
+                            channelWithCategoryListener.takeDvrList(value.body(),channel);
 //                            channelWithCategoryListener.takeEpgList(value.body());
                         } else {
                             channelWithCategoryListener.onErrorOccured(value.message(), null, LIVE_DVR_ERROR); //value.message()
@@ -178,7 +182,53 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                         } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
                             channelWithCategoryListener.onErrorOccured("Couldn't connect to server", null, LIVE_CATEGORY_ERROR);
                         } else {
-                            channelWithCategoryListener.onErrorOccured("Error Occured", null, LIVE_CATEGORY_ERROR);
+                            channelWithCategoryListener.onErrorOccured("Error Occured", null, LIVE_DVR_ERROR);
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @Override
+    public void getDvrLink(final Channel channel, String dvrName, String token) {
+        Retrofit retrofit = ApiManager.getAdapter();
+        final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
+        Observable<Response<DvrLink>> observable = channelApiInterface.getDvrLink(channel.getDvrPath(),dvrName, token);
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response<DvrLink>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<DvrLink> value) {
+                        int responseCode = value.code();
+                        if (responseCode == 200) {
+
+                            Log.d("dvr value", "onNext: "+value.body());
+
+
+                            channelWithCategoryListener.takeDvrLink(value.body(),channel);
+//                            channelWithCategoryListener.takeEpgList(value.body());
+                        } else {
+                            channelWithCategoryListener.onErrorOccured(value.message(), null, LIVE_DVR_ERROR); //value.message()
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (e instanceof HttpException || e instanceof ConnectException) {
+                            channelWithCategoryListener.onErrorOccured("No Internet Connection", null, LIVE_CATEGORY_ERROR);
+                        } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
+                            channelWithCategoryListener.onErrorOccured("Couldn't connect to server", null, LIVE_CATEGORY_ERROR);
+                        } else {
+                            channelWithCategoryListener.onErrorOccured("Error Occured", null, LIVE_DVR_ERROR);
                         }
                     }
 

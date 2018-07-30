@@ -63,11 +63,11 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
         ChannelCategory channelCategory = channelCategoryList.get(position);
         holder.categoryOrChannelName.setText(channelCategory.getCategoryTitle());
-        if (position == getSelectedPos()) {
-            holder.itemLayout.setSelected(true);
-        } else {
-            holder.itemLayout.setSelected(false);
-        }
+//        if (position == getSelectedPos()) {
+//            holder.itemLayout.setSelected(true);
+//        } else {
+//            holder.itemLayout.setSelected(false);
+//        }
 
     }
 

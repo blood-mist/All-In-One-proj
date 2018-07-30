@@ -19,6 +19,7 @@ import comcast.stb.entity.EventItem;
  */
 
 class DvrRecyclerAdapter extends RecyclerView.Adapter<DvrRecyclerAdapter.ViewHolder> {
+    private final DvrItemClickListener dvrItemClickListener;
     private List<DvrResponse> programList;
 
     Context mContext;
@@ -35,9 +36,10 @@ class DvrRecyclerAdapter extends RecyclerView.Adapter<DvrRecyclerAdapter.ViewHol
     private int focusedItem = 0;
     int tryFocusItem;
 
-    public DvrRecyclerAdapter(Context context, List<DvrResponse> programList) {
+    public DvrRecyclerAdapter(Context context, List<DvrResponse> programList,DvrItemClickListener dvrItemClickListener) {
         this.programList = programList;
         this.mContext = context;
+        this.dvrItemClickListener = dvrItemClickListener;
 
     }
 
@@ -81,7 +83,18 @@ class DvrRecyclerAdapter extends RecyclerView.Adapter<DvrRecyclerAdapter.ViewHol
             super(itemView);
             programName = itemView.findViewById(R.id.txt_cat_title);
             duration=itemView.findViewById(R.id.txt_timeDuration);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    dvrItemClickListener.onDvrItemClick(programList.get(getAdapterPosition()));
+
+                }
+            });
 
         }
+    }
+    interface DvrItemClickListener{
+        void onDvrItemClick(DvrResponse dvrResponse);
     }
 }

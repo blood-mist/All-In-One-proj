@@ -15,6 +15,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.ConnectException;
@@ -52,6 +53,7 @@ import io.realm.Realm;
 import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
 import static comcast.stb.StringData.LIVE_DVR_ERROR;
@@ -69,6 +71,8 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     List<ChannelCategory> channelCategoryList;
     private Realm realm;
     LoginData loginData;
+    @BindView(R.id.txt_recorded)
+    TextView txtRecorded;
     @BindView(R.id.livetv_surface_view)
     SurfaceView surfaceView;
     @BindView(R.id.progressbar_container)
@@ -196,10 +200,22 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     }
 
     @Override
-    public void setDvr(List<DvrResponse> dvrList) {
+    public void setDvr(List<DvrResponse> dvrList,Channel channel) {
         MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
-        menuFragment.populateDvr(dvrList);
+        menuFragment.populateDvr(dvrList,channel);
 
+    }
+
+    @Override
+    public void setDvrLink(String dvrLink, Channel channel) {
+        Timber.d("dvrlink: "+dvrLink);
+        playVideo(dvrLink,true);
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+
+            }
+        });
     }
 
     public void updateProgress(boolean showProgress) {
@@ -224,7 +240,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     }
 
     public void startHandler() {
-        hideMenuHandler.postDelayed(closeFragmentRunnable, TimeUnit.SECONDS.toMillis(10)); //for 10 secs
+        hideMenuHandler.postDelayed(closeFragmentRunnable, TimeUnit.SECONDS.toMillis(30)); //for 10 secs
     }
 
     private Runnable closeFragmentRunnable = new Runnable() {
@@ -274,9 +290,9 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         super.onPause();
     }
 
-    private void playVideo(String link) {
+    private void playVideo(String link, final boolean isDvr) {
         player.reset();
-        link= "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+//        link= "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
         try {
             player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -289,6 +305,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                     });
                     player.setScreenOnWhilePlaying(true);
                     player.start();
+                    txtRecorded.setVisibility(isDvr?View.VISIBLE:View.GONE);
                     progressContainer.setVisibility(View.GONE);
                     startHandler();
 
@@ -367,6 +384,12 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         }
 
     }
+
+    @Override
+    public void onDvrClicked(Channel channel, DvrResponse dvrResponse) {
+            liveTVPresenter.getDvrLink(channel,dvrResponse.getUrl(),loginData.getToken());
+    }
+
     @Override
     public void OnEPGClicked(Channel channel){
         liveTVPresenter.getEpg(channel.getChannelId(), loginData.getToken());
@@ -374,14 +397,8 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     }
     @Override
     public void OnDVRClicked(Channel channel){
-        liveTVPresenter.getDvr(channel.getDvrPath(), loginData.getToken());
+        liveTVPresenter.getDvr(channel, loginData.getToken());
     }
-    @Override
-    public void onChannelSelected(Channel channel) {
-//        liveTVPresenter.getDvr(channel.getDvrPath(),loginData.getToken());
-
-    }
-
     @Override
     public void onLogoutClicked() {
         logoutPres.logout();
@@ -419,8 +436,6 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         updateProgress(true);
         Retrofit retrofit = ApiManager.getAdapter();
         final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
-
-
         Observable<Response<TvLink>> observable = channelApiInterface.getChannelLink(channel.getChannelId(), loginData.getToken());
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<TvLink>>() {
@@ -444,7 +459,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                             });
                             setCurrentChannel(channel);
 
-                            playVideo(value.body().getLink());
+                            playVideo(value.body().getLink(),false);
 //                            startControllersTimer();
                         } else if (responseCode == 403) {
                             onErrorOccured("403", channel, LIVE_PLAY_ERROR);
@@ -497,5 +512,9 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         Fragment infoDialogFragment = manager.findFragmentByTag("LiveTvErrorFragment");
         if (infoDialogFragment != null)
             manager.beginTransaction().remove(infoDialogFragment).commit();
+    }
+
+    public void cancelEpgDvrLoad() {
+        ApiManager.cancelALLCalls();
     }
 }

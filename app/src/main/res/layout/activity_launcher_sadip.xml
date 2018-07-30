@@ -199,10 +199,8 @@
             android:id="@+id/app_recycler_list"
             android:layout_width="match_parent"
             android:layout_height="0dip"
-            android:layout_gravity="center"
-            android:layout_weight="10"
+            android:layout_weight="12"
             android:foregroundGravity="center"
-            android:orientation="horizontal"
             android:nextFocusRight="@id/app_recycler_list"
             android:padding="10dp" />
 
