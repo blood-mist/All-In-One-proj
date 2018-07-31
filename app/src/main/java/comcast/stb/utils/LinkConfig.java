@@ -2,7 +2,6 @@ package comcast.stb.utils;
 
 public class LinkConfig {
     public static final String BASE_URL = "http://69.79.26.3/stv/public/api/v1/";
-
     public static final int APP_KEY = 1;
     public static final String PLATFORM = "android";
 

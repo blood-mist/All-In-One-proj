@@ -1,36 +1,23 @@
 package comcast.stb.livetv;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-import com.squareup.picasso.Picasso;
-import com.wang.avi.AVLoadingIndicatorView;
-
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -40,336 +27,187 @@ import butterknife.ButterKnife;
 import comcast.stb.R;
 import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
-import comcast.stb.entity.EpgResponse;
+import comcast.stb.entity.DvrResponse;
 import comcast.stb.entity.EventItem;
-import comcast.stb.entity.LoginData;
-import comcast.stb.utils.ApiManager;
-import comcast.stb.utils.DurationUtil;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import io.realm.Realm;
-import retrofit2.HttpException;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
-import static android.view.View.GONE;
-import static comcast.stb.StringData.LANGUAGE_ENGLISH;
-import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
-import static comcast.stb.StringData.LIVE_EPG_ERROR;
-import static comcast.stb.StringData.PREF_LANG;
-
-
-public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListener, EpgChannelAdapter.OnChannelListInteractionListener {
+public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListener, ChannelRecyclerAdapter.OnChannelListInteractionListener {
+    private ArrayList<ChannelCategory> channelCategoryList;
+    private int channelId;
+    private static final String CHANNEL_LIST = "channel_list";
+    private static final String CHANNEL_ID = "channel_id";
+    public static final String ERROR_MESSAGE = "error_message";
     private static final String CHANNEL_CATEGORY = "channelCategory";
     private static final String CHANNEL = "channel";
-    public static final String ERROR_MESSAGE = "error_message";
-
-
-    @BindView(R.id.channelList)
-    RecyclerView channelReycler;
-
-
-    @BindView(R.id.txt_channel_name)
-    TextView channelName;
-
-    @BindView(R.id.txt_day)
-    TextView onAirDay;
-
-    @BindView(R.id.txt_date)
-    TextView onAirDate;
-
-    @BindView(R.id.txt_on_air_prgm_time)
-    TextView epgOnAirTime;
-
-    @BindView(R.id.txt_on_air_prgm_name)
-    TextView epgonAirPgm;
-
-    @BindView(R.id.layout_date_epg)
-    LinearLayout layoutDateEpg;
-
-
-    @BindView(R.id.gv_date)
-    RecyclerView dateRecycler;
-
-    @BindView(R.id.gv_prgms)
-    RecyclerView pgmRecycler;
-
-    // TODO: Rename and change types of parameters
-    private ChannelCategory channelCategory;
-    private Channel currentEpgChannel;
-    private ArrayList<Calendar> calendars;
-    private Realm realm;
-    private LoginData loginData;
-    private LinkedHashMap<String, ArrayList<EventItem>> epgHash;
-    ProgramRecyclerAdapter programRecyclerAdapter;
-    DateAdapter dateAdapter;
-
-    private String preferedLang;
-
-    private OnFragmentInteractionListener mListener;
-    private ArrayList<EventItem> programList;
+    private LinkedHashMap<String, ArrayList<EventItem>> epghashMap;
+    private ArrayList<Calendar> calendarList;
+    private MenuFragment.OnChannelClickedListener clickListener;
 
     public EpgFragment() {
     }
 
+    private static EpgFragment instance;
 
-    public static EpgFragment newInstance(ChannelCategory channelCategory, Channel channel) {
-        EpgFragment fragment = new EpgFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(CHANNEL_CATEGORY, channelCategory);
-        args.putParcelable(CHANNEL, channel);
-        fragment.setArguments(args);
-        return fragment;
+    public static Fragment getInstance() {
+        return instance = instance == null ? new EpgFragment() : instance;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            channelCategory = getArguments().getParcelable(CHANNEL_CATEGORY);
-            currentEpgChannel = getArguments().getParcelable(CHANNEL);
+            channelCategoryList = getArguments().getParcelableArrayList(CHANNEL_LIST);
+            channelId = getArguments().getInt(CHANNEL_ID);
+            populateChannelList(channelCategoryList);
         }
-        realm = Realm.getDefaultInstance();
-        loginData = realm.where(LoginData.class).findFirst();
-        preferedLang= PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(PREF_LANG,LANGUAGE_ENGLISH);
     }
 
+    private void populateChannelList(ArrayList<ChannelCategory> channelCategoryList) {
+        ArrayList<Channel> channels = new ArrayList<>();
+        for (ChannelCategory category : channelCategoryList)
+            channels.addAll(category.getChannels());
+
+        ChannelRecyclerAdapter adapter = new ChannelRecyclerAdapter(getContext(), channels, EpgFragment.this);
+        recChannels.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
+        recChannels.setAdapter(adapter);
+    }
+
+    @BindView(R.id.recycler_channel_list)
+    RecyclerView recChannels;
+    @BindView(R.id.txt_on_air_prgm_time)
+    TextView txtOnAirTime;
+    @BindView(R.id.txt_on_air_prgm_name)
+    TextView getTxtOnAirTPrgm;
+    @BindView(R.id.date_recycler)
+    RecyclerView recDate;
+    @BindView(R.id.prgm_recycler)
+    RecyclerView pgmRecyclerList;
+    Channel currentChannel;
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_epg, container, false);
-        ButterKnife.bind(this, v);
-        String currentDay = new SimpleDateFormat("EEEE", Locale.US).format(Calendar.getInstance().getTime());
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Calendar.getInstance().getTime());
-        onAirDay.setText(currentDay);
-        onAirDate.setText(currentDate);
-        EpgChannelAdapter epgChannelAdapter = new EpgChannelAdapter(getActivity(), (ArrayList<Channel>) channelCategory.getChannels(), EpgFragment.this);
-        channelReycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        channelReycler.setAdapter(epgChannelAdapter);
-        requestEpg(currentEpgChannel.getChannelId(), loginData.getToken());
-        return v;
-    }
-
-    private void requestEpg(int channelId, String token) {
-        Retrofit retrofit = ApiManager.getAdapter();
-        final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
-
-
-        Observable<Response<EpgResponse>> observable = channelApiInterface.getEpg(channelId, token,preferedLang);
-        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
-                .subscribe(new Observer<Response<EpgResponse>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Response<EpgResponse> value) {
-                        int responseCode = value.code();
-                        if (responseCode == 200) {
-                            setEpg(getFilteredEpg(value.body()));
-//                            channelWithCategoryListener.takeEpgList(value.body());
-                        } else {
-                            onErrorOccured(value.message()); //value.message()
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (e instanceof HttpException || e instanceof ConnectException) {
-                            onErrorOccured("No Internet Connection");
-                        } else if (e instanceof UnknownHostException || e instanceof SocketTimeoutException) {
-                            onErrorOccured("Couldn't connect to server");
-                        } else {
-                            onErrorOccured("EPG of the requested channel couldn't be fetched");
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        View menuView = inflater.inflate(R.layout.fragment_epg_dvr, container, false);
+        ButterKnife.bind(this, menuView);
+        pgmRecyclerList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        if (getActivity() instanceof LiveTVActivity) {
+            currentChannel = ((LiveTVActivity) getActivity()).getCurrentChannel();
+        }
+        return menuView;
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-    }
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+//        userName.setText(username);
 
-    private void onErrorOccured(String message) {
-        layoutDateEpg.setVisibility(View.GONE);
-        Bundle bundle = new Bundle();
-        bundle.putString(ERROR_MESSAGE, message);
-        Fragment fragment = new FragmentError();
-        fragment.setArguments(bundle);
-        try {
-            getChildFragmentManager().beginTransaction()
-                    .replace(R.id.container_epg_dvr, fragment, "error")
-                    .commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private LinkedHashMap<String, ArrayList<EventItem>> getFilteredEpg(EpgResponse epgResponse) {
-        String previousDate = "";
-        List<EventItem> datewiseEpgList = null;
-        LinkedHashMap<String, ArrayList<EventItem>> epgHash = new LinkedHashMap<>();
-        List<EventItem> allEpgFrmServer = epgResponse.getEvents();
-        Calendar currentCal = Calendar.getInstance();
-        Calendar epgStartCal = Calendar.getInstance();
-        Calendar epgEndCal = Calendar.getInstance();
-        for (EventItem epgItem : allEpgFrmServer) {
-            String startDate = epgItem.getBeginTime();
-            String duration = epgItem.getDuration();
-            DurationUtil durationUtil = new DurationUtil(duration);
-            SimpleDateFormat epgDurationFormat = new SimpleDateFormat("HH:mm", Locale.US);
-            SimpleDateFormat epgParseDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-            try {
-                Date epgStartDate = epgParseDateFormat.parse(startDate);
-                epgStartCal.setTime(epgStartDate);
-                epgEndCal.setTime(new Date(epgStartDate.getTime()));
-                epgEndCal.add(Calendar.HOUR_OF_DAY, durationUtil.getDurationHour());
-                epgEndCal.add(Calendar.MINUTE, durationUtil.getDurationMinute());
-                epgEndCal.add(Calendar.SECOND, durationUtil.getDurationSecond());
-                Log.d("endDateTime", startDate + "-" + epgParseDateFormat.format(epgEndCal.getTime()));
-                if (epgEndCal.after(currentCal)) {
-                    epgItem.setStartHour(epgDurationFormat.format(epgStartCal.getTime()));
-                    epgItem.setEndHour(epgDurationFormat.format(epgEndCal.getTime()));
-                    Log.d("filteredEndDateTime", startDate + "-" + epgParseDateFormat.format(epgEndCal.getTime()));
-                    SimpleDateFormat dateDayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                    String dayString = dateDayFormat.format(epgStartDate);
-                    if (dayString.equals(previousDate)) {
-                        //if contains key
-                        assert datewiseEpgList != null;
-                        datewiseEpgList.add(epgItem);
-                        if (allEpgFrmServer.indexOf(epgItem) == allEpgFrmServer.size() - 1) {
-                            epgHash.put(dayString, (ArrayList<EventItem>) datewiseEpgList);
-                        }
-                    } else {
-                        if (datewiseEpgList != null)
-                            epgHash.put(previousDate, (ArrayList<EventItem>) datewiseEpgList);
-
-                        datewiseEpgList = new ArrayList<>();
-                        datewiseEpgList.add(epgItem);
-                        previousDate = dayString;
-                        if (allEpgFrmServer.indexOf(epgItem) == allEpgFrmServer.size() - 1)
-                            epgHash.put(dayString, (ArrayList<EventItem>) datewiseEpgList);
-                    }
-
-                }
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return epgHash;
-    }
-
-    public void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
-        Log.d("hashmp", epgChannelList.size() + "");
-        if(!epgChannelList.isEmpty()) {
-            final ArrayList<Calendar> calendarList = new ArrayList<>();
-            ArrayList<String> keys = new ArrayList<>(epgChannelList.keySet());
-            for (int i = 0; i < keys.size(); i++) {
-                Calendar calendar = Calendar.getInstance();
-                try {
-                    calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(keys.get(i)));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                calendarList.add(calendar);
-            }
-            showEpgMenu(calendarList, epgChannelList);
-        }else{
-            onErrorOccured("Sorry, EPG for the requested channel is not available");
-        }
-    }
-
-    private void showEpgMenu(ArrayList<Calendar> calendarList, LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
-        populateDayList(calendarList, epgChannelList);
-    }
-
-    public void populateDayList(ArrayList<Calendar> calendarList, LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
-        epgHash = epgChannelList;
-        this.calendars = calendarList;
-        if (dateAdapter == null) {
-            dateAdapter = new DateAdapter(getActivity(), this.calendars, EpgFragment.this);
-            dateRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            dateRecycler.setAdapter(dateAdapter);
-        } else {
-            dateAdapter = new DateAdapter(getActivity(), this.calendars, EpgFragment.this);
-            dateRecycler.swapAdapter(dateAdapter, false);
-        }
-        onDayClicked(0);
-
-    }
-
-    @Override
-    public void onDayClicked(int position) {
-        ArrayList<EventItem> clickedDayEpgList = epgHash.get((epgHash.keySet().toArray())[position]);
-        Log.d("onDayClicked: ", clickedDayEpgList.size() + "");
-        if (programRecyclerAdapter == null) {
-            programList = clickedDayEpgList;
-            programRecyclerAdapter = new ProgramRecyclerAdapter(getActivity(), programList);
-            pgmRecycler.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-            pgmRecycler.setAdapter(programRecyclerAdapter);
-        } else {
-            programList = clickedDayEpgList;
-            programRecyclerAdapter = new ProgramRecyclerAdapter(getActivity(), programList);
-            pgmRecycler.swapAdapter(programRecyclerAdapter, false);
-        }
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        populateEpg(channelCategoryList, currentChannel);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof MenuFragment.OnChannelClickedListener) {
+            clickListener = (MenuFragment.OnChannelClickedListener) context;
+            if(getArguments()!=null){
+                populateChannelList(getArguments().<ChannelCategory>getParcelableArrayList(CHANNEL_LIST));
+            }
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnEPGClickedListener");
+        }
+    }
+
+    private void populateEpg(ArrayList<ChannelCategory> channelCategoryList, Channel currentChannel) {
 
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
-    public void onChannelClickInteraction(Channel channel) {
-        this.currentEpgChannel = channel;
-        Fragment child = getChildFragmentManager().findFragmentByTag("error");
-        if (child != null)
-            getChildFragmentManager().beginTransaction().remove(child).commit();
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 
-        layoutDateEpg.setVisibility(View.VISIBLE);
-        requestEpg(this.currentEpgChannel.getChannelId(), loginData.getToken());
+    DateAdapter dateAdapter;
+
+    public void populateDayList(ArrayList<Calendar> calendarList, LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
+        epghashMap = epgChannelList;
+        if (calendarList.size() > 3)
+            this.calendarList = new ArrayList<>(calendarList.subList(0, 3));
+        else
+            this.calendarList = calendarList;
+        RecyclerView dayRecyclerList = null;
+        if (dateAdapter == null) {
+            dateAdapter = new DateAdapter(getActivity(), this.calendarList, EpgFragment.this);
+            dayRecyclerList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            dayRecyclerList.setAdapter(dateAdapter);
+        } else {
+            dateAdapter = new DateAdapter(getActivity(), this.calendarList, EpgFragment.this);
+            dayRecyclerList.swapAdapter(dateAdapter, false);
+        }
+        onDayClicked(0);
+    }
+
+    @Override
+    public void onDayClicked(int position) {
+        ArrayList<EventItem> clickedDayEpgList = epghashMap.get((epghashMap.keySet().toArray())[position]);
+        Log.d("onDayClicked: ", clickedDayEpgList.size() + "");
+        ProgramRecyclerAdapter programRecyclerAdapter = new ProgramRecyclerAdapter(getActivity(), clickedDayEpgList);
+        pgmRecyclerList.setAdapter(programRecyclerAdapter);
+    }
+
+    public void populateDvr(List<DvrResponse> dvrList, Channel channel) {
+
     }
 
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (!hidden) {
+            Bundle b = getArguments();
+            //set Focus on channel
+            LinkedHashMap<String, ArrayList<EventItem>> epgChannelList = b.getParcelable("epgChannelList");
+            calendarList = getCalendarList(epgChannelList);
+            //click on calendar
+            //set epg
+            populateDayList(calendarList, epgChannelList);
+
+        }
+        super.onHiddenChanged(hidden);
+    }
+
+    private ArrayList<Calendar> getCalendarList(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
+        Log.d("hashmp", epgChannelList.size() + "");
+        final ArrayList<Calendar> calendarList = new ArrayList<>();
+        ArrayList<String> keys = new ArrayList<>(epgChannelList.keySet());
+        for (int i = 0; i < keys.size(); i++) {
+            Calendar calendar = Calendar.getInstance();
+            try {
+                calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(keys.get(i)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            calendarList.add(calendar);
+        }
+        return calendarList;
+    }
+
+
+    @Override
+    public void onChannelClickInteraction(Channel channel) {
+        clickListener.OnEPGClicked(channel);
+    }
+
+    @Override
+    public void onChannelSelected(Channel channel) {
+
+    }
+
+    @Override
+    public void onChannelDeselected() {
+
     }
 }

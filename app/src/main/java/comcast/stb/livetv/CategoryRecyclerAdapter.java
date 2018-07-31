@@ -12,7 +12,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import comcast.stb.R;
-import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
 
 
@@ -45,7 +44,9 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.item_channel_category, parent, false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.item_channel_category, parent,false);
+        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        v.setLayoutParams(lp);
         return new ViewHolder(v);
     }
 
@@ -62,11 +63,11 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
         ChannelCategory channelCategory = channelCategoryList.get(position);
         holder.categoryOrChannelName.setText(channelCategory.getCategoryTitle());
-        if (position == getSelectedPos()) {
-            holder.itemLayout.setSelected(true);
-        } else {
-            holder.itemLayout.setSelected(false);
-        }
+//        if (position == getSelectedPos()) {
+//            holder.itemLayout.setSelected(true);
+//        } else {
+//            holder.itemLayout.setSelected(false);
+//        }
 
     }
 
@@ -85,24 +86,13 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
             categoryOrChannelName = itemView.findViewById(R.id.txt_cat_title);
             itemLayout = itemView.findViewById(R.id.channel_category_layout);
 
-            itemLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onCategoryClicked(channelCategoryList.get(getAdapterPosition()));
-                }
-            });
-
             itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
-                    if(b){
-                        categoryOrChannelName.setSelected(true);
-                        itemLayout.setScaleY(1.09f);
-                        itemLayout.setScaleX(1.09f);
-                    }else{
-                        categoryOrChannelName.setSelected(false);
-                        itemLayout.setScaleX(1.0f);
-                        itemLayout.setScaleY(1.0f);
+                    if (b) {
+                        setSelectedPos(getAdapterPosition());
+
+                        onCategoryClicked(channelCategoryList.get(getAdapterPosition()));
                     }
                 }
             });
@@ -110,11 +100,11 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
         }
     }
 
-    private void onCategoryClicked(ChannelCategory channelCategory) {
-        mListener.onCategoryListClickInteraction(channelCategory);
+    private void onCategoryClicked(ChannelCategory category) {
+        mListener.onCategoryListClickInteraction(category);
     }
 
     public interface OnCategoryListInteractionListener {
-        void onCategoryListClickInteraction(ChannelCategory channelCategory);
+        void onCategoryListClickInteraction(ChannelCategory category);
     }
 }

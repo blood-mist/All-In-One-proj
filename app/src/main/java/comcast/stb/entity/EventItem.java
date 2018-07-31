@@ -74,7 +74,7 @@ public class EventItem{
 	@Override
  	public String toString(){
 		return 
-			"EventsItem{" + 
+			"DvrResponse{" +
 			"duration = '" + duration + '\'' + 
 			",programName = '" + programName + '\'' + 
 			",description = '" + description + '\'' + 

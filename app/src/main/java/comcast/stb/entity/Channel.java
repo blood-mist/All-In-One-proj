@@ -3,111 +3,128 @@ package comcast.stb.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
-
 import javax.annotation.Generated;
+import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
 @Generated("com.robohorse.robopojogenerator")
-public class Channel extends RealmObject implements Parcelable  {
+public class Channel extends RealmObject implements Parcelable{
+
 	@SerializedName("channel_name")
 	private String channelName;
 
 	@SerializedName("channel_logo")
 	private String channelLogo;
 
+	@SerializedName("channel_price")
+	private String channelPrice;
+
 	@SerializedName("channel_category_id")
 	private int channelCategoryId;
 
-	@SerializedName("parental_lock")
-	private int parentalLock;
+	@SerializedName("subscription_status")
+	private String subscriptionStatus;
+
+	@SerializedName("expiry_flag")
+	private boolean expiryFlag;
+
+	@SerializedName("dvr_path")
+	private String dvrPath;
+
+	@SerializedName("expiry")
+	private boolean expiry;
 
 	@SerializedName("channel_id")
 	private int channelId;
 
-	@SerializedName("channel_price")
-	private String channelPrice;
-	@SerializedName("expiry")
-	private String expiry;
-	@SerializedName("subscription_status")
-	private String subscriptionStatus;
-	@SerializedName("expiry_flag")
-	private boolean expiryFlag;
-
-	public String getChannelPrice() {
-		return channelPrice;
-	}
-
-	public void setChannelPrice(String channelPrice) {
-		this.channelPrice = channelPrice;
-	}
-
-	public String getExpiry() {
-		return expiry;
-	}
-
-	public void setExpiry(String expiry) {
-		this.expiry = expiry;
-	}
-
-	public String getSubscriptionStatus() {
-		return subscriptionStatus;
-	}
-
-	public void setSubscriptionStatus(String subscriptionStatus) {
-		this.subscriptionStatus = subscriptionStatus;
-	}
-
-	public boolean isExpiryFlag() {
-		return expiryFlag;
-	}
-
-	public void setExpiryFlag(boolean expiryFlag) {
-		this.expiryFlag = expiryFlag;
-	}
-
-	public void setChannelName(String channelName) {
+	public void setChannelName(String channelName){
 		this.channelName = channelName;
 	}
 
-	public String getChannelName() {
+	public String getChannelName(){
 		return channelName;
 	}
 
-	public void setChannelLogo(String channelLogo) {
+	public void setChannelLogo(String channelLogo){
 		this.channelLogo = channelLogo;
 	}
 
-	public String getChannelLogo() {
+	public String getChannelLogo(){
 		return channelLogo;
 	}
 
-	public void setChannelCategoryId(int channelCategoryId) {
+	public void setChannelPrice(String channelPrice){
+		this.channelPrice = channelPrice;
+	}
+
+	public String getChannelPrice(){
+		return channelPrice;
+	}
+
+	public void setChannelCategoryId(int channelCategoryId){
 		this.channelCategoryId = channelCategoryId;
 	}
 
-	public int getChannelCategoryId() {
+	public int getChannelCategoryId(){
 		return channelCategoryId;
 	}
 
-	public void setParentalLock(int parentalLock) {
-		this.parentalLock = parentalLock;
+	public void setSubscriptionStatus(String subscriptionStatus){
+		this.subscriptionStatus = subscriptionStatus;
 	}
 
-	public int getParentalLock() {
-		return parentalLock;
+	public String getSubscriptionStatus(){
+		return subscriptionStatus;
 	}
 
-	public void setChannelId(int channelId) {
+	public void setExpiryFlag(boolean expiryFlag){
+		this.expiryFlag = expiryFlag;
+	}
+
+	public Object getExpiryFlag(){
+		return expiryFlag;
+	}
+
+	public void setDvrPath(String dvrPath){
+		this.dvrPath = dvrPath;
+	}
+
+	public String getDvrPath(){
+		return dvrPath;
+	}
+
+	public void setExpiry(boolean expiry){
+		this.expiry = expiry;
+	}
+
+	public boolean getExpiry(){
+		return expiry;
+	}
+
+	public void setChannelId(int channelId){
 		this.channelId = channelId;
 	}
 
-	public int getChannelId() {
+	public int getChannelId(){
 		return channelId;
 	}
 
-
+	@Override
+ 	public String toString(){
+		return 
+			"Channel{" +
+			"channel_name = '" + channelName + '\'' + 
+			",channel_logo = '" + channelLogo + '\'' + 
+			",channel_price = '" + channelPrice + '\'' + 
+			",channel_category_id = '" + channelCategoryId + '\'' + 
+			",subscription_status = '" + subscriptionStatus + '\'' + 
+			",expiry_flag = '" + expiryFlag + '\'' + 
+			",dvr_path = '" + dvrPath + '\'' + 
+			",expiry = '" + expiry + '\'' + 
+			",channel_id = '" + channelId + '\'' + 
+			"}";
+		}
 	@Override
 	public int describeContents() {
 		return 0;
@@ -117,13 +134,9 @@ public class Channel extends RealmObject implements Parcelable  {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(this.channelName);
 		dest.writeString(this.channelLogo);
-		dest.writeInt(this.channelCategoryId);
-		dest.writeInt(this.parentalLock);
-		dest.writeInt(this.channelId);
 		dest.writeString(this.channelPrice);
-		dest.writeString(this.expiry);
-		dest.writeString(this.subscriptionStatus);
-		dest.writeByte(this.expiryFlag ? (byte) 1 : (byte) 0);
+		dest.writeInt(this.channelId);
+//		dest.writeString(this.channelDesc);
 	}
 
 	public Channel() {
@@ -132,16 +145,12 @@ public class Channel extends RealmObject implements Parcelable  {
 	protected Channel(Parcel in) {
 		this.channelName = in.readString();
 		this.channelLogo = in.readString();
-		this.channelCategoryId = in.readInt();
-		this.parentalLock = in.readInt();
-		this.channelId = in.readInt();
 		this.channelPrice = in.readString();
-		this.expiry = in.readString();
-		this.subscriptionStatus = in.readString();
-		this.expiryFlag = in.readByte() != 0;
+		this.channelId = in.readInt();
+//		this.channelDesc = in.readString();
 	}
 
-	public static final Creator<Channel> CREATOR = new Creator<Channel>() {
+	public static final Parcelable.Creator<Channel> CREATOR = new Parcelable.Creator<Channel>() {
 		@Override
 		public Channel createFromParcel(Parcel source) {
 			return new Channel(source);

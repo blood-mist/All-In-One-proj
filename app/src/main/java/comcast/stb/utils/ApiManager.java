@@ -15,6 +15,10 @@ public class ApiManager {
 
     private ApiManager() {
     }
+    private static OkHttpClient client;
+    public  static void cancelALLCalls(){
+        client.dispatcher().cancelAll();
+    }
 
     // singleton for RestAdapter
     public static Retrofit getAdapter() {
@@ -33,9 +37,11 @@ public class ApiManager {
                             .addConverterFactory(GsonConverterFactory.create())
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .build();
+                    ApiManager.client = httpClient;
                 }
             }
         }
+
         return retrofit;
     }
 

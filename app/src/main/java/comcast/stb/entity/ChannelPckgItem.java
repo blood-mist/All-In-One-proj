@@ -13,7 +13,7 @@ import javax.annotation.Generated;
 public class ChannelPckgItem implements Parcelable{
 
 	@SerializedName("channels")
-	private List<ChannelsItem> channels;
+	private List<Channel> channels;
 
 	@SerializedName("package_name")
 	private String packageName;
@@ -27,11 +27,11 @@ public class ChannelPckgItem implements Parcelable{
 	@SerializedName("package_description")
 	private String packageDescription;
 
-	public void setChannels(List<ChannelsItem> channels){
+	public void setChannels(List<Channel> channels){
 		this.channels = channels;
 	}
 
-	public List<ChannelsItem> getChannels(){
+	public List<Channel> getChannels(){
 		return channels;
 	}
 
@@ -97,7 +97,7 @@ public class ChannelPckgItem implements Parcelable{
 	}
 
 	protected ChannelPckgItem(Parcel in) {
-		this.channels = in.createTypedArrayList(ChannelsItem.CREATOR);
+		this.channels = in.createTypedArrayList(Channel.CREATOR);
 		this.packageName = in.readString();
 		this.packageId = in.readInt();
 		this.packagePrice = in.readString();

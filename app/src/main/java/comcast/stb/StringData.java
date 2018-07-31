@@ -30,6 +30,7 @@ public class StringData {
     public static final String CHANNEL_LOGO = "channel_logo";
     public static final String CHANNEL_CATEGORY = "channel_category";
     public static final String CHANNEL_PRICE = "channel_price";
+    public static final String CURRENT_CHANNEL="current_channel";
     public static final String IS_CHANNEL_EXPIRY = "is_expired";
     public static final String SUBSCRIPTION_STATUS = "subscription_status";
     public static final String EXPIRY_DATE = "expiry_date";
@@ -40,12 +41,14 @@ public class StringData {
     public static final String PACKAGE_ERROR = "package_error";
     public static final String TOKEN_ERROR = "token_error";
     public static final String LIVE_CATEGORY_ERROR = "live_category_error";
+    public static final String LIVE_DVR_ERROR="live_dvr_error";
     public static final String LIVE_PLAY_ERROR = "live_play_error";
     public static final String MOVIE_PLAY_ERROR = "movie_play_error";
     public static final String MOVIE_CATEGORY_ERROR = "movie_category_error";
     public static final String LIVE_EPG_ERROR = "epg_error";
-    public static final String MENU_FRAGMENT = "menu_fragment";
-    public static final String BUY_ERROR = "buy_error";
+    public static final String CAT_CHANNEL_FRAGMENT ="menu_fragment" ;
+    public static final String EPG_DVR_FRAGMENT ="epg_dvr_fragment" ;
+    public static final String BUY_ERROR="buy_error";
     public static final String PREF_LANG = "prefered_language";
     public static final String LANGUAGE_ENGLISH ="english" ;
     public static final String LANGUAGE_SPANISH ="spanish" ;

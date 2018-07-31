@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import comcast.stb.R;
-import comcast.stb.entity.ChannelsItem;
+import comcast.stb.entity.Channel;
 import comcast.stb.entity.MoviesItem;
 
 import static comcast.stb.StringData.CHANNEL_PACKAGE;
@@ -36,7 +36,7 @@ public class PackageRecyclerAdapter extends  RecyclerView.Adapter<PackageRecycle
     }
     @Override
     public PackageRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel_packages, parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel_packages, null);
         return new PackageRecyclerAdapter.ViewHolder(v);
     }
 
@@ -46,13 +46,13 @@ public class PackageRecyclerAdapter extends  RecyclerView.Adapter<PackageRecycle
     }
     @Override
     public void onBindViewHolder(ViewHolder holder,  int position) {
-       switch(packageType){
-           case CHANNEL_PACKAGE:
-              holder. populateItemsForChannel();
-               break;
-           case MOVIE_PACKAGE:
-               holder.populateItemsForMovies();
-       }
+        switch(packageType){
+            case CHANNEL_PACKAGE:
+                holder. populateItemsForChannel();
+                break;
+            case MOVIE_PACKAGE:
+                holder.populateItemsForMovies();
+        }
         //bind MovieItemView here
     }
 
@@ -64,29 +64,51 @@ public class PackageRecyclerAdapter extends  RecyclerView.Adapter<PackageRecycle
 
     public class ViewHolder extends  RecyclerView.ViewHolder {
 
+        private TextView channelTitle;
         private LinearLayout itemLayout;
+        private View shadeView;
         private ImageView channelImage;
         public ViewHolder(final View itemView) {
             super(itemView);
+            shadeView = itemView.findViewById(R.id.shade_view);
+            channelTitle = itemView.findViewById(R.id.txt_channelname);
             channelImage = itemView.findViewById(R.id.img_channel);
             itemLayout = itemView.findViewById(R.id.channel_item_layout);
 
+            itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
+                        shadeView.setVisibility(View.GONE);
+                        itemView.setScaleX(1.05f);
+                        itemView.setScaleY(1.05f);
+                        channelTitle.setSelected(true);
+                    } else {
+                        shadeView.setVisibility(View.VISIBLE);
+                        itemView.setScaleX(1.0f);
+                        itemView.setScaleY(1.0f);
+                        channelTitle.setSelected(false);
+                    }
+                }
+            });
         }
 
 
         public void populateItemsForChannel() {
-            final ChannelsItem pckgItem= (ChannelsItem) pckgList.get(getAdapterPosition());
+            final Channel pckgItem= (Channel) pckgList.get(getAdapterPosition());
+            channelTitle.setText(pckgItem.getChannelName());
             Picasso.with(mContext)
                     .load(pckgItem.getChannelLogo())
-                    .resize(60,60)
+                    .resize(70,70)
                     .placeholder(R.drawable.placeholder)
                     .into(channelImage);
         }
         public void populateItemsForMovies() {
             final MoviesItem pckgItem= (MoviesItem) pckgList.get(getAdapterPosition());
+            channelTitle.setText(pckgItem.getMovieName());
             Picasso.with(mContext)
                     .load(pckgItem.getMoviePicture())
-                    .resize(60,60)
+                    .resize(70,70)
                     .placeholder(R.drawable.placeholder)
                     .into(channelImage);
         }

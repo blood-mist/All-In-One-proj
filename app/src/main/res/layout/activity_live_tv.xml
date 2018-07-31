@@ -11,7 +11,16 @@
         android:id="@+id/livetv_surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
+    <TextView
+        android:id="@+id/txt_recorded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:text="RECORDED"
+        android:layout_margin="60dp"
+        android:textColor="#80f20404"
+        android:visibility="visible"
+        android:textSize="40sp" />
     <FrameLayout
         android:id="@+id/livetv_menu_container"
         android:layout_width="match_parent"
@@ -34,4 +43,6 @@
             app:indicatorColor="@color/white_color"
             app:indicatorName="BallTrianglePathIndicator"/>
     </FrameLayout>
+
+
 </FrameLayout>
