@@ -18,7 +18,7 @@ import retrofit2.http.Query;
 public interface MoviePckgApiInterface {
     //    http://69.79.26.170:8080/html/stv/public/api/v1/subscribe/movie-package/1?token={token}token
     @FormUrlEncoded
-    @POST("subscribe/movie-package_icon/{package_id}")
+    @POST("subscribe/movie_package/{package_id}")
     Observable<Response<BuyResponse>> buyMoviePackages(@Path("package_id") int packageId, @Field("duration") int duration, @Query("token") String token);
 
     interface MoviePcgkBuyView {

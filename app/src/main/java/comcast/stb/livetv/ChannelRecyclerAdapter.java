@@ -51,7 +51,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel, parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_channel_modified, parent,false);
 
 
         return new ViewHolder(v);
@@ -71,10 +71,9 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 //        holder.itemView.setSelected(tryFocusItem==position);
 
         Channel channel = channelList.get(position);
-        holder.channelTitle.setText(channel.getChannelName());
         Picasso.with(mContext)
                 .load(channel.getChannelLogo())
-                .resize(200,200)
+                .resize(150,150)
                 .placeholder(R.drawable.placeholder)
                 .into(holder.channelImage);
         if (position == getSelectedChannel()) {
@@ -92,15 +91,13 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView channelTitle;
         private LinearLayout itemLayout;
         private ImageView channelImage;
         public ViewHolder(final View itemView) {
             super(itemView);
-           channelTitle = itemView.findViewById(R.id.txt_channelname);
             channelImage=itemView.findViewById(R.id.img_channel);
             itemLayout = itemView.findViewById(R.id.channel_item_layout);
-            itemLayout.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     onChannelClicked(channelList.get(getAdapterPosition()));
@@ -108,14 +105,11 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
                 }
             });
 
-            itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
                     if (b) {
                         onChannelSelected(channelList.get(getAdapterPosition()));
-                    } else {
-                        mListener.onChannelDeselected();
-
                     }
                 }
             });
@@ -135,6 +129,5 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
     public interface OnChannelListInteractionListener {
         void onChannelClickInteraction(Channel channel);
         void onChannelSelected(Channel channel);
-        void onChannelDeselected();
     }
 }

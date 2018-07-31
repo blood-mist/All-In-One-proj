@@ -41,7 +41,6 @@ import comcast.stb.entity.events.FmLauncherEvent;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
-import comcast.stb.movielist.MovieNewActivity;
 import comcast.stb.utils.AppConfig;
 import comcast.stb.utils.Connectivity;
 import comcast.stb.utils.DeviceUtils;
@@ -180,13 +179,14 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
         appRecyclerList.setAdapter(appListRecyclerAdapter);
         appRecyclerList.setNestedScrollingEnabled(false);
         appRecyclerList.setHasFixedSize(true);
+        appRecyclerList.requestFocus();
     }
 
     private void addItemsToList() {
         appDataList = new ArrayList<>();
         appDataList = new ArrayList<>();
         appDataList.add(new AppData(LIVE_TV, ContextCompat.getDrawable(this, R.drawable.live)));
-        appDataList.add(new AppData(SUBSCRIPTIONS, ContextCompat.getDrawable(this, R.drawable.subscribe)));
+        appDataList.add(new AppData(SUBSCRIPTIONS, ContextCompat.getDrawable(this, R.drawable.subs)));
         appDataList.add(new AppData(MOVIE, ContextCompat.getDrawable(this, R.drawable.video)));
         appDataList.add(new AppData(SETTINGS, ContextCompat.getDrawable(this, R.drawable.settings)));
         appDataList.add(new AppData(RADIO_SERVICE, ContextCompat.getDrawable(this, R.drawable.radio)));

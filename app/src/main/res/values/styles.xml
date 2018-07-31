@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/white_color</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
 

@@ -1,43 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/app_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:clipToPadding="true"
     android:layout_gravity="center"
     android:padding="10dp">
-
     <LinearLayout
-        android:id="@+id/item_layout"
-        android:layout_width="280dp"
-        android:layout_height="280dp"
-        android:layout_gravity="center"
-        android:padding="5dp"
-        android:focusable="true"
+        android:id="@+id/app_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:clickable="true"
+        android:focusable="true"
+        android:importantForAccessibility="yes"
         android:focusableInTouchMode="true"
-        android:background="@drawable/icon_selector"
-        android:gravity="center"
-        android:orientation="vertical">
-        <ImageView
+        android:background="@drawable/category_new_list_selector">
+        <LinearLayout
+            android:id="@+id/item_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:padding="5dp"
-            android:foregroundGravity="center"
-            android:scaleType="centerInside"
-            android:adjustViewBounds="true"
-            android:src="@drawable/tv_icon"
-            android:id="@+id/img_appicon"/>
-
-        <TextView
-            android:id="@+id/txt_appName"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:padding="6dp"
             android:gravity="center"
-            android:text="Live TV"
-            android:textAllCaps="true"
-            android:textColor="@color/white_color"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textStyle="bold" />
+            android:orientation="vertical">
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:src="@drawable/placeholder"
+                android:id="@+id/img_appicon"/>
+        </LinearLayout>
     </LinearLayout>
+
+
 </FrameLayout>

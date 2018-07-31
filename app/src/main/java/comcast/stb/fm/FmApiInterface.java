@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 
 public interface FmApiInterface {
     @GET("fms")
-    Observable<Response<List<FmCategory>>> getFmsWithCategory(@Query("token") String token);
+    Observable<Response<List<FmCategory>>> getFmsWithCategory(@Query("token") String token,@Query("lang")String language);
 
     @GET("fms/{fm-id}/playable")
     Observable<Response<TvLink>> getFmLink(@Path("fm-id") int fmID, @Query("token") String token);
@@ -26,12 +26,12 @@ public interface FmApiInterface {
         void hideProgress();
     }
     interface FmWithCategoryPresenter{
-        void getFmsWithCategory(String token);
+        void getFmsWithCategory(String token,String language);
 
 
     }
     interface FmWithCategoryInteractor{
-        void getFmsWithCategory(String token);
+        void getFmsWithCategory(String token,String language);
     }
     interface FmWithCategoryListener{
         void takeFmsWithCategory(List<FmCategory> FmCategoryList);

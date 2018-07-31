@@ -17,7 +17,7 @@ public class PackagesInfo implements Parcelable {
 	private String subscriptionStatus;
 
 	@SerializedName("expiry_flag")
-	private String expiryFlag;
+	private boolean expiryFlag;
 
 	@SerializedName("package_name")
 	private String packageName;
@@ -47,11 +47,11 @@ public class PackagesInfo implements Parcelable {
 		return subscriptionStatus;
 	}
 
-	public void setExpiryFlag(String expiryFlag){
+	public void setExpiryFlag(boolean expiryFlag){
 		this.expiryFlag = expiryFlag;
 	}
 
-	public String getExpiryFlag(){
+	public boolean getExpiryFlag(){
 		return expiryFlag;
 	}
 
@@ -96,7 +96,7 @@ public class PackagesInfo implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(this.recommendGroup);
 		dest.writeString(this.subscriptionStatus);
-		dest.writeString(this.expiryFlag);
+		dest.writeByte(this.expiryFlag ? (byte) 1 : (byte) 0);
 		dest.writeString(this.packageName);
 		dest.writeInt(this.packageId);
 		dest.writeString(this.expiry);
@@ -109,14 +109,14 @@ public class PackagesInfo implements Parcelable {
 	protected PackagesInfo(Parcel in) {
 		this.recommendGroup = in.readInt();
 		this.subscriptionStatus = in.readString();
-		this.expiryFlag = in.readString();
+		this.expiryFlag = in.readByte() != 0;
 		this.packageName = in.readString();
 		this.packageId = in.readInt();
 		this.expiry = in.readString();
 		this.packagePrice = in.readString();
 	}
 
-	public static final Parcelable.Creator<PackagesInfo> CREATOR = new Parcelable.Creator<PackagesInfo>() {
+	public static final Creator<PackagesInfo> CREATOR = new Creator<PackagesInfo>() {
 		@Override
 		public PackagesInfo createFromParcel(Parcel source) {
 			return new PackagesInfo(source);

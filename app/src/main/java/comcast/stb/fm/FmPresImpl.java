@@ -16,9 +16,9 @@ public class FmPresImpl implements FmApiInterface.FmWithCategoryPresenter,FmApiI
     }
 
     @Override
-    public void getFmsWithCategory(String token) {
+    public void getFmsWithCategory(String token,String language) {
         fmWithCategoryView.showProgress();
-        fmWithCategoryInteractor.getFmsWithCategory(token);
+        fmWithCategoryInteractor.getFmsWithCategory(token,language);
     }
 
     @Override

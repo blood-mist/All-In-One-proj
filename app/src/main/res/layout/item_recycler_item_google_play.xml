@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:layout_gravity="center">
+<RelativeLayout
+    android:id="@+id/google_item_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/category_new_list_selector"
+    android:gravity="center"
+    android:importantForAccessibility="yes"
+    android:focusable="true"
+    android:clickable="true"
+    android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/item_card_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_launcher"
+        android:layout_above="@+id/item_card_txt_title"/>
+
+
+    <TextView
+        android:id="@+id/item_card_txt_title"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="35dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="Sample title"
+        android:textColor="@color/white_color"
+        android:textSize="14sp" />
+
+
+</RelativeLayout>
+</FrameLayout>

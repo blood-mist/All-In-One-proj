@@ -8,9 +8,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:orientation="horizontal"
         android:padding="4dp"
+        android:layout_gravity="center"
         android:background="@drawable/category_list_selector"
         android:importantForAccessibility="yes"
         android:id="@+id/channel_item_layout"
@@ -26,7 +27,7 @@
             android:src="@drawable/placeholder"
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_image"
-            android:scaleType="fitXY" />
+            android:scaleType="centerCrop" />
 
 
         <TextView

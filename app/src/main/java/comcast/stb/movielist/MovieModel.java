@@ -37,6 +37,7 @@ public class MovieModel implements MovieListApiInterface.MovieWithCategoryIntera
     MovieListApiInterface.MovieWithCategoryListener movieWithCategoryListener;
     LogoutPresImpl logoutPres;
     TokenPresImpl tokenPres;
+    private  String language;
     public MovieModel(MovieListApiInterface.MovieWithCategoryListener movieWithCategoryListener,LogoutPresImpl logoutPres) {
         this.movieWithCategoryListener = movieWithCategoryListener;
         this.logoutPres = logoutPres;
@@ -44,12 +45,12 @@ public class MovieModel implements MovieListApiInterface.MovieWithCategoryIntera
     }
 
     @Override
-    public void getMoviesWithCategory(final String token) {
+    public void getMoviesWithCategory(final String token,String language) {
         Retrofit retrofit = ApiManager.getAdapter();
         final MovieListApiInterface MovieListApiInterface = retrofit.create(MovieListApiInterface.class);
 
 
-        Observable<Response<List<MovieCategory>>> observable = MovieListApiInterface.getMoviesWithCategory(token);
+        Observable<Response<List<MovieCategory>>> observable = MovieListApiInterface.getMoviesWithCategory(token,language);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<List<MovieCategory>>>() {
                     @Override
@@ -92,12 +93,12 @@ public class MovieModel implements MovieListApiInterface.MovieWithCategoryIntera
     }
 
     @Override
-    public void buyMovie( int duration, int movieId,final String token) {
+    public void buyMovie( int duration, int movieId,final String token,String language) {
         Retrofit retrofit = ApiManager.getAdapter();
         final MovieListApiInterface MovieListApiInterface = retrofit.create(MovieListApiInterface.class);
 
 
-        Observable<Response<BuyResponse>> observable = MovieListApiInterface.buyMovie(duration,movieId,token);
+        Observable<Response<BuyResponse>> observable = MovieListApiInterface.buyMovie(duration,movieId,token,language);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<BuyResponse>>() {
                     @Override
@@ -152,7 +153,7 @@ public class MovieModel implements MovieListApiInterface.MovieWithCategoryIntera
                 realm.insertOrUpdate(loginDatas);
             }
         });
-        getMoviesWithCategory(newToken.getToken());
+        getMoviesWithCategory(newToken.getToken(),language);
     }
 
     @Override

@@ -27,7 +27,7 @@ import comcast.stb.entity.LoginData;
 import comcast.stb.entity.MoviesItem;
 
 import comcast.stb.entity.events.BuyEvent;
-import comcast.stb.movielist.MovieNewActivity;
+import comcast.stb.movielist.MovieDetailsActivity;
 import io.realm.Realm;
 
 import static comcast.stb.StringData.PURCHASE_TYPE_BOUGHT;
@@ -107,7 +107,7 @@ public class BuyMovieDialog extends DialogFragment implements BuyMovieApiInterfa
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.Theme_AppCompat_Light_Dialog_Alert);
         showProgress();
         builder.setView(view);
-        builder.setCancelable(true);;
+        builder.setCancelable(true);
         return builder.create();
     }
 
@@ -142,15 +142,15 @@ public class BuyMovieDialog extends DialogFragment implements BuyMovieApiInterfa
 
     @Override
     public void showProgress() {
-        if(activity instanceof MovieNewActivity)
-            ((MovieNewActivity) activity).updateProgress(true);
+        if(activity instanceof MovieDetailsActivity)
+            ((MovieDetailsActivity) activity).updateProgress(true);
 
 
     }
 
     @Override
     public void hideProgress() {
-        if(activity instanceof MovieNewActivity)
-            ((MovieNewActivity) activity).updateProgress(false);
+        if(activity instanceof MovieDetailsActivity)
+            ((MovieDetailsActivity) activity).updateProgress(false);
     }
 }

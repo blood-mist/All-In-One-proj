@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -55,9 +56,6 @@ public class PackageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             genericViewHolder.itemTxtTitle.setText(model.getPackageName());
             genericViewHolder.itemPrice.setText("$"+model.getPackagePrice());
-           genericViewHolder.itemSubscription.setText(model.getSubscriptionStatus());
-           genericViewHolder.itemExpiry.setText(model.getExpiryFlag());
-
 
         }
     }
@@ -86,8 +84,7 @@ public class PackageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         private TextView itemTxtTitle;
         private TextView itemPrice;
-        private TextView itemSubscription;
-        private TextView itemExpiry;
+        private RelativeLayout itemLayout;
 
 
         // @BindView(R.id.img_user)
@@ -105,12 +102,11 @@ public class PackageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             // ButterKnife.bind(this, itemView);
 
-            this.itemTxtTitle = (TextView) itemView.findViewById(R.id.txt_package_name);
-            this.itemPrice = (TextView) itemView.findViewById(R.id.txt_package_price);
-            this.itemSubscription=itemView.findViewById(R.id.txt_package_subscribed);
-            this.itemExpiry=itemView.findViewById(R.id.txt_package_expiry);
+            this.itemTxtTitle = itemView.findViewById(R.id.txt_package_name);
+            this.itemPrice = itemView.findViewById(R.id.txt_package_price);
+            this.itemLayout=itemView.findViewById(R.id.layout_package);
 
-            itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
                     if(b){
@@ -122,10 +118,10 @@ public class PackageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             });
 
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), modelList.get(getAdapterPosition()));
+                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), getItem(getAdapterPosition()));
 
 
                 }

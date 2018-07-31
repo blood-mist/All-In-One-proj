@@ -1,11 +1,13 @@
 package comcast.stb.livetv;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -37,10 +41,10 @@ import comcast.stb.entity.ChannelCategory;
 import comcast.stb.entity.EventItem;
 import comcast.stb.entity.LoginData;
 import comcast.stb.entity.TvLink;
+import comcast.stb.entity.events.ChannelSwitch;
 import comcast.stb.login.LoginActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
-import comcast.stb.movielist.MovieNewActivity;
 import comcast.stb.purchase.livetvpurchase.BuyChannelDialog;
 import comcast.stb.utils.ApiManager;
 import io.reactivex.Observable;
@@ -53,10 +57,12 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static comcast.stb.StringData.LANGUAGE_ENGLISH;
 import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
 import static comcast.stb.StringData.LIVE_EPG_ERROR;
 import static comcast.stb.StringData.LIVE_PLAY_ERROR;
 import static comcast.stb.StringData.MENU_FRAGMENT;
+import static comcast.stb.StringData.PREF_LANG;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 
 
@@ -75,6 +81,8 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     public MediaPlayer player;
     Channel previousChannel;
     LogoutPresImpl logoutPres;
+    private ChannelCategory currentCategory;
+    private String preflang;
 
     public Channel getCurrentChannel() {
         return currentChannel;
@@ -87,6 +95,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_tv);
         ButterKnife.bind(this);
+        preflang=PreferenceManager.getDefaultSharedPreferences(this).getString(PREF_LANG,LANGUAGE_ENGLISH);
         progressContainer.setVisibility(View.VISIBLE);
         hideMenuHandler = new Handler();
         realm = Realm.getDefaultInstance();
@@ -97,9 +106,10 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         player = new MediaPlayer();
         logoutPres = new LogoutPresImpl(this);
         liveTVPresenter = new LiveTVPresenterImpl(this, logoutPres);
-        liveTVPresenter.getChannelsWithCategory(authToken);
+        liveTVPresenter.getChannelsWithCategory(authToken, preflang);
         previousChannel = realm.where(Channel.class).findFirst();
         if (previousChannel != null) {
+            setCurrentChannel(previousChannel);
             onChannelClicked(previousChannel);
         }
 
@@ -107,8 +117,33 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            showMenu();
+        Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU:
+                showMenu();
+                break;
+            case KeyEvent.KEYCODE_CHANNEL_DOWN:
+                EventBus.getDefault().post(new ChannelSwitch(false));
+                return true;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                if(menuFrag==null || menuFrag.isHidden()) {
+                    EventBus.getDefault().post(new ChannelSwitch(false));
+                    return true;
+                }else{
+                    return false;
+                }
+
+            case KeyEvent.KEYCODE_CHANNEL_UP:
+                EventBus.getDefault().post(new ChannelSwitch(true));
+                return true;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if(menuFrag==null || menuFrag.isHidden()) {
+                    EventBus.getDefault().post(new ChannelSwitch(true));
+                    return true;
+                }else{
+                    return false;
+                }
+
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -116,7 +151,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     private void showMenu() {
         Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
         if (menuFrag == null)
-            getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName()), MENU_FRAGMENT).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList), MENU_FRAGMENT).commit();
         else {
             if (menuFrag.isHidden())
                 getSupportFragmentManager().beginTransaction().show(menuFrag).commit();
@@ -151,36 +186,13 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         showMenu();
     }
 
-    @Override
-    public void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
-        Log.d("hashmp", epgChannelList.size() + "");
-        final ArrayList<Calendar> calendarList = new ArrayList<>();
-        ArrayList<String> keys = new ArrayList<>(epgChannelList.keySet());
-        for (int i = 0; i < keys.size(); i++) {
-            Calendar calendar = Calendar.getInstance();
-            try {
-                calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(keys.get(i)));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            calendarList.add(calendar);
-        }
-        updateEpginMenu(calendarList, epgChannelList);
-    }
-
-    private void updateEpginMenu(ArrayList<Calendar> calendarList, LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
-        Log.d("CalendarListSize", calendarList.size() + "");
-        MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
-        menuFragment.populateDayList(calendarList, epgChannelList);
-
-    }
 
     @Override
     public void onErrorOccured(String message, Channel channel, String errorType) {
         switch (errorType) {
             case LIVE_EPG_ERROR:
-                MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
-                menuFragment.hideEpgMenu();
+              /*  MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
+                menuFragment.hideEpgMenu();*/
                 break;
             default:
                 progressContainer.setVisibility(View.GONE);
@@ -308,7 +320,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                     Toast.makeText(LiveTVActivity.this, "Error Playing Media", Toast.LENGTH_LONG).show();
                     Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
                     if (menuFrag == null)
-                        getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName()), MENU_FRAGMENT).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList), MENU_FRAGMENT).commit();
                     else {
                         if (menuFrag.isHidden())
                             getSupportFragmentManager().beginTransaction().show(menuFrag).commit();
@@ -359,8 +371,10 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     }
 
     @Override
-    public void onChannelSelected(Channel channel) {
-        liveTVPresenter.getEpg(channel.getChannelId(), loginData.getToken());
+    public void onEpgRequest(Channel channel, ChannelCategory channelCategory) {
+        currentCategory = channelCategory;
+        EpgFragment epgFragment = EpgFragment.newInstance(currentCategory, channel);
+        getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, epgFragment, "EpgFragment").commit();
     }
 
     @Override
@@ -396,13 +410,14 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         buyChannelDialog.show(getSupportFragmentManager(), "buyFragmentDialog");
     }
 
-    private void getChannelLink(final Channel channel) {
+    public void getChannelLink(final Channel channel) {
         updateProgress(true);
         Retrofit retrofit = ApiManager.getAdapter();
+        this.currentChannel = channel;
         final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
 
 
-        Observable<Response<TvLink>> observable = channelApiInterface.getChannelLink(channel.getChannelId(), loginData.getToken());
+        Observable<Response<TvLink>> observable = channelApiInterface.getChannelLink(channel.getChannelId(), loginData.getToken(),preflang);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<TvLink>>() {
                     @Override
@@ -423,7 +438,6 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                                     realm.insertOrUpdate(channel);
                                 }
                             });
-                            setCurrentChannel(channel);
 
                             playVideo(value.body().getLink());
 //                            startControllersTimer();
@@ -463,7 +477,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         onDismissBtnInteraction();
         switch (errorType) {
             case LIVE_CATEGORY_ERROR:
-                liveTVPresenter.getChannelsWithCategory(loginData.getToken());
+                liveTVPresenter.getChannelsWithCategory(loginData.getToken(),preflang);
                 break;
             case LIVE_PLAY_ERROR:
                 getChannelLink(channel);

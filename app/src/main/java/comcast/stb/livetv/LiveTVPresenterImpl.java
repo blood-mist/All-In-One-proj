@@ -26,24 +26,16 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     }
 
     @Override
-    public void getChannelsWithCategory(String token) {
-        channelWithCategoryInteractor.getChannelsWithCategory(token);
+    public void getChannelsWithCategory(String token,String language) {
+        channelWithCategoryInteractor.getChannelsWithCategory(token,language);
     }
 
-    @Override
-    public void getEpg(int channelId,String token) {
-        channelWithCategoryInteractor.getEpg(channelId,token);
-    }
 
     @Override
     public void takeChannelsWithCategory(List<ChannelCategory> channelCategoryList) {
         channelWithCategoryView.setChannelsWithCategory(channelCategoryList);
     }
 
-    @Override
-    public void takeEpgList(LinkedHashMap<String, ArrayList<EventItem>> epgList) {
-        channelWithCategoryView.setEpg(epgList);
-    }
 
     @Override
     public void onErrorOccured(String message, Channel channel, String errorType) {

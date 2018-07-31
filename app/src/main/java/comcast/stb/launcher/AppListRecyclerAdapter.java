@@ -1,30 +1,33 @@
 package comcast.stb.launcher;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import comcast.stb.R;
 import comcast.stb.entity.AppData;
-import comcast.stb.fm.FmListActivity;
+import comcast.stb.fm.FmSimpleActivity;
 import comcast.stb.livetv.LiveTVActivity;
-import comcast.stb.movielist.MovieNewActivity;
+import comcast.stb.movielist.MovieSimpleActivity;
+import comcast.stb.subscriptions.SubscriptionActivity;
 import comcast.stb.valueAddedPackages.PackageActivity;
 
 import static comcast.stb.utils.StringData.LIVE_TV;
 import static comcast.stb.utils.StringData.MOVIE;
 import static comcast.stb.utils.StringData.PACKAGES;
 import static comcast.stb.utils.StringData.RADIO_SERVICE;
+import static comcast.stb.utils.StringData.SUBSCRIPTIONS;
 
 
 /**
@@ -113,7 +116,6 @@ public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecycler
 //        holder.itemView.setSelected(tryFocusItem==position);
 
         AppData appData = appList.get(position);
-        holder.apptitle.setText(appData.getAppName());
         holder.appImage.setImageDrawable(appData.getAppImage());
     }
 
@@ -124,14 +126,22 @@ public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView appImage;
-        private TextView apptitle;
-        private LinearLayout itemLayout;
+        private LinearLayout itemLayout,applayout;
         public ViewHolder(final View itemView) {
             super(itemView);
             appImage=itemView.findViewById(R.id.img_appicon);
-            apptitle =  itemView.findViewById( R.id.txt_appName);
             itemLayout=itemView.findViewById(R.id.item_layout);
-            itemLayout.setOnClickListener(new View.OnClickListener() {
+            applayout=itemView.findViewById(R.id.app_layout);
+
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            ((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            //if you need three fix imageview in width
+            int devicewidth = displaymetrics.widthPixels /5;
+            int deviceheight = displaymetrics.heightPixels /4;
+            itemLayout.getLayoutParams().width=devicewidth;
+            itemLayout.getLayoutParams().height=deviceheight;
+
+            applayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     AppData clickedAppData=appList.get(getAdapterPosition());
@@ -141,11 +151,11 @@ public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecycler
                             mContext.startActivity(liveIntent);
                             break;
                         case MOVIE:
-                            Intent movieIntent=new Intent(mContext, MovieNewActivity.class);
+                            Intent movieIntent=new Intent(mContext, MovieSimpleActivity.class);
                             mContext.startActivity(movieIntent);
                             break;
                         case RADIO_SERVICE:
-                            Intent radioIntent=new Intent(mContext, FmListActivity.class);
+                            Intent radioIntent=new Intent(mContext, FmSimpleActivity.class);
                             mContext.startActivity(radioIntent);
                             break;
                         case "settings":
@@ -156,6 +166,22 @@ public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecycler
                             Intent packageIntent=new Intent(mContext, PackageActivity.class);
                             mContext.startActivity(packageIntent);
                             break;
+                        case SUBSCRIPTIONS:
+                            Intent subscriptionIntent=new Intent(mContext, SubscriptionActivity.class);
+                            mContext.startActivity(subscriptionIntent);
+                            break;
+                    }
+                }
+            });
+            applayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if(b) {
+                        itemLayout.setScaleX(1.02f);
+                        itemLayout.setScaleY(1.025f);
+                    }else{
+                        itemLayout.setScaleX(1.0f);
+                        itemLayout.setScaleY(1.0f);
                     }
                 }
             });

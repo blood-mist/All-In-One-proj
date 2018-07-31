@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/stb_bg"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bgs"
+    android:padding="25dp">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
@@ -40,5 +45,13 @@
         android:scrollbars="none" />
 
 </LinearLayout>
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/progressbar_packageActivity"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:indicatorColor="@color/white_color"
+        app:indicatorName="BallSpinFadeLoaderIndicator"/>
 
-
+</FrameLayout>

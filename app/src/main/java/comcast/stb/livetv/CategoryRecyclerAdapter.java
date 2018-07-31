@@ -45,9 +45,7 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.item_channel_category, parent,false);
-        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        v.setLayoutParams(lp);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.item_channel_category, parent, false);
         return new ViewHolder(v);
     }
 
@@ -87,12 +85,24 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
             categoryOrChannelName = itemView.findViewById(R.id.txt_cat_title);
             itemLayout = itemView.findViewById(R.id.channel_category_layout);
 
+            itemLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onCategoryClicked(channelCategoryList.get(getAdapterPosition()));
+                }
+            });
+
             itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
-                    if (b) {
-                        setSelectedPos(getAdapterPosition());
-                        onCategoryClicked(channelCategoryList.get(getAdapterPosition()).getCategoryTitle(),(ArrayList<Channel>) channelCategoryList.get(getAdapterPosition()).getChannels());
+                    if(b){
+                        categoryOrChannelName.setSelected(true);
+                        itemLayout.setScaleY(1.09f);
+                        itemLayout.setScaleX(1.09f);
+                    }else{
+                        categoryOrChannelName.setSelected(false);
+                        itemLayout.setScaleX(1.0f);
+                        itemLayout.setScaleY(1.0f);
                     }
                 }
             });
@@ -100,11 +110,11 @@ public class CategoryRecyclerAdapter extends RecyclerView.Adapter<CategoryRecycl
         }
     }
 
-    private void onCategoryClicked(String categoryName,ArrayList<Channel> channels) {
-        mListener.onCategoryListClickInteraction(categoryName,channels);
+    private void onCategoryClicked(ChannelCategory channelCategory) {
+        mListener.onCategoryListClickInteraction(channelCategory);
     }
 
     public interface OnCategoryListInteractionListener {
-        void onCategoryListClickInteraction(String categoryname,ArrayList<Channel> channelList);
+        void onCategoryListClickInteraction(ChannelCategory channelCategory);
     }
 }

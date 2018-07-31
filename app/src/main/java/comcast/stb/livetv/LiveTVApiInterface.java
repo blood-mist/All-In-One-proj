@@ -22,29 +22,25 @@ import retrofit2.http.Query;
 
 public interface LiveTVApiInterface {
     @GET("user/channels")//?with=channels && channel-categories?with=channels
-    Observable<Response<List<ChannelCategory>>> getChannelsWithCategory(@Query("token") String token);//, @Query("app-name") String appName, @Query("platform") String platform
+    Observable<Response<List<ChannelCategory>>> getChannelsWithCategory(@Query("token") String token,@Query("lang") String language);//, @Query("app-name") String appName, @Query("platform") String platform
     @GET("channels/{channel-id}/playable")
-    Observable<Response<TvLink>> getChannelLink(@Path("channel-id") int channelID, @Query("token") String token);
+    Observable<Response<TvLink>> getChannelLink(@Path("channel-id") int channelID, @Query("token") String token,@Query("lang") String language);
     @GET("epg/channel/{channel-id}")
-    Observable<Response<EpgResponse>> getEpg(@Path("channel-id") int channelID, @Query("token")String token);
+    Observable<Response<EpgResponse>> getEpg(@Path("channel-id") int channelID, @Query("token")String token,@Query("lang") String language);
 
 
     interface ChannelWithCategoryView{
         void setChannelsWithCategory(List<ChannelCategory> channelCategoryList);
-        void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList);
         void onErrorOccured(String message,Channel channel,String errorType);
     }
     interface ChannelWithCategoryPresenter{
-        void getChannelsWithCategory(String token);
-        void getEpg(int channelId,String token);
+        void getChannelsWithCategory(String token,String language);
     }
     interface ChannelWithCategoryInteractor{
-        void getChannelsWithCategory(String token);
-        void getEpg(int channelId,String token);
+        void getChannelsWithCategory(String token,String language);
     }
     interface ChannelWithCategoryListener{
         void takeChannelsWithCategory(List<ChannelCategory> channelCategoryList);
-        void takeEpgList(LinkedHashMap<String, ArrayList<EventItem>> epgList);
         void onErrorOccured(String message, Channel channel, String errorType);
     }
 }

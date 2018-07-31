@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="250dp"
+    android:layout_gravity="center"
+    tools:context="comcast.stb.packageInfoDialog.PackageInfo"
+    android:background="@color/white_selection"
+    android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Package Info"
+        android:layout_margin="15dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:padding="5dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_color"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp">
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/txt_packageLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Package Name:"/>
+        <TextView
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/txt_packageLabel"
+            android:text="package1"
+            android:id="@+id/txt_packageName"/>
+        <TextView
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Package Price:"
+            android:layout_below="@id/txt_packageLabel"
+            android:id="@+id/txt_priceLabel"/>
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/txt_packagePrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$0"
+            android:layout_toEndOf="@id/txt_priceLabel"
+            android:layout_below="@+id/txt_packageName"/>
+        <TextView
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status:"
+            android:id="@+id/txt_statusLabel"
+            android:layout_below="@id/txt_priceLabel"/>
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/txt_expiryStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not Expired"
+            android:layout_toEndOf="@id/txt_statusLabel"
+            android:layout_below="@id/txt_packagePrice"/>
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/txt_expiryLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expiry:"
+            android:layout_below="@id/txt_statusLabel"/>
+        <TextView
+            android:id="@+id/txt_expiryDate"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/txt_expiryLabel"
+            android:text="N/A"
+            android:layout_below="@+id/txt_expiryStatus"/>
+
+        <Button
+            android:layout_below="@+id/txt_expiryLabel"
+            android:id="@+id/btn_packageCancel"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:textAllCaps="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/button_selector"
+            android:text="@string/cancel"/>
+        <Button
+            android:id="@+id/btn_packagePurchase"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:textAllCaps="true"
+            android:layout_below="@+id/txt_expiryLabel"
+            android:layout_toStartOf="@+id/btn_packageCancel"
+            android:background="@drawable/button_selector"
+            android:text="@string/purchase"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

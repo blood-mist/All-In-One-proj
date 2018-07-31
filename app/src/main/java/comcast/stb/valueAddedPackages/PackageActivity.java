@@ -1,49 +1,47 @@
 package comcast.stb.valueAddedPackages;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
+
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-import android.widget.Toast;
-import android.os.Handler;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import comcast.stb.R;
+import comcast.stb.entity.BuyResponse;
 import comcast.stb.entity.LoginData;
 import comcast.stb.entity.OrderItem;
 import comcast.stb.entity.PackagesInfo;
 import comcast.stb.entity.SubsItem;
-import comcast.stb.launcher.LauncherModifiedActivity;
 import comcast.stb.logout.LogoutApiInterface;
 import comcast.stb.logout.LogoutPresImpl;
-import comcast.stb.splashscreen.SplashActivity;
+import comcast.stb.packageInfoDialog.PackageDialogFragment;
+import comcast.stb.packageInfoDialog.PackageInfo;
+import comcast.stb.purchase.channelPckgPurchase.ChannelPckgApiInterface;
+import comcast.stb.purchase.channelPckgPurchase.ChannelPckgBuyPresImpl;
+import comcast.stb.purchase.moviePckgPurchase.MoviePckgApiInterface;
+import comcast.stb.purchase.moviePckgPurchase.MoviePckgBuyPresImpl;
 import comcast.stb.userutility.UserApiInterface;
 import comcast.stb.userutility.UserPresImpl;
 import io.realm.Realm;
 
 import static comcast.stb.StringData.CHANNEL_PACKAGE;
-import static comcast.stb.StringData.CHANNEL_PCKG;
 import static comcast.stb.StringData.MOVIE_PACKAGE;
-import static comcast.stb.StringData.MOVIE_PCKG;
-import static comcast.stb.StringData.ORDER_LIST;
-import static comcast.stb.StringData.SUBSCRIPTION_LIST;
-import static comcast.stb.StringData.USER_NAME;
 
 
-public class PackageActivity extends AppCompatActivity implements UserApiInterface.UserView, LogoutApiInterface.LogoutView {
+public class PackageActivity extends AppCompatActivity implements UserApiInterface.UserView, LogoutApiInterface.LogoutView, PackageInfo.OnFragmentInteractionListener,
+        PackageDialogFragment.OnFragmentInteractionListener, ChannelPckgApiInterface.ChannelPcgkBuyView, MoviePckgApiInterface.MoviePcgkBuyView {
 
+    private static final String PACKAGE_INFO_DIALOG = "package_info_fragment";
+    private static final String PACKAGE_DETAILS_FRAGMENT = "package_details_fragment";
     private Realm realm;
     private LogoutPresImpl logoutPres;
     private UserPresImpl userPres;
@@ -55,6 +53,8 @@ public class PackageActivity extends AppCompatActivity implements UserApiInterfa
     RecyclerView channelRecycler;
     @BindView(R.id.movie_package_recycler)
     RecyclerView movieRecycler;
+    @BindView(R.id.progressbar_packageActivity)
+    AVLoadingIndicatorView progressbar;
 
 
     private PackageListAdapter channelPackageRecyclerAdapter;
@@ -62,6 +62,8 @@ public class PackageActivity extends AppCompatActivity implements UserApiInterfa
     private PackageListAdapter moviePackagerecyclerAdapter;
 
     private ArrayList<PackageEntity> modelList = new ArrayList<>();
+    private ChannelPckgBuyPresImpl channelPckgBuyPres;
+    private MoviePckgBuyPresImpl moviePckgBuyPres;
 
 
     @Override
@@ -69,11 +71,13 @@ public class PackageActivity extends AppCompatActivity implements UserApiInterfa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_package);
         ButterKnife.bind(this);
-        realm=Realm.getDefaultInstance();
-        loginData=realm.where(LoginData.class).findFirst();
+        realm = Realm.getDefaultInstance();
+        loginData = realm.where(LoginData.class).findFirst();
         logoutPres = new LogoutPresImpl(this);
         userPres = new UserPresImpl(this, logoutPres);
-        userPres.getPackageInfo(CHANNEL_PACKAGE,loginData.getToken());
+        channelPckgBuyPres = new ChannelPckgBuyPresImpl(this);
+        moviePckgBuyPres = new MoviePckgBuyPresImpl(this);
+        userPres.getPackageInfo(CHANNEL_PACKAGE, loginData.getToken());
         // ButterKnife.bind(this);
 
 
@@ -102,17 +106,25 @@ public class PackageActivity extends AppCompatActivity implements UserApiInterfa
             public void onItemClick(View view, int position, PackagesInfo model) {
 
                 //handle item click events here
-                Toast.makeText(PackageActivity.this, "Hey " + model.getPackageName(), Toast.LENGTH_SHORT).show();
+
+                PackageInfo packagesInfo = PackageInfo.newInstance(model, CHANNEL_PACKAGE);
+                packagesInfo.show(getSupportFragmentManager(), PACKAGE_INFO_DIALOG);
 
 
             }
         });
 
-        moviePackagerecyclerAdapter=new PackageListAdapter(PackageActivity.this,moviesPackagesList);
+        moviePackagerecyclerAdapter = new PackageListAdapter(PackageActivity.this, moviesPackagesList);
         movieRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         movieRecycler.setHasFixedSize(true);
         movieRecycler.setAdapter(moviePackagerecyclerAdapter);
-
+        moviePackagerecyclerAdapter.SetOnItemClickListener(new PackageListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, PackagesInfo model) {
+                PackageInfo packagesInfo = PackageInfo.newInstance(model, MOVIE_PACKAGE);
+                packagesInfo.show(getSupportFragmentManager(), PACKAGE_INFO_DIALOG);
+            }
+        });
 
 
     }
@@ -144,13 +156,58 @@ public class PackageActivity extends AppCompatActivity implements UserApiInterfa
     }
 
     @Override
-    public void showProgress() {
+    public void setChannelPcgkBuyRespone(BuyResponse buyRespone) {
+        Toast.makeText(PackageActivity.this, buyRespone.getName() + "successfully bought", Toast.LENGTH_SHORT).show();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(PACKAGE_INFO_DIALOG);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
 
     }
 
     @Override
-    public void hideProgress() {
+    public void onChannelPckgBuyError(int packageId, String message) {
+        Toast.makeText(PackageActivity.this, message + ", package_icon purchase failed!", Toast.LENGTH_SHORT).show();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(PACKAGE_INFO_DIALOG);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+    }
 
+    @Override
+    public void setMoviePcgkBuyRespone(BuyResponse buyRespone) {
+        Toast.makeText(PackageActivity.this, buyRespone.getName() + "successfully bought", Toast.LENGTH_SHORT).show();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(PACKAGE_INFO_DIALOG);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+    }
+
+    @Override
+    public void onMoviePckgBuyError(int packageId, String message) {
+        Toast.makeText(PackageActivity.this, message + ", package_icon purchase failed!", Toast.LENGTH_SHORT).show();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(PACKAGE_INFO_DIALOG);
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+    }
+
+    @Override
+    public void showProgress() {
+        startAnim();
+    }
+
+    private void startAnim() {
+        progressbar.smoothToShow();
+    }
+
+    @Override
+    public void hideProgress() {
+        stopAnim();
+    }
+
+    private void stopAnim() {
+        progressbar.smoothToHide();
     }
 
     @Override
@@ -161,5 +218,24 @@ public class PackageActivity extends AppCompatActivity implements UserApiInterfa
     @Override
     public void setOrderHistory(List<OrderItem> orderHistory) {
 
+    }
+
+    @Override
+    public void onPurchaseInteraction(PackagesInfo packagesInfo, String packageType) {
+        PackageDialogFragment packageDialogFragment = PackageDialogFragment.newInstance(packageType, packagesInfo);
+        packageDialogFragment.show(getSupportFragmentManager(), PACKAGE_INFO_DIALOG);
+    }
+
+    @Override
+    public void onBuyClick(String packageType, int packageId, int duration) {
+        switch (packageType) {
+            case CHANNEL_PACKAGE:
+                channelPckgBuyPres.buyChannelPcgk(packageId, duration, loginData.getToken());
+                break;
+            case MOVIE_PACKAGE:
+                moviePckgBuyPres.buyMoviePcgk(packageId, duration, loginData.getToken());
+                break;
+
+        }
     }
 }
