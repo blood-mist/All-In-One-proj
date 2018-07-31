@@ -43,6 +43,7 @@ import comcast.stb.entity.EventItem;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
+import static comcast.stb.StringData.CHANNEL_CATEGORY;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 import static comcast.stb.StringData.USER_NAME;
 
@@ -133,6 +134,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     ProgramRecyclerAdapter programRecyclerAdapter;
     DvrRecyclerAdapter dvrRecyclerAdapter;
     DateAdapter dateAdapter;
+    private static MenuFragment instance;
 
     public MenuFragment() {
     }
@@ -153,11 +155,16 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
         return fragment;
     }
 
+    public static MenuFragment getInstance() {
+        return instance= instance==null?new MenuFragment():instance;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            channelCategoryList = getArguments().getParcelableArrayList(CHANNEL_LIST);
+            Timber.d("MenuFragment Keys"+ getArguments().keySet().toArray().toString());
+            this.channelCategoryList = getArguments().getParcelableArrayList(CHANNEL_CATEGORY);
             username = getArguments().getString(USER_NAME);
 
         }
@@ -292,8 +299,9 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
                     break;
                 }
             }
-            categoryRecyclerAdapter.setSelectedPos(channelCategoryList.indexOf(currentCategory));
+
             assert currentCategory != null;
+            categoryRecyclerAdapter.setSelectedPos(channelCategoryList.indexOf(currentCategory));
             onCategoryListClickInteraction(currentCategory);
             Timber.d("category:" + channelCategoryList.indexOf(currentCategory));
         }

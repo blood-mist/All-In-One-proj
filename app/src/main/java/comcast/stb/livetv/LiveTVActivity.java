@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -55,11 +56,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
+import static comcast.stb.StringData.CHANNEL_CATEGORY;
+import static comcast.stb.StringData.CURRENT_CHANNEL;
+import static comcast.stb.StringData.EPG_DVR_FRAGMENT;
 import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
 import static comcast.stb.StringData.LIVE_DVR_ERROR;
 import static comcast.stb.StringData.LIVE_EPG_ERROR;
 import static comcast.stb.StringData.LIVE_PLAY_ERROR;
-import static comcast.stb.StringData.MENU_FRAGMENT;
+import static comcast.stb.StringData.CAT_CHANNEL_FRAGMENT;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 
 
@@ -113,24 +117,19 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            showMenu();
+//            showMenu();
+            Fragment frag= getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
+            if(frag!=null&&frag.isVisible())
+                hideFragment(frag);
+            else
+                openFragment(false,null);
+
+
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    private void showMenu() {
-        Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
-        if (menuFrag == null)
-            getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName()), MENU_FRAGMENT).commit();
-        else {
-            if (menuFrag.isHidden())
-                getSupportFragmentManager().beginTransaction().show(menuFrag).commit();
-            else
-                getSupportFragmentManager().beginTransaction().hide(menuFrag).commit();
 
-
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -142,40 +141,32 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         super.onBackPressed();
     }
 
-    private void updateMenuUI() {
-        Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
-        if (menuFrag != null)
-            getSupportFragmentManager().beginTransaction().hide(menuFrag).commit();
 
-    }
 
     @Override
     public void setChannelsWithCategory(List<ChannelCategory> channelCategoryList) {
         this.channelCategoryList = channelCategoryList;
         progressContainer.setVisibility(View.GONE);
-        showMenu();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(CHANNEL_CATEGORY, (ArrayList<? extends Parcelable>) channelCategoryList);
+        openFragment(false,bundle);
+//        showMenu();
     }
 
     @Override
     public void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
         Log.d("hashmp", epgChannelList.size() + "");
-        final ArrayList<Calendar> calendarList = new ArrayList<>();
-        ArrayList<String> keys = new ArrayList<>(epgChannelList.keySet());
-        for (int i = 0; i < keys.size(); i++) {
-            Calendar calendar = Calendar.getInstance();
-            try {
-                calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(keys.get(i)));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            calendarList.add(calendar);
-        }
-        updateEpginMenu(calendarList, epgChannelList);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("epgChannelList", (Parcelable) epgChannelList);
+        hideFragment(MenuFragment.getInstance());
+//        getSupportFragmentManager().beginTransaction().hide(MenuFragment.getInstance()).commit();
+        openFragment(true,bundle);;
+//        updateEpginMenu(calendarList, epgChannelList);
     }
 
     private void updateEpginMenu(ArrayList<Calendar> calendarList, LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
         Log.d("CalendarListSize", calendarList.size() + "");
-        MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
+        EpgFragment menuFragment = (EpgFragment) getSupportFragmentManager().findFragmentByTag(EPG_DVR_FRAGMENT);
         menuFragment.populateDayList(calendarList, epgChannelList);
 
     }
@@ -185,7 +176,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         switch (errorType) {
             case LIVE_EPG_ERROR:
             case LIVE_DVR_ERROR:
-                MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
+                MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(CAT_CHANNEL_FRAGMENT);
                 menuFragment.hideEpgMenu();
                 break;
 
@@ -201,8 +192,8 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     @Override
     public void setDvr(List<DvrResponse> dvrList,Channel channel) {
-        MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(MENU_FRAGMENT);
-        menuFragment.populateDvr(dvrList,channel);
+//        EpgFragment menuFragment = (EpgFragment) getSupportFragmentManager().findFragmentByTag(EPG_DVR_FRAGMENT);
+//        menuFragment.populateDvr(dvrList,channel);
 
     }
 
@@ -247,10 +238,9 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         @Override
         public void run() {
             try {
-
-                updateMenuUI();
-
-
+                Fragment fragment= getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
+                if(fragment!=null&&fragment.isVisible())
+                    hideFragment(fragment);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -292,7 +282,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     private void playVideo(String link, final boolean isDvr) {
         player.reset();
-//        link= "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+        link= "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
         try {
             player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -333,15 +323,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                     }
                     player.reset();
                     Toast.makeText(LiveTVActivity.this, "Error Playing Media", Toast.LENGTH_LONG).show();
-                    Fragment menuFrag = getSupportFragmentManager().findFragmentById(R.id.livetv_menu_container);
-                    if (menuFrag == null)
-                        getSupportFragmentManager().beginTransaction().replace(R.id.livetv_menu_container, MenuFragment.newInstance(channelCategoryList, loginData.getUser().getName()), MENU_FRAGMENT).commit();
-                    else {
-                        if (menuFrag.isHidden())
-                            getSupportFragmentManager().beginTransaction().show(menuFrag).commit();
-                    }
-//                    progressContainer.setVisibility(View.GONE);
-//                    showAlertDialog(getActivity().getResources().getString(R.string.server_down));
+                    openFragment(false,null);
                     return false;
                 }
             });
@@ -517,4 +499,22 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     public void cancelEpgDvrLoad() {
         ApiManager.cancelALLCalls();
     }
+    public void openFragment(boolean isEpg, Bundle bundle ){
+        Fragment frag = isEpg? EpgFragment.getInstance():MenuFragment.getInstance();
+        bundle=bundle==null?new Bundle():bundle;
+        bundle.putParcelableArrayList(CHANNEL_CATEGORY, (ArrayList<? extends Parcelable>) channelCategoryList);
+        bundle.putParcelable(CURRENT_CHANNEL,currentChannel);
+        frag.setArguments(bundle);
+        if(!frag.isAdded())
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.livetv_menu_container,frag,
+                            isEpg?EPG_DVR_FRAGMENT:CAT_CHANNEL_FRAGMENT)
+                    .commit();
+        else if(!frag.isHidden())
+            getSupportFragmentManager().beginTransaction().show(frag).commit();
+    }
+    public void hideFragment(Fragment frag){
+        getSupportFragmentManager().beginTransaction().hide(frag).commit();
+    }
+
 }
