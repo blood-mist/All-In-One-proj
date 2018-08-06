@@ -112,7 +112,7 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
         lstBasic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                if(position ==3)
+                if(position ==2)
                 startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
 
             }
@@ -190,7 +190,7 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
     private void populateList() {
         AppListRecyclerAdapter appListRecyclerAdapter = new AppListRecyclerAdapter(LauncherModifiedActivity.this, appDataList, appRecyclerList);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL);
-        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         appRecyclerList.setLayoutManager(/*new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)*/layoutManager);
         appRecyclerList.setAdapter(appListRecyclerAdapter);
         appRecyclerList.setNestedScrollingEnabled(false);

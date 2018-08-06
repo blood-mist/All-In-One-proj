@@ -9,8 +9,8 @@
 
     <LinearLayout
         android:id="@+id/item_layout"
-        android:layout_width="300dp"
-        android:layout_height="340dp"
+        android:layout_width="280dp"
+        android:layout_height="300dp"
         android:padding="5dp"
         android:focusable="true"
         android:clickable="true"

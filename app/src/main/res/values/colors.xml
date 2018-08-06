@@ -35,5 +35,6 @@
     <color name="color_theme">#4576BA</color>
     <color name="color_theme_focused">#aa4576BA</color>
     <color name="color_theme_selected">#ee4576BA</color>
+    <color name="color_white_partial">#c0f0f0f0</color>
 
 </resources>

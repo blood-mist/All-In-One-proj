@@ -11,13 +11,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@drawable/theme_selector"
         android:importantForAccessibility="yes"
         android:id="@+id/channel_item_layout"
         android:focusable="true"
         android:clickable="true"
         android:focusableInTouchMode="true">
         <!--android:background="@drawable/category_list_selector"-->
+
         <ImageView
             android:id="@+id/img_channel"
             android:layout_width="100dp"
@@ -25,7 +25,7 @@
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:padding="10dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerInside"
             android:src="@drawable/placeholder" />
 
 

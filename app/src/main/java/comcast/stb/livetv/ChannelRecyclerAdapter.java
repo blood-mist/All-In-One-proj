@@ -97,6 +97,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
             super(itemView);
 //           channelTitle = itemView.findViewById(R.id.txt_channelname);
             channelImage=itemView.findViewById(R.id.img_channel);
+            channelImage.setImageAlpha(100);
             itemLayout = itemView.findViewById(R.id.channel_item_layout);
             itemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,8 +111,10 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
                 @Override
                 public void onFocusChange(View view, boolean b) {
                     if (b) {
+                        channelImage.setImageAlpha(255);
                         onChannelSelected(channelList.get(getAdapterPosition()));
                     } else {
+                        channelImage.setImageAlpha(100);
                         mListener.onChannelDeselected();
 
                     }

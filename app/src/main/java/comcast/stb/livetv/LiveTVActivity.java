@@ -152,32 +152,46 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         openFragment(false,bundle);
 //        showMenu();
     }
+    private ArrayList<Calendar> getCalendarList(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
+        Log.d("hashmp", epgChannelList.size() + "");
+        final ArrayList<Calendar> calendarList = new ArrayList<>();
+        ArrayList<String> keys = new ArrayList<>(epgChannelList.keySet());
+        for (int i = 0; i < keys.size(); i++) {
+            Calendar calendar = Calendar.getInstance();
+            try {
+                calendar.setTime(new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(keys.get(i)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            calendarList.add(calendar);
+        }
+        return calendarList;
+    }
+
 
     @Override
     public void setEpg(LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
         Log.d("hashmp", epgChannelList.size() + "");
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("epgChannelList", (Parcelable) epgChannelList);
-        hideFragment(MenuFragment.getInstance());
-//        getSupportFragmentManager().beginTransaction().hide(MenuFragment.getInstance()).commit();
-        openFragment(true,bundle);;
-//        updateEpginMenu(calendarList, epgChannelList);
-    }
-
-    private void updateEpginMenu(ArrayList<Calendar> calendarList, LinkedHashMap<String, ArrayList<EventItem>> epgChannelList) {
-        Log.d("CalendarListSize", calendarList.size() + "");
-        EpgFragment menuFragment = (EpgFragment) getSupportFragmentManager().findFragmentByTag(EPG_DVR_FRAGMENT);
-        menuFragment.populateDayList(calendarList, epgChannelList);
+        ArrayList<Calendar> calendarList = getCalendarList(epgChannelList);
+        if (calendarList.size() > 0){
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("epgChannelList",  epgChannelList);
+            hideFragment(MenuFragment.getInstance());
+            openFragment(true,bundle);;
+        }else{
+            Toast.makeText(this,"NO EPG Found",Toast.LENGTH_SHORT).show();
+        }
 
     }
+
+
 
     @Override
     public void onErrorOccured(String message, Channel channel, String errorType) {
         switch (errorType) {
             case LIVE_EPG_ERROR:
             case LIVE_DVR_ERROR:
-                MenuFragment menuFragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag(CAT_CHANNEL_FRAGMENT);
-                menuFragment.hideEpgMenu();
+                Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
                 break;
 
             default:
@@ -510,7 +524,12 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
                     .add(R.id.livetv_menu_container,frag,
                             isEpg?EPG_DVR_FRAGMENT:CAT_CHANNEL_FRAGMENT)
                     .commit();
-        else if(!frag.isHidden())
+        else if(isEpg&& frag.isVisible()){
+            ((EpgFragment)frag).updateDatas(bundle);
+
+        }
+
+        else /*if(!frag.isHidden())*/
             getSupportFragmentManager().beginTransaction().show(frag).commit();
     }
     public void hideFragment(Fragment frag){

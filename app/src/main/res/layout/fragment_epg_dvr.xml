@@ -19,8 +19,12 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_channel_list"
             android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1" />
+            android:layout_height="80dp"
+             />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:background="#80b7b7b7"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,6 +37,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <TextView
@@ -58,18 +63,28 @@
                     android:text="Program Name" />
 
             </LinearLayout>
+            <View
+                android:layout_width="1dip"
+                android:layout_height="match_parent"
+                android:background="#80b7b7b7"/>
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/date_recycler"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
+            <View
+                android:layout_width="1dip"
+                android:layout_height="match_parent"
+                android:background="#80b7b7b7"/>
+
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/prgm_recycler"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="5" />
+                android:layout_weight="7" />
 
         </LinearLayout>
     </LinearLayout>

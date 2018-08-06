@@ -111,6 +111,8 @@ public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecycler
         AppData appData = appList.get(position);
         holder.apptitle.setText(appData.getAppName());
         holder.appImage.setImageDrawable(appData.getAppImage());
+//        holder.itemLayout.setScaleX(0.8f);
+//        holder.itemLayout.setScaleY(0.8f);
     }
 
     @Override
@@ -127,6 +129,19 @@ public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecycler
             appImage=itemView.findViewById(R.id.img_appicon);
             apptitle =  itemView.findViewById( R.id.txt_appName);
             itemLayout=itemView.findViewById(R.id.item_layout);
+            itemLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if(b) {
+                        itemLayout.setScaleX(1.1f);
+                        itemLayout.setScaleY(1.1f);
+
+                    }else{
+                        itemLayout.setScaleX(1f);
+                        itemLayout.setScaleY(1f);
+                    }
+                }
+            });
             itemLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

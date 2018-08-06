@@ -12,7 +12,7 @@
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:padding="5dp"
-        android:background="@drawable/category_list_selector"
+        android:background="@drawable/theme_selector"
         android:focusable="true">
         <TextView
             android:id="@+id/txt_timeDuration"

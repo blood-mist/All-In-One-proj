@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
 import comcast.stb.entity.DvrResponse;
 import comcast.stb.entity.EventItem;
+
+import static comcast.stb.StringData.CHANNEL_CATEGORY;
+import static comcast.stb.StringData.CURRENT_CHANNEL;
 
 public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListener, ChannelRecyclerAdapter.OnChannelListInteractionListener {
     private ArrayList<ChannelCategory> channelCategoryList;
@@ -52,19 +56,17 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            channelCategoryList = getArguments().getParcelableArrayList(CHANNEL_LIST);
             channelId = getArguments().getInt(CHANNEL_ID);
-            populateChannelList(channelCategoryList);
+//            populateChannelList(channelCategoryList);
         }
     }
 
-    private void populateChannelList(ArrayList<ChannelCategory> channelCategoryList) {
+    private void populateChannelList(List<ChannelCategory> channelCategoryList) {
         ArrayList<Channel> channels = new ArrayList<>();
         for (ChannelCategory category : channelCategoryList)
             channels.addAll(category.getChannels());
 
         ChannelRecyclerAdapter adapter = new ChannelRecyclerAdapter(getContext(), channels, EpgFragment.this);
-        recChannels.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
         recChannels.setAdapter(adapter);
     }
 
@@ -84,11 +86,18 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View menuView = inflater.inflate(R.layout.fragment_epg_dvr, container, false);
+
         ButterKnife.bind(this, menuView);
-        pgmRecyclerList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        recChannels.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
+        pgmRecyclerList.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        channelCategoryList = getArguments().getParcelableArrayList(CHANNEL_CATEGORY);
+        populateChannelList(channelCategoryList);
         if (getActivity() instanceof LiveTVActivity) {
-            currentChannel = ((LiveTVActivity) getActivity()).getCurrentChannel();
+            currentChannel = getArguments().getParcelable(CURRENT_CHANNEL);
+            updateDatas(getArguments());
+//            populateEpg(currentChannel);
         }
+        Log.d("EPG FRAG CREATE VIEW", "complete: ");
         return menuView;
     }
 
@@ -97,7 +106,7 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
         super.onActivityCreated(savedInstanceState);
 //        userName.setText(username);
 
-        populateEpg(channelCategoryList, currentChannel);
+
     }
 
     @Override
@@ -106,7 +115,8 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
         if (context instanceof MenuFragment.OnChannelClickedListener) {
             clickListener = (MenuFragment.OnChannelClickedListener) context;
             if(getArguments()!=null){
-                populateChannelList(getArguments().<ChannelCategory>getParcelableArrayList(CHANNEL_LIST));
+                channelCategoryList = getArguments().getParcelableArrayList(CHANNEL_CATEGORY);
+//                populateChannelList(channelCategories);
             }
         } else {
             throw new RuntimeException(context.toString()
@@ -114,9 +124,7 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
         }
     }
 
-    private void populateEpg(ArrayList<ChannelCategory> channelCategoryList, Channel currentChannel) {
 
-    }
 
     @Override
     public void onDetach() {
@@ -136,14 +144,13 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
             this.calendarList = new ArrayList<>(calendarList.subList(0, 3));
         else
             this.calendarList = calendarList;
-        RecyclerView dayRecyclerList = null;
         if (dateAdapter == null) {
             dateAdapter = new DateAdapter(getActivity(), this.calendarList, EpgFragment.this);
-            dayRecyclerList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-            dayRecyclerList.setAdapter(dateAdapter);
+            recDate.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+            recDate.setAdapter(dateAdapter);
         } else {
             dateAdapter = new DateAdapter(getActivity(), this.calendarList, EpgFragment.this);
-            dayRecyclerList.swapAdapter(dateAdapter, false);
+            recDate.swapAdapter(dateAdapter, false);
         }
         onDayClicked(0);
     }
@@ -156,22 +163,11 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
         pgmRecyclerList.setAdapter(programRecyclerAdapter);
     }
 
-    public void populateDvr(List<DvrResponse> dvrList, Channel channel) {
-
-    }
-
-
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
             Bundle b = getArguments();
-            //set Focus on channel
-            LinkedHashMap<String, ArrayList<EventItem>> epgChannelList = b.getParcelable("epgChannelList");
-            calendarList = getCalendarList(epgChannelList);
-            //click on calendar
-            //set epg
-            populateDayList(calendarList, epgChannelList);
-
+            updateDatas(b);
         }
         super.onHiddenChanged(hidden);
     }
@@ -206,5 +202,13 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
     @Override
     public void onChannelDeselected() {
 
+    }
+
+    public void updateDatas(Bundle bundle) {
+        LinkedHashMap<String, ArrayList<EventItem>> epgChannelList = (LinkedHashMap<String, ArrayList<EventItem>>) bundle.getSerializable("epgChannelList");
+        calendarList = getCalendarList(epgChannelList);
+        //click on calendar
+        //set epg
+        populateDayList(calendarList, epgChannelList);
     }
 }
