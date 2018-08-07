@@ -7,8 +7,7 @@
     android:layout_gravity="center"
     android:background="@color/colorPrimary"
     android:gravity="center"
-    android:orientation="vertical"
-    tools:context="com.crostinotv.stb.splashscreen.SplashActivity">
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"

@@ -46,6 +46,7 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
     LiveTVApiInterface.ChannelWithCategoryListener channelWithCategoryListener;
     TokenPresImpl tokenPres;
     LogoutPresImpl logoutPres;
+    private String language;
 
     public LiveTVModel(LiveTVApiInterface.ChannelWithCategoryListener channelWithCategoryListener, LogoutPresImpl logoutPres) {
         this.channelWithCategoryListener = channelWithCategoryListener;
@@ -54,12 +55,13 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
     }
 
     @Override
-    public void getChannelsWithCategory(final String token) {
+    public void getChannelsWithCategory(final String token,String language) {
         Retrofit retrofit = ApiManager.getAdapter();
         final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
+        this.language=language;
 
 
-        Observable<Response<List<ChannelCategory>>> observable = channelApiInterface.getChannelsWithCategory(token);
+        Observable<Response<List<ChannelCategory>>> observable = channelApiInterface.getChannelsWithCategory(token,language);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<List<ChannelCategory>>>() {
                     @Override
@@ -100,13 +102,14 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                 });
     }
 
+
     @Override
-    public void getEpg(int channelId, final String token) {
+    public void getEpg(int channelId, final String token,String language) {
         Retrofit retrofit = ApiManager.getAdapter();
         final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
 
 
-        Observable<Response<EpgResponse>> observable = channelApiInterface.getEpg(channelId, token);
+        Observable<Response<EpgResponse>> observable = channelApiInterface.getEpg(channelId, token,language);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<EpgResponse>>() {
                     @Override
@@ -145,13 +148,13 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
     }
 
     @Override
-    public void getDvr(final Channel channel, String token) {
+    public void getDvr(final Channel channel, String token,String language) {
 
         String dvrPath=channel.getDvrPath();
         dvrPath="cinevision";
         Retrofit retrofit = ApiManager.getAdapter();
         final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
-        Observable<Response<List<DvrResponse>>> observable = channelApiInterface.getDvr(dvrPath, token);
+        Observable<Response<List<DvrResponse>>> observable = channelApiInterface.getDvr(dvrPath, token,language);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<List<DvrResponse>>>() {
                     @Override
@@ -194,10 +197,10 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
     }
 
     @Override
-    public void getDvrLink(final Channel channel, String dvrName, String token) {
+    public void getDvrLink(final Channel channel, String dvrName, String token,String language) {
         Retrofit retrofit = ApiManager.getAdapter();
         final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
-        Observable<Response<DvrLink>> observable = channelApiInterface.getDvrLink(channel.getDvrPath(),dvrName, token);
+        Observable<Response<DvrLink>> observable = channelApiInterface.getDvrLink(channel.getDvrPath(),dvrName, token,language);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<DvrLink>>() {
                     @Override
@@ -306,7 +309,7 @@ public class LiveTVModel implements LiveTVApiInterface.ChannelWithCategoryIntera
                 realm.insertOrUpdate(loginDatas);
             }
         });
-        getChannelsWithCategory(newToken.getToken());
+        getChannelsWithCategory(newToken.getToken(),language);
     }
 
     @Override

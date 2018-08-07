@@ -25,16 +25,19 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
 
     @Override
     public void getSubsHistory(String token) {
+        userView.showProgress();
         userDataInteractor.getSubsHistory(token);
     }
 
     @Override
     public void getOrderHistory(String token) {
+        userView.showProgress();
         userDataInteractor.getOrderHistory(token);
     }
 
     @Override
     public void getPackageInfo(String packageType, String token) {
+        userView.showProgress();
         userDataInteractor.getPackageInfo(packageType, token);
     }
 
@@ -42,22 +45,26 @@ public class UserPresImpl implements UserApiInterface.UserDataListener, UserApiI
     @Override
     public void takeSubsHistory(List<SubsItem> subsHistory) {
         userView.setSubsHistory(subsHistory);
+        userView.hideProgress();
     }
 
     @Override
     public void takeOrderHistory(List<OrderItem> orderHistory) {
         userView.setOrderHistory(orderHistory);
+        userView.hideProgress();
     }
 
     @Override
     public void takePackageInfo(List<PackagesInfo> channelInfoList, String packageType) {
         userView.setPackageInfo(channelInfoList, packageType);
+        userView.hideProgress();
     }
 
 
     @Override
     public void onErrorOccured( String message,String packageType,String errorType) {
         userView.onErrorOccured(message,packageType,PACKAGE_ERROR);
+        userView.hideProgress();
     }
 
 

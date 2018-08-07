@@ -46,13 +46,13 @@ public class PackageRecyclerAdapter extends  RecyclerView.Adapter<PackageRecycle
     }
     @Override
     public void onBindViewHolder(ViewHolder holder,  int position) {
-       switch(packageType){
-           case CHANNEL_PACKAGE:
-              holder. populateItemsForChannel();
-               break;
-           case MOVIE_PACKAGE:
-               holder.populateItemsForMovies();
-       }
+        switch(packageType){
+            case CHANNEL_PACKAGE:
+                holder. populateItemsForChannel();
+                break;
+            case MOVIE_PACKAGE:
+                holder.populateItemsForMovies();
+        }
         //bind MovieItemView here
     }
 

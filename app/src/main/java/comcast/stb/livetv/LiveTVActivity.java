@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -59,11 +60,13 @@ import timber.log.Timber;
 import static comcast.stb.StringData.CHANNEL_CATEGORY;
 import static comcast.stb.StringData.CURRENT_CHANNEL;
 import static comcast.stb.StringData.EPG_DVR_FRAGMENT;
+import static comcast.stb.StringData.LANGUAGE_ENGLISH;
 import static comcast.stb.StringData.LIVE_CATEGORY_ERROR;
 import static comcast.stb.StringData.LIVE_DVR_ERROR;
 import static comcast.stb.StringData.LIVE_EPG_ERROR;
 import static comcast.stb.StringData.LIVE_PLAY_ERROR;
 import static comcast.stb.StringData.CAT_CHANNEL_FRAGMENT;
+import static comcast.stb.StringData.PREF_LANG;
 import static comcast.stb.StringData.PURCHASE_TYPE_BUY;
 
 
@@ -84,7 +87,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
     public MediaPlayer player;
     Channel previousChannel;
     LogoutPresImpl logoutPres;
-
+    private String preflang;
     public Channel getCurrentChannel() {
         return currentChannel;
     }
@@ -96,6 +99,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_tv);
         ButterKnife.bind(this);
+        preflang = PreferenceManager.getDefaultSharedPreferences(this).getString(PREF_LANG, LANGUAGE_ENGLISH);
         progressContainer.setVisibility(View.VISIBLE);
         hideMenuHandler = new Handler();
         realm = Realm.getDefaultInstance();
@@ -106,7 +110,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         player = new MediaPlayer();
         logoutPres = new LogoutPresImpl(this);
         liveTVPresenter = new LiveTVPresenterImpl(this, logoutPres);
-        liveTVPresenter.getChannelsWithCategory(authToken);
+        liveTVPresenter.getChannelsWithCategory(authToken,preflang);
         previousChannel = realm.where(Channel.class).findFirst();
         if (previousChannel != null) {
             onChannelClicked(previousChannel);
@@ -383,17 +387,17 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
 
     @Override
     public void onDvrClicked(Channel channel, DvrResponse dvrResponse) {
-            liveTVPresenter.getDvrLink(channel,dvrResponse.getUrl(),loginData.getToken());
+        liveTVPresenter.getDvrLink(channel,dvrResponse.getUrl(),loginData.getToken(),preflang);
     }
 
     @Override
     public void OnEPGClicked(Channel channel){
-        liveTVPresenter.getEpg(channel.getChannelId(), loginData.getToken());
+        liveTVPresenter.getEpg(channel.getChannelId(), loginData.getToken(),preflang);
 
     }
     @Override
     public void OnDVRClicked(Channel channel){
-        liveTVPresenter.getDvr(channel, loginData.getToken());
+        liveTVPresenter.getDvr(channel, loginData.getToken(),preflang);
     }
     @Override
     public void onLogoutClicked() {
@@ -432,7 +436,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         updateProgress(true);
         Retrofit retrofit = ApiManager.getAdapter();
         final LiveTVApiInterface channelApiInterface = retrofit.create(LiveTVApiInterface.class);
-        Observable<Response<TvLink>> observable = channelApiInterface.getChannelLink(channel.getChannelId(), loginData.getToken());
+        Observable<Response<TvLink>> observable = channelApiInterface.getChannelLink(channel.getChannelId(), loginData.getToken(),preflang);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<TvLink>>() {
                     @Override
@@ -493,7 +497,7 @@ public class LiveTVActivity extends AppCompatActivity implements LiveTVApiInterf
         onDismissBtnInteraction();
         switch (errorType) {
             case LIVE_CATEGORY_ERROR:
-                liveTVPresenter.getChannelsWithCategory(loginData.getToken());
+                liveTVPresenter.getChannelsWithCategory(loginData.getToken(),preflang);
                 break;
             case LIVE_PLAY_ERROR:
                 getChannelLink(channel);

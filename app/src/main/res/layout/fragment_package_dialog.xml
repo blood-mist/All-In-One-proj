@@ -2,10 +2,10 @@
 <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="800dp"
+    android:layout_gravity="center"
     android:layout_height="wrap_content"
-    android:background="@color/white_selection"
-    tools:context="comcast.stb.launcher.LauncherActivity">
+    android:background="@color/white_no_selection">
 
 
     <TextView
@@ -15,11 +15,12 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="5dp"
-        android:gravity="center"
+        android:layout_margin="10dp"
         android:padding="10dp"
         android:singleLine="true"
-        android:text="@string/channels"
+        android:text="PACKAGE DETAILS"
+        android:textAllCaps="true"
+        android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@drawable/text_selector"
         app:layout_widthPercent="59%" />
@@ -33,17 +34,16 @@
         android:layout_alignLeft="@+id/txt_package_label"
         android:layout_alignRight="@+id/txt_package_label"
         android:layout_alignStart="@+id/txt_package_label"
-        android:layout_below="@+id/txt_package_label"
+        android:layout_below="@+id/pckg_line_view"
+        android:layout_margin="10dp"
         android:padding="10dp" />
 
     <View
         android:id="@+id/pckg_line_view"
-        android:layout_width="1dp"
-        android:layout_margin="5dp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/txt_package_label"
-        android:layout_alignBottom="@+id/description_container"
-        android:layout_toRightOf="@id/txt_package_label"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:layout_height="1dp"
+       android:layout_below="@+id/txt_package_label"
         android:background="@color/white_selection"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"/>
@@ -51,14 +51,11 @@
     <LinearLayout
         android:id="@+id/description_container"
         android:layout_width="0dp"
+        android:layout_margin="10dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_toEndOf="@+id/pckg_line_view"
-        android:layout_toRightOf="@+id/pckg_line_view"
+        android:layout_below="@+id/pckg_line_view"
         android:orientation="vertical"
         app:layout_widthPercent="40%">
 
@@ -68,16 +65,14 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="@string/txt_package_description"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/white_color"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="Duration in Months"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/white_color" />
 
         <Spinner
@@ -102,7 +97,6 @@
                 android:padding="10dp"
                 android:text="buy now to get exclusive offers"
                 android:textAllCaps="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/white_color"
                 android:textStyle="bold" />
 
@@ -112,24 +106,37 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="Price:"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/white_color" />
 
-            <Button
-                android:id="@+id/btn_package_buy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:textColor="@color/white_color"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textAllCaps="true"
-                android:background="@drawable/button_selector"
-                android:gravity="center"
-                android:text="buy" />
         </LinearLayout>
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_package_buy"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:textColor="@color/white_color"
+        android:textAllCaps="true"
+        android:layout_below="@+id/description_container"
+        android:layout_toStartOf="@+id/btn_packageCancel"
+        android:background="@drawable/button_selector"
+        android:gravity="center"
+        android:text="buy" />
 
+    <Button
+        android:id="@+id/btn_packageCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:textColor="@color/white_color"
+        android:textAllCaps="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/description_container"
+        android:background="@drawable/button_selector"
+        android:gravity="center"
+        android:text="@string/cancel" />
 </android.support.percent.PercentRelativeLayout>
 
 

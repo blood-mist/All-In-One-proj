@@ -40,7 +40,6 @@ import comcast.stb.entity.Channel;
 import comcast.stb.entity.ChannelCategory;
 import comcast.stb.entity.DvrResponse;
 import comcast.stb.entity.EventItem;
-import comcast.stb.fm.FmCategoryRecyclerAdapter;
 import timber.log.Timber;
 
 import static android.view.View.GONE;
@@ -115,7 +114,7 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
     @BindView(R.id.layout_cat_channels)
     LinearLayout layoutCatChannels;
 
-//    @BindView(R.id.epg_list_layout)
+    //    @BindView(R.id.epg_list_layout)
 //    LinearLayout epgListlayouut;
     private Channel currentChannel;
     private LinkedHashMap<String, ArrayList<EventItem>> epghashMap;
@@ -228,47 +227,47 @@ public class MenuFragment extends Fragment implements CategoryRecyclerAdapter.On
 
     }
 
-   /* @OnClick(R.id.img_tv_logout)
-    public void logout() {
-        clickListener.onLogoutClicked();
-    }*/
-   public void loadEpg(Channel channel){
-       switch (channel.getSubscriptionStatus()) {
-           case PURCHASE_TYPE_BUY:
-               buylayout.setVisibility(View.VISIBLE);
+    /* @OnClick(R.id.img_tv_logout)
+     public void logout() {
+         clickListener.onLogoutClicked();
+     }*/
+    public void loadEpg(Channel channel){
+        switch (channel.getSubscriptionStatus()) {
+            case PURCHASE_TYPE_BUY:
+                buylayout.setVisibility(View.VISIBLE);
 //               epgContainer.setVisibility(GONE);
-               break;
-           default:
-               if (channel.getExpiry()) {
-                   buylayout.setVisibility(View.VISIBLE);
+                break;
+            default:
+                if (channel.getExpiry()) {
+                    buylayout.setVisibility(View.VISIBLE);
 //                   epgContainer.setVisibility(GONE);
-               } else {
-                   buylayout.setVisibility(GONE);
+                } else {
+                    buylayout.setVisibility(GONE);
 //                   epgContainer.setVisibility(View.VISIBLE);
 
-               }
-               break;
-       }
+                }
+                break;
+        }
 
-   }
-   public void loadDvr(Channel channel){
-       switch (channel.getSubscriptionStatus()) {
-           case PURCHASE_TYPE_BUY:
-               buylayout.setVisibility(View.VISIBLE);
+    }
+    public void loadDvr(Channel channel){
+        switch (channel.getSubscriptionStatus()) {
+            case PURCHASE_TYPE_BUY:
+                buylayout.setVisibility(View.VISIBLE);
 //               epgContainer.setVisibility(GONE);
-               break;
-           default:
-               if (channel.getExpiry()) {
-                   buylayout.setVisibility(View.VISIBLE);
+                break;
+            default:
+                if (channel.getExpiry()) {
+                    buylayout.setVisibility(View.VISIBLE);
 //                   epgContainer.setVisibility(GONE);
-               } else {
-                   buylayout.setVisibility(GONE);
+                } else {
+                    buylayout.setVisibility(GONE);
 //                   epgContainer.setVisibility(View.VISIBLE);
-               }
-               break;
-       }
+                }
+                break;
+        }
 
-   }
+    }
 
     private void populateChannelWithCategory(ArrayList<ChannelCategory> channelCategoryList) {
         this.channelCategoryList = channelCategoryList;

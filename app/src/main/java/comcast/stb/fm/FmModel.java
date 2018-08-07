@@ -27,6 +27,7 @@ public class FmModel implements FmApiInterface.FmWithCategoryInteractor,TokenRef
     FmApiInterface.FmWithCategoryListener fmWithCategoryListener;
     TokenPresImpl tokenPres;
     LogoutPresImpl logoutPres;
+    private String language;
 
 
     public FmModel(FmApiInterface.FmWithCategoryListener fmWithCategoryListener,LogoutPresImpl logoutPres) {
@@ -36,12 +37,13 @@ public class FmModel implements FmApiInterface.FmWithCategoryInteractor,TokenRef
     }
 
     @Override
-    public void getFmsWithCategory(final String token) {
+    public void getFmsWithCategory(final String token,String language) {
         Retrofit retrofit = ApiManager.getAdapter();
         final FmApiInterface fmApiInterface = retrofit.create(FmApiInterface.class);
+        this.language=language;
 
 
-        Observable<Response<List<FmCategory>>> observable = fmApiInterface.getFmsWithCategory(token);
+        Observable<Response<List<FmCategory>>> observable = fmApiInterface.getFmsWithCategory(token,language);
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response<List<FmCategory>>>() {
                     @Override
@@ -94,7 +96,7 @@ public class FmModel implements FmApiInterface.FmWithCategoryInteractor,TokenRef
                 realm.insertOrUpdate(loginDatas);
             }
         });
-        getFmsWithCategory(newToken.getToken());
+        getFmsWithCategory(newToken.getToken(),language);
     }
 
     @Override

@@ -1,9 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.crostinotv.stb.subscription.SubscriptionActivity">
+    android:background="@drawable/bgs"
+    android:padding="25dp">
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/img_userProfile"
+        android:layout_margin="20dp"
+        android:layout_width="80dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="80dp"
+        android:src="@drawable/userimage"/>
+
+    <TextView
+        android:id="@+id/txt_userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/img_userProfile"
+        android:text="UserName"
+        android:padding="3dp"
+        android:layout_alignTop="@+id/img_userProfile"/>
+
+    <TextView
+        android:id="@+id/txt_userEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_userName"
+        android:text="abc@abc.com"
+        android:padding="3dp"
+        android:layout_alignStart="@+id/txt_userName"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txt_userBalance"
+        android:text="You have $0"
+        android:padding="3dp"
+        android:layout_below="@+id/txt_userEmail"
+        android:layout_alignStart="@+id/txt_userEmail"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/img_userProfile"
+    android:orientation="vertical"
+    android:weightSum="2">
+    <TextView
+        android:id="@+id/txt_subscriptionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/subscriptions"
+        android:textAllCaps="true"
+        android:padding="20dp"
+        android:textStyle="bold"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recycler_subscription"
+            />
+        <TextView
+            android:id="@+id/txt_noSubscription"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:gravity="center"
+            android:text=" No Subscriptions Recorded. Please subscribe our packages first."/>
+    </FrameLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order History"
+        android:padding="20dp"
+        android:textAllCaps="true"
+        android:textStyle="bold"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp">
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recycler_orderHistory" />
+        <TextView
+            android:id="@+id/txt_noOrder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:visibility="gone"
+            android:gravity="center"
+            android:text=" No Orders Recorded. Please subscribe our packages first."/>
+    </FrameLayout>
+
+</LinearLayout>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/progress_subscription"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:indicatorColor="@color/white_color"
+        app:indicatorName="BallSpinFadeLoaderIndicator"/>
+
+</RelativeLayout>

@@ -28,24 +28,20 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     }
 
     @Override
-    public void getChannelsWithCategory(String token) {
-        channelWithCategoryInteractor.getChannelsWithCategory(token);
-    }
-
-    @Override
-    public void getEpg(int channelId,String token) {
-        channelWithCategoryInteractor.getEpg(channelId,token);
-    }
-
-    @Override
-    public void getDvr(Channel channel, String token) {
-        channelWithCategoryInteractor.getDvr(channel,token);
+    public void getChannelsWithCategory(String token,String language) {
+        channelWithCategoryInteractor.getChannelsWithCategory(token,language);
     }
 
 
     @Override
-    public void getDvrLink(Channel channel, String DvrName, String token) {
-        channelWithCategoryInteractor.getDvrLink(channel,DvrName,token);
+    public void getDvr(Channel channel, String token,String language) {
+        channelWithCategoryInteractor.getDvr(channel,token,language);
+    }
+
+
+    @Override
+    public void getDvrLink(Channel channel, String DvrName, String token,String language) {
+        channelWithCategoryInteractor.getDvrLink(channel,DvrName,token,language);
 
     }
 
@@ -58,6 +54,7 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     public void takeEpgList(LinkedHashMap<String, ArrayList<EventItem>> epgList) {
         channelWithCategoryView.setEpg(epgList);
     }
+
 
     @Override
     public void takeDvrList(List<DvrResponse> dvrList,Channel channel) {
@@ -72,6 +69,10 @@ public class LiveTVPresenterImpl implements LiveTVApiInterface.ChannelWithCatego
     @Override
     public void onErrorOccured(String message, Channel channel, String errorType) {
         channelWithCategoryView.onErrorOccured(message,channel,errorType);
+    }
+    @Override
+    public void getEpg(int channelId,String token,String language) {
+        channelWithCategoryInteractor.getEpg(channelId,token,language);
     }
 
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import comcast.stb.entity.ChannelPckgItem;
 import comcast.stb.entity.MoviePckgItem;
+import comcast.stb.entity.PackagesInfo;
 import comcast.stb.logout.LogoutPresImpl;
 
 /**
@@ -17,34 +18,44 @@ public class PackagePresenterImpl implements PackageApiInterface.PackageListener
         this.packagesView = packagesView;
         packageInteractor = new PackageModel(this,logoutPres);
     }
+
+
+
     @Override
     public void getChannlesInaPckg(int packageId, String token) {
+        packagesView.showProgress();
         packageInteractor.getChannlesInaPckg(packageId, token);
     }
 
     @Override
     public void getMoviesInaPckg(int packageId, String token) {
+        packagesView.showProgress();
         packageInteractor.getMoviesInaPckg(packageId, token);
     }
+
 
     @Override
     public void setChannelsInaPckg(int packageId, List<ChannelPckgItem> channelsInaPckgList) {
         packagesView.setChannelsInaPckg(packageId,channelsInaPckgList);
+        packagesView.hideProgress();
     }
 
     @Override
     public void setMoviesInaPckg(int packageId, List<MoviePckgItem> moviesInaPckgList) {
         packagesView.setMoviesInaPckg(packageId,moviesInaPckgList);
+        packagesView.hideProgress();
     }
 
     @Override
     public void onChannelInaPckgError(int packageId, String message) {
         packagesView.onChannelInaPckgError(packageId,message);
+        packagesView.hideProgress();
     }
 
     @Override
     public void onMoviesInaPckgError(int packageId, String message) {
         packagesView.onMoviesInaPckgError(packageId,message);
+        packagesView.hideProgress();
 
     }
 }

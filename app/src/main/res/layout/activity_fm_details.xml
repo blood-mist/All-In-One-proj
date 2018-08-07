@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/movies_details_screen_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bgs"
+    android:padding="25dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Similar FMs"
+        android:importantForAccessibility="no"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:padding="5dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:layout_alignParentTop="true"
+        android:id="@+id/similar_fms_label"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/simiar_fms_recycler"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/similar_fms_label"
+        android:padding="5dp"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:id="@+id/fm_details_seperator"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:importantForAccessibility="no"
+        android:layout_below="@id/simiar_fms_recycler"
+        android:layout_gravity="bottom"
+        android:background="@color/colorBlue" />
+    <LinearLayout
+        android:id="@+id/fm_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/fm_details_seperator"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.cleveroad.audiovisualization.GLAudioVisualizationView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/visualizer_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:av_bubblesSize="@dimen/bubble_size"
+                app:av_bubblesRandomizeSizes="true"
+                app:av_wavesHeight="@dimen/wave_height"
+                app:av_wavesFooterHeight="@dimen/footer_height"
+                app:av_wavesCount="7"
+                app:av_layersCount="4"
+                app:av_backgroundColor="@color/av_color_bg"
+                app:av_bubblesPerLayer="16"
+                />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:background="@color/transp60blue"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_name_desc"
+                    android:layout_width="300dp"
+                    android:layout_height="150dp"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/fm_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLength="30"
+                        android:maxLines="1"
+                        android:textAllCaps="true"
+                        android:text="Hello"
+                        android:textColor="@color/white_color"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/fm_picture"
+                        android:layout_width="80dp"
+                        android:layout_height="90dp"
+                        android:focusable="false"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        android:nextFocusRight="@+id/ll_buttons"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/placeholder" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/watch_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/button_selector"
+                    android:padding="5dp"
+                    android:layout_below="@id/layout_name_desc"
+                    android:clickable="true"
+                    android:orientation="horizontal"
+                    android:layout_gravity="bottom">
+                    <ImageView
+                        android:id="@+id/icon_fm_prev"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/exo_controls_previous"
+                        android:tint="@color/white_color"
+                        android:focusable="true"
+                        android:importantForAccessibility="yes"
+                        android:clickable="true"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/selector_fm_ctrl"
+                        android:focusableInTouchMode="true"
+                        android:nextFocusDown="@+id/layout_similar_movies" />
+
+                    <ImageView
+                        android:id="@+id/icon_fm_play"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/exo_controls_play"
+                        android:tint="@color/white_color"
+                        android:focusable="true"
+                        android:clickable="true"
+                        android:importantForAccessibility="yes"
+                        android:background="@drawable/selector_fm_ctrl"
+                        android:focusableInTouchMode="true"
+                        android:nextFocusDown="@+id/layout_similar_movies" />
+                    <ImageView
+                        android:id="@+id/icon_fm_next"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/exo_controls_next"
+                        android:tint="@color/white_color"
+                        android:importantForAccessibility="yes"
+                        android:layout_margin="5dp"
+                        android:focusable="true"
+                        android:background="@drawable/selector_fm_ctrl"
+                        android:clickable="true"
+                        android:focusableInTouchMode="true"
+                        android:nextFocusDown="@+id/layout_similar_movies" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/fm_details_progress"
+        style="@style/AVLoadingIndicatorView.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        app:indicatorColor="@color/white_color"
+        app:indicatorName="BallSpinFadeLoaderIndicator" />
+
+
+</RelativeLayout>

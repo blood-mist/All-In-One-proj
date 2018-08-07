@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:background="@color/transp_20_black"
+    android:background="@color/transparent_grey"
     android:gravity="center">
 
     <TextView

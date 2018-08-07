@@ -1,13 +1,15 @@
 package comcast.stb.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-import javax.annotation.Generated;
-
 @Generated("com.robohorse.robopojogenerator")
-public class MovieCategory{
+public class MovieCategory implements Parcelable {
 
 	@SerializedName("movies")
 	private List<MoviesItem> movies;
@@ -87,4 +89,44 @@ public class MovieCategory{
 			",parent_cat = '" + parentCat + '\'' + 
 			"}";
 		}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeList(this.movies);
+		dest.writeString(this.categoryTitle);
+		dest.writeString(this.categoryLogo);
+		dest.writeInt(this.categoryId);
+		dest.writeString(this.categoryDesc);
+		dest.writeInt(this.parentCat);
+	}
+
+	public MovieCategory() {
+	}
+
+	protected MovieCategory(Parcel in) {
+		this.movies = new ArrayList<MoviesItem>();
+		in.readList(this.movies, MoviesItem.class.getClassLoader());
+		this.categoryTitle = in.readString();
+		this.categoryLogo = in.readString();
+		this.categoryId = in.readInt();
+		this.categoryDesc = in.readString();
+		this.parentCat = in.readInt();
+	}
+
+	public static final Parcelable.Creator<MovieCategory> CREATOR = new Parcelable.Creator<MovieCategory>() {
+		@Override
+		public MovieCategory createFromParcel(Parcel source) {
+			return new MovieCategory(source);
+		}
+
+		@Override
+		public MovieCategory[] newArray(int size) {
+			return new MovieCategory[size];
+		}
+	};
 }

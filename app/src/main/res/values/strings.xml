@@ -121,7 +121,7 @@
 
     <string name="ima_not_loaded">Playing sample without ads, as the IMA extension was not loaded</string>
     <string name="title_permissions">Permissions</string>
-    <string name="message_permissions"><![CDATA[To allow audio visualization view to process audio stream app needs an access to your <b>Microphone</b>.]]></string>
+    <string name="message_permissions"><![CDATA[To allow ComCast STB to process audio stream app needs an access to your <b>Microphone</b>.]]></string>
     <string name="allow">allow</string>
     <string name="btn_cancel">cancel</string>
     <string name="toast_permissions_not_granted">Permissions not granted.</string>
@@ -131,4 +131,6 @@
     <string name="title_activity_package">Value Added Packages</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_movie_simple">MovieSimpleActivity</string>
+    <string name="language">Language</string>
 </resources>

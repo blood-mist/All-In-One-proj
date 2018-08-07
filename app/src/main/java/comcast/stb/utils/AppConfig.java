@@ -7,7 +7,7 @@ import comcast.stb.BuildConfig;
  */
 
 public class AppConfig {
-    private static boolean isFromDevelopment = BuildConfig.DEBUG;
+    private static boolean isFromDevelopment =true;
 
     public static boolean isDevelopment() {
         return isFromDevelopment;

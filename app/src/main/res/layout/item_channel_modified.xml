@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:layout_gravity="center"
+    android:background="@drawable/category_new_list_selector"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:focusableInTouchMode="true"
+    android:importantForAccessibility="yes"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/channel_item_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="4dp">
+
+        <ImageView
+            android:id="@+id/img_channel"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:foregroundGravity="center"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/movie_image"
+            android:focusable="false"
+            android:scaleType="centerInside"
+            android:src="@drawable/placeholder" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+

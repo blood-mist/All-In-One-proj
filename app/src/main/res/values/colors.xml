@@ -32,9 +32,10 @@
     <color name="transp_20_black">#33111111</color>
     <color name="transp_20_primary">#338daedb</color>
     <color name="colorblue_trans">#6695DCD4</color>
+    <color name="transparent_50_black">#CC111111</color>
+    <color name="transp10blue">#cc95dcd4</color>
     <color name="color_theme">#4576BA</color>
     <color name="color_theme_focused">#aa4576BA</color>
     <color name="color_theme_selected">#ee4576BA</color>
     <color name="color_white_partial">#c0f0f0f0</color>
-
 </resources>

@@ -1,7 +1,5 @@
 package comcast.stb.movielist;
 
-;
-
 import java.util.List;
 
 import comcast.stb.entity.BuyResponse;
@@ -23,13 +21,13 @@ import retrofit2.http.Query;
 
 public interface MovieListApiInterface {
     @GET("user/movies")//?with=Movies && movie-categories?with=movies
-    Observable<Response<List<MovieCategory>>> getMoviesWithCategory(@Query("token") String token);
+    Observable<Response<List<MovieCategory>>> getMoviesWithCategory(@Query("token") String token,@Query("lang") String language);
     @GET("movies/{movie-id}/playable")
-    Observable<Response<MovieLink>> getChannelLink(@Path("movie-id") int movieId, @Query("token") String token);
+    Observable<Response<MovieLink>> getChannelLink(@Path("movie-id") int movieId, @Query("token") String token,@Query("lang") String language);
 
     @FormUrlEncoded
     @POST("subscribe/movie/{movie-id}")
-    Observable<Response<BuyResponse>> buyMovie( @Field("duration") int duration,@Path("movie-id") int movieId,@Query("token") String token);
+    Observable<Response<BuyResponse>> buyMovie( @Field("duration") int duration,@Path("movie-id") int movieId,@Query("token") String token,@Query("lang") String language);
 
     interface MovieWithCategoryView{
         void setMoviesWithCategory(List<MovieCategory> movieCategoryList);
@@ -39,13 +37,13 @@ public interface MovieListApiInterface {
         void hideProgress();
     }
     interface MovieWithCategoryPresenter{
-        void getMoviesWithCategory(String token);
-        void buyMovie(int duration,int movieId,String token);
+        void getMoviesWithCategory(String token,String language);
+        void buyMovie(int duration,int movieId,String token,String language);
 
     }
     interface MovieWithCategoryInteractor{
-        void getMoviesWithCategory(String token);
-        void buyMovie(int duration,int movieId,String token);
+        void getMoviesWithCategory(String token,String language);
+        void buyMovie(int duration,int movieId,String token,String language);
     }
     interface MovieWithCategoryListener{
         void takeMoviesWithCategory(List<MovieCategory> movieCategoryList);

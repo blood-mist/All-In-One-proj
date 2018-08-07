@@ -90,7 +90,7 @@ public class ChannelRecyclerAdapter extends RecyclerView.Adapter<ChannelRecycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-//        private TextView channelTitle;
+        //        private TextView channelTitle;
         private LinearLayout itemLayout;
         private ImageView channelImage;
         public ViewHolder(final View itemView) {

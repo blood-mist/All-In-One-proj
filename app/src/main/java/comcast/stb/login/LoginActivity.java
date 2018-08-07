@@ -2,12 +2,15 @@ package comcast.stb.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,9 +41,13 @@ import io.realm.Realm;
 
 import static comcast.stb.StringData.CHANNEL_PACKAGE;
 import static comcast.stb.StringData.CHANNEL_PCKG;
+import static comcast.stb.StringData.LANGUAGE_ENGLISH;
+import static comcast.stb.StringData.LANGUAGE_SERBIAN;
+import static comcast.stb.StringData.LANGUAGE_SPANISH;
 import static comcast.stb.StringData.MOVIE_PACKAGE;
 import static comcast.stb.StringData.MOVIE_PCKG;
 import static comcast.stb.StringData.ORDER_LIST;
+import static comcast.stb.StringData.PREF_LANG;
 import static comcast.stb.StringData.SUBSCRIPTION_LIST;
 import static comcast.stb.StringData.USER_NAME;
 
@@ -50,9 +57,14 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
     private LoginPresenterImpl loginPresenter;
     private UserPresImpl userPres;
     private LogoutPresImpl logoutPres;
+    private String prefLang;
     private ArrayList<SubsItem> subscriptionList;
     private ArrayList<OrderItem> orderItemArrayList;
     private ArrayList<PackagesInfo> channelPackageslist, moviesPackagesList;
+
+    private SharedPreferences langauagePreferences;
+
+    private SharedPreferences.Editor editor;
 
     @BindView(R.id.txt_user_mac)
     TextView userMac;
@@ -62,6 +74,10 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
     EditText userPassword;
     @BindView(R.id.progressBar2)
     AVLoadingIndicatorView progressBar;
+
+    @BindView(R.id.radioGroup1)
+    RadioGroup languageGroup;
+
     private Validator validator;
     Realm realm;
     private LoginData loginData;
@@ -70,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        langauagePreferences= PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         validator = new Validator(this);
@@ -87,6 +104,31 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
                 }
             }
         });
+        languageGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                setPreferredLanguage(checkedId);
+            }
+        });
+
+    }
+
+    private void setPreferredLanguage(int checkedId) {
+        switch (checkedId){
+            case R.id.rdbtn_eng:
+                prefLang=LANGUAGE_ENGLISH;
+                break;
+            case R.id.rdbtn_esp:
+                prefLang=LANGUAGE_SPANISH;
+                break;
+            case R.id.rdbtn_ser:
+                prefLang=LANGUAGE_SERBIAN;
+                break;
+            default:
+                prefLang=LANGUAGE_ENGLISH;
+                break;
+
+        }
     }
 
     @OnClick(R.id.btn_login)
@@ -105,7 +147,12 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
     public void onSuccessfullyLoggedIn(LoginData loginData) {
         updateUI(loginData);
         this.loginData=loginData;
-        userPres.getSubsHistory(loginData.getToken());
+        Intent launcherIntent = new Intent(LoginActivity.this, LauncherModifiedActivity.class);
+        launcherIntent.putExtra(USER_NAME, loginData.getUser().getName());
+        launcherIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(launcherIntent);
+        finish();
+//        userPres.getSubsHistory(loginData.getToken());
     }
 
     @Override
@@ -171,6 +218,9 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
 
     @Override
     public void onValidationSucceeded() {
+        editor=langauagePreferences.edit();
+        editor.putString(PREF_LANG,prefLang);
+        editor.apply();
         loginPresenter.userTryingToLogin(userMac.getText().toString(), userPassword.getText().toString());
     }
 
@@ -191,7 +241,7 @@ public class LoginActivity extends AppCompatActivity implements LoginApiInterfac
 
     private void updateUI(final LoginData loginData) {
         hideProgress();
-        realm.executeTransaction(new Realm.Transaction() {
+        realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.insertOrUpdate(loginData);

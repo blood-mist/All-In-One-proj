@@ -39,6 +39,9 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
     private int channelId;
     private static final String CHANNEL_LIST = "channel_list";
     private static final String CHANNEL_ID = "channel_id";
+    public static final String ERROR_MESSAGE = "error_message";
+    private static final String CHANNEL_CATEGORY = "channelCategory";
+    private static final String CHANNEL = "channel";
     private LinkedHashMap<String, ArrayList<EventItem>> epghashMap;
     private ArrayList<Calendar> calendarList;
     private MenuFragment.OnChannelClickedListener clickListener;
@@ -114,7 +117,7 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
         super.onAttach(context);
         if (context instanceof MenuFragment.OnChannelClickedListener) {
             clickListener = (MenuFragment.OnChannelClickedListener) context;
-            if(getArguments()!=null){
+            if (getArguments() != null) {
                 channelCategoryList = getArguments().getParcelableArrayList(CHANNEL_CATEGORY);
 //                populateChannelList(channelCategories);
             }
@@ -123,7 +126,6 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
                     + " must implement OnEPGClickedListener");
         }
     }
-
 
 
     @Override
@@ -204,6 +206,7 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
 
     }
 
+
     public void updateDatas(Bundle bundle) {
         LinkedHashMap<String, ArrayList<EventItem>> epgChannelList = (LinkedHashMap<String, ArrayList<EventItem>>) bundle.getSerializable("epgChannelList");
         calendarList = getCalendarList(epgChannelList);
@@ -212,3 +215,5 @@ public class EpgFragment extends Fragment implements DateAdapter.OnDayClickListe
         populateDayList(calendarList, epgChannelList);
     }
 }
+
+

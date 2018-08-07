@@ -24,15 +24,15 @@ public class MoviePresImpl implements MovieListApiInterface.MovieWithCategoryPre
     }
 
     @Override
-    public void getMoviesWithCategory(String token) {
+    public void getMoviesWithCategory(String token,String language) {
         movieWithCategoryView.showProgress();
-        movieWithCategoryInteractor.getMoviesWithCategory(token);
+        movieWithCategoryInteractor.getMoviesWithCategory(token,language);
     }
 
     @Override
-    public void buyMovie( int duration, int movieId,String token) {
+    public void buyMovie( int duration, int movieId,String token,String language) {
         movieWithCategoryView.showProgress();
-        movieWithCategoryInteractor.buyMovie(duration,movieId,token);
+        movieWithCategoryInteractor.buyMovie(duration,movieId,token,language);
     }
 
     @Override

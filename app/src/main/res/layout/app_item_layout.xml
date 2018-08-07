@@ -26,7 +26,7 @@
             android:foregroundGravity="center"
             android:scaleType="centerInside"
             android:adjustViewBounds="true"
-            android:src="@drawable/tv_icon"
+            android:src="@drawable/placeholder"
             android:id="@+id/img_appicon"/>
 
         <TextView

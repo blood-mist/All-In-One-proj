@@ -1,295 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+
+    <TextView
+        android:id="@+id/txt_category_label"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:background="@color/transp_50_black"
+        android:gravity="center"
+        android:padding="10dp"
+        android:focusable="false"
+        android:importantForAccessibility="noHideDescendants"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/recycler_category_list"
+        android:text="@string/categories"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/white_color"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_category_list"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_toEndOf="@+id/txt_category_label"
+        android:background="@color/transp_50_black"
+        android:importantForAccessibility="yes"
+        android:nextFocusLeft="@id/recycler_channel_list"
+        android:padding="10dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_channel_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="comcast.stb.launcher.LauncherActivity"
-        android:background="@color/transp_20_black">
+        android:importantForAccessibility="yes"
+        android:layout_alignEnd="@+id/txt_category_label"
+        android:layout_below="@+id/recycler_category_list"
+        android:background="@color/transp_50_black"
+        android:nextFocusUp="@id/recycler_category_list"
+        android:nextFocusRight="@id/txt_epg"
+        android:padding="10dp" />
 
-        <ImageView
-            android:id="@+id/org_logo"
-            android:layout_width="250dp"
-            android:layout_height="40dp"
-            android:focusable="false"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="5dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/storeLogo"
-            android:scaleType="fitXY"
-            android:src="@drawable/store_logo" />
-
-        <ImageButton
-            android:id="@+id/img_tv_logout"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
-            android:layout_margin="5dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:adjustViewBounds="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="5dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/logout" />
-
-        <TextView
-            android:id="@+id/txt_tv_username"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_alignBottom="@+id/img_tv_logout"
-            android:layout_alignParentTop="true"
-            android:layout_margin="5dp"
-            android:layout_toLeftOf="@+id/img_tv_logout"
-            android:layout_toStartOf="@+id/img_tv_logout"
-            android:ellipsize="marquee"
-            android:gravity="center"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:singleLine="true"
-            android:text="Hello"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@drawable/text_selector" />
-
-        <ImageView
-            android:id="@+id/user_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentTop="true"
-            android:layout_margin="5dp"
-            android:layout_toLeftOf="@+id/txt_tv_username"
-            android:layout_toStartOf="@+id/txt_tv_username"
-            android:adjustViewBounds="true"
-            android:padding="5dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/userimage" />
-    <LinearLayout
-        android:layout_width="match_parent"
+    <View
+        android:id="@+id/default_view"
+        android:layout_width="1dp"
         android:layout_height="match_parent"
+        android:layout_below="@+id/recycler_category_list"
+        android:layout_toEndOf="@+id/recycler_channel_list"
+        android:background="@color/colorBlue"
+        android:focusable="true"
+        android:importantForAccessibility="yes"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="245dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/org_logo"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        android:layout_alignParentEnd="true">
+        android:layout_toEndOf="@+id/default_view"
+        android:background="@color/transparent_black">
+
         <LinearLayout
-            android:id="@+id/category_container"
-            android:layout_width="0dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
+            android:id="@+id/channel_list_layout"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="false"
-            android:background="@drawable/menu_left_selector"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:layout_marginEnd="5dp">
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txt_category_label"
-                android:layout_width="match_parent"
+                android:id="@+id/txt_tv_description"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="@string/categories"
+                android:importantForAccessibility="no"
+                android:text="@string/txt_description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/white_color"
                 android:textStyle="bold" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_category_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp" />
-        </LinearLayout>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:id="@+id/channel_list_layout"
-                android:layout_alignParentTop="true"
-                android:background="@color/white_no_selection"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/txt_tv_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/img_desc"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
                     android:padding="10dp"
-                    android:text="@string/txt_description"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/white_color"
-                    android:textStyle="bold" />
+                    android:focusable="false"
+                    android:importantForAccessibility="no"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/placeholder" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:id="@+id/img_desc"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/placeholder"
-                        android:scaleType="fitXY"
-                        android:padding="10dp"
-                        android:adjustViewBounds="true"/>
-                    <LinearLayout
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_channel_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:padding="10dp"
+                        android:importantForAccessibility="no"
+                        android:text="@string/description_demo"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@color/white_color" />
+
+                    <TextView
+                        android:id="@+id/description_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:importantForAccessibility="no"
+                        android:padding="10dp"
+                        android:text="Channel Category: "
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                    <TextView
+                        android:id="@+id/txt_menu_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:importantForAccessibility="no"
+                        android:padding="10dp"
+                        android:text="$1.00"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:importantForAccessibility="yes"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:id="@+id/epg_icon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:adjustViewBounds="true"
+                            android:focusable="false"
+                            android:importantForAccessibility="no"
+                            android:padding="5dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/epg" />
+
                         <TextView
-                            android:id="@+id/txt_channel_description"
+                            android:id="@+id/txt_epg"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            android:textColor="@color/white_color"
-                            android:text="@string/description_demo"
-                            android:padding="10dp"/>
-                        <TextView
-                            android:id="@+id/description_category"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Channel Category: "
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:importantForAccessibility="yes"
+                            android:nextFocusLeft="@id/recycler_channel_list"
+                            android:nextFocusUp="@id/recycler_category_list"
                             android:padding="10dp"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                            android:text="EPG"
+                            android:textAllCaps="true"
+                            android:textColor="@drawable/text_selector" />
+
+                        <ImageView
+                            android:id="@+id/purchase_icon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="50dp"
+                            android:adjustViewBounds="true"
+                            android:focusable="false"
+                            android:importantForAccessibility="no"
+                            android:padding="5dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/purchase_status" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="More Descrition can be added here about the channel"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:importantForAccessibility="yes"
+                            android:nextFocusUp="@id/recycler_category_list"
                             android:padding="10dp"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                            android:text="Free"
+                            android:textAllCaps="true"
+                            android:textColor="@drawable/text_selector" />
+
                     </LinearLayout>
 
                 </LinearLayout>
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone"
-                        android:id="@+id/buy_option_container">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/white_color"
-                            android:textStyle="bold"
-                            android:text="buy now to get exclusive offers"
-                            android:textAllCaps="true"
-                            android:padding="10dp"/>
-                        <TextView
-                            android:id="@+id/txt_menu_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            android:padding="10dp"
-                            android:text="Price:"
-                            android:textColor="@color/white_color"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="buy"
-                            android:layout_margin="5dp"
-                            android:gravity="center"
-                            android:layout_gravity="center"
-                            android:background="@drawable/button_selector"/>
-                    </LinearLayout>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:visibility="visible"
-                        android:id="@+id/epg_container">
-                        <TextView
-                            android:id="@+id/txt_epg_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textAllCaps="true"
-                            android:layout_alignParentTop="true"
-                            android:padding="10dp"
-                            android:layout_alignParentLeft="true"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:text="EPG GUIDE"
-                            android:textStyle="bold"
-                            android:textColor="@color/white_color"/>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/epg_list_layout"
-                            android:layout_below="@+id/txt_epg_title"
-                            android:orientation="vertical"
-                            android:visibility="visible">
-                            <android.support.v7.widget.RecyclerView
-                                android:id="@+id/day_recycler"
-                                android:layout_width="match_parent"
-                                android:layout_height="60dp"
-                                android:padding="5dp"/>
-                            <android.support.v7.widget.RecyclerView
-                                android:id="@+id/pgm_guide_recycler"
-                                android:layout_width="match_parent"
-                                android:padding="5dp"
-                                android:layout_height="match_parent"/>
-                        </LinearLayout>
-
-
-                        <TextView
-                            android:id="@+id/txt_errorEpgText"
-                            android:layout_below="@+id/txt_epg_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="80dp"
-                            android:padding="10dp"
-                            android:background="@drawable/white_border"
-                            android:text="@string/error_epg"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:visibility="gone"/>
-                    </RelativeLayout>
-                </FrameLayout>
-
 
             </LinearLayout>
 
 
-
-        </RelativeLayout>
-        <LinearLayout
-            android:id="@+id/description_container"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/menu_right_selector"
-            android:orientation="vertical"
-            android:layout_marginStart="5dp">
-            <TextView
-                android:id="@+id/current_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="Test Channel"
-                android:textColor="@color/white_color"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_channel_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp" />
         </LinearLayout>
-    </LinearLayout>
+
 
     </RelativeLayout>
+
+</RelativeLayout>
 
 

@@ -16,9 +16,9 @@ import java.util.ArrayList;
 
 import comcast.stb.R;
 import comcast.stb.entity.AppData;
-import comcast.stb.fm.FmListActivity;
+import comcast.stb.fm.FmSimpleActivity;
 import comcast.stb.livetv.LiveTVActivity;
-import comcast.stb.movielist.MovieNewActivity;
+import comcast.stb.movielist.MovieSimpleActivity;
 import comcast.stb.valueAddedPackages.PackageActivity;
 
 import static comcast.stb.utils.StringData.LIVE_TV;
@@ -152,11 +152,11 @@ public class AppListRecyclerAdapter extends RecyclerView.Adapter<AppListRecycler
                             mContext.startActivity(liveIntent);
                             break;
                         case MOVIE:
-                            Intent movieIntent=new Intent(mContext, MovieNewActivity.class);
+                            Intent movieIntent=new Intent(mContext, MovieSimpleActivity.class);
                             mContext.startActivity(movieIntent);
                             break;
                         case RADIO_SERVICE:
-                            Intent radioIntent=new Intent(mContext, FmListActivity.class);
+                            Intent radioIntent=new Intent(mContext, FmSimpleActivity.class);
                             mContext.startActivity(radioIntent);
                             break;
                         case "settings":

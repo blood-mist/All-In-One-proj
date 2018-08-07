@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/stb_bg"
+    android:background="@drawable/bg_3"
     android:orientation="vertical"
-    android:weightSum="7">
+    android:weightSum="7"
+    android:padding="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,16 +15,6 @@
         android:layout_gravity="top"
         android:layout_weight="1">
 
-        <ImageView
-            android:id="@+id/org_launcher_logo"
-            android:layout_width="300dp"
-            android:layout_height="45dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/storeLogo"
-            android:scaleType="fitXY"
-            android:src="@drawable/store_logo" />
 
         <ImageButton
             android:id="@+id/img_logout"
@@ -134,6 +125,8 @@
         android:layout_height="0dp"
         android:layout_weight="5"
         android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:weightSum="4">
 
         <android.support.v7.widget.RecyclerView

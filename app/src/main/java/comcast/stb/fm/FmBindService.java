@@ -139,6 +139,7 @@ public class FmBindService extends Service {
 
     public void startPlayer(String channelLink) {
         try {
+            try {mediaPlayer.reset();} catch (Exception e) {e.printStackTrace();}
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(this, Uri.parse(channelLink));
             mediaPlayer.prepareAsync();
@@ -154,7 +155,7 @@ public class FmBindService extends Service {
             mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                 @Override
                 public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                    Timber.d("onError");
+                    Timber.d("onError"+i+","+i1);
                     mediaPlayer.reset();
                     callReceiver(ACTION_PLAY);
                     return false;

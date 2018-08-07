@@ -195,13 +195,14 @@ public class LauncherModifiedActivity extends AppCompatActivity implements AdApi
         appRecyclerList.setAdapter(appListRecyclerAdapter);
         appRecyclerList.setNestedScrollingEnabled(false);
         appRecyclerList.setHasFixedSize(true);
+        appRecyclerList.requestFocus();
     }
 
     private void addItemsToList() {
         appDataList = new ArrayList<>();
         appDataList = new ArrayList<>();
         appDataList.add(new AppData(LIVE_TV, ContextCompat.getDrawable(this, R.drawable.live)));
-        appDataList.add(new AppData(SUBSCRIPTIONS, ContextCompat.getDrawable(this, R.drawable.subscribe)));
+        appDataList.add(new AppData(SUBSCRIPTIONS, ContextCompat.getDrawable(this, R.drawable.subs)));
         appDataList.add(new AppData(MOVIE, ContextCompat.getDrawable(this, R.drawable.video)));
         appDataList.add(new AppData(SETTINGS, ContextCompat.getDrawable(this, R.drawable.settings)));
         appDataList.add(new AppData(RADIO_SERVICE, ContextCompat.getDrawable(this, R.drawable.radio)));

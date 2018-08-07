@@ -19,6 +19,7 @@ public class LoginPresenterImpl implements LoginApiInterface.LoginPresenter, Log
 
     @Override
     public void userTryingToLogin(String userName, String password) {
+        loginView.showProgress();
         loginModel.checkCredentials(userName, password);
     }
 
